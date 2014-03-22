@@ -1,0 +1,34 @@
+<MKM version="2.0" imageFileUrl="file:///C:/Users/qiuzhonglei/Downloads/%e6%96%b0%e7%89%88H5%e6%90%9c%e7%b4%a2%e9%a1%b5/%e6%9f%a5%e8%af%a2-v2-%e5%a2%9e%e5%8a%a0%e6%9b%b4%e5%a4%9a%e4%b8%8b%e6%8b%89%e8%8f%9c%e5%8d%95.psd">
+  <Marks>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3384544" offsetX="25" offsetY="10" x="253" y="71"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3116489" offsetX="25" offsetY="10" x="340" y="133"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="5" color="16711680" targetColor="14759982" offsetX="25" offsetY="10" x="629" y="405"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3381723" offsetX="25" offsetY="10" x="191" y="267"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="16711422" offsetX="45" offsetY="45" x="154" y="276"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3381723" offsetX="27" offsetY="25" x="70" y="259"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="10066329" offsetX="43" offsetY="11" x="64" y="319"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="10066329" offsetX="25" offsetY="10" x="88" y="179"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3381723" offsetX="25" offsetY="10" x="85" y="208"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="16382457" offsetX="25" offsetY="10" x="190" y="370"/>
+    <LengthMark direction="3" color="16711680" length="85" x="15" y="40"/>
+    <TextMark defaultDirection="9" direction="9" color="16711680" x="92" y="66" textMaxWidth="100" offsetX="25" offsetY="10" text="1.8rem"/>
+    <TextMark defaultDirection="9" direction="9" color="16711680" x="202" y="102" textMaxWidth="100" offsetX="25" offsetY="10" text="1.2rem"/>
+    <LengthMark direction="12" color="16711680" length="58" x="0" y="77"/>
+    <LengthMark direction="12" color="16711680" length="10" x="160" y="81"/>
+    <LengthMark direction="12" color="16711680" length="9" x="171" y="102"/>
+    <LengthMark direction="3" color="16711680" length="68" x="249" y="140"/>
+    <LengthMark direction="12" color="16711680" length="20" x="0" y="177"/>
+    <LengthMark direction="3" color="16711680" length="14" x="98" y="125"/>
+    <LengthMark direction="3" color="16711680" length="128" x="15" y="353"/>
+    <LengthMark direction="3" color="16711680" length="128" x="26" y="224"/>
+    <LengthMark direction="3" color="16711680" length="14" x="36" y="208"/>
+    <LengthMark direction="12" color="16711680" length="64" x="21" y="166"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="15658734" offsetX="25" offsetY="10" x="138" y="352"/>
+    <TextMark defaultDirection="9" direction="9" color="16711680" x="79" y="265" textMaxWidth="100" offsetX="25" offsetY="10" text="1.5rem"/>
+    <TextMark defaultDirection="9" direction="9" color="16711680" x="191" y="301" textMaxWidth="100" offsetX="25" offsetY="10" text="1.1rem"/>
+    <LengthMark direction="3" color="16711680" length="52" x="49" y="243"/>
+    <LengthMark direction="3" color="16711680" length="36" x="62" y="294"/>
+    <LengthMark direction="3" color="16711680" length="20" x="61" y="224"/>
+    <LengthMark direction="3" color="16711680" length="22" x="73" y="330"/>
+  </Marks>
+</MKM>

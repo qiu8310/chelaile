@@ -27,6 +27,10 @@ module.exports = function (grunt) {
 
         // Watches files for changes and runs tasks based on the changed files
         watch: {
+            bower: {
+                files: ['bower.json'],
+                tasks: ['bowerInstall']
+            },
             js: {
                 files: ['<%= config.app %>/scripts/{,*/}*.js'],
                 tasks: ['jshint'],
@@ -145,6 +149,7 @@ module.exports = function (grunt) {
                 imagesDir: '<%= config.app %>/images',
                 javascriptsDir: '<%= config.app %>/scripts',
                 fontsDir: '<%= config.app %>/styles/fonts',
+                importPath: '<%= config.app %>/bower_components',
                 httpImagesPath: '/images',
                 httpGeneratedImagesPath: '/images/generated',
                 httpFontsPath: '/styles/fonts',
@@ -166,7 +171,7 @@ module.exports = function (grunt) {
         // Add vendor prefixed styles
         autoprefixer: {
             options: {
-                browsers: ['android >= 2.3', 'chrome >= 23', 'ios > 4']
+                browsers: ['ie >= 10', 'ff >= 30', 'android >= 2.3', 'chrome >= 23', 'ios > 4']
             },
             dist: {
                 files: [{
@@ -175,6 +180,19 @@ module.exports = function (grunt) {
                     src: '{,*/}*.css',
                     dest: '.tmp/styles/'
                 }]
+            }
+        },
+
+        // Automatically inject Bower components into the HTML file
+        bowerInstall: {
+            app: {
+                src: ['<%= config.app %>/{,*/}*.html'],
+                ignorePath: '<%= config.app %>/',
+                exclude: []
+            },
+            sass: {
+                src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],
+                ignorePath: '<%= config.app %>/bower_components/'
             }
         },
 
@@ -239,8 +257,8 @@ module.exports = function (grunt) {
             dist: {
                 options: {
                     collapseBooleanAttributes: true,
-                    collapseWhitespace: true,
-                    removeAttributeQuotes: true,
+                    collapseWhitespace: false,
+                    removeAttributeQuotes: false,
                     removeCommentsFromCDATA: true,
                     removeEmptyAttributes: true,
                     removeOptionalTags: true,
@@ -269,7 +287,8 @@ module.exports = function (grunt) {
                         '.htaccess',
                         'images/{,*/}*.webp',
                         '{,*/}*.html',
-                        'styles/fonts/{,*/}*.*'
+                        'styles/fonts/{,*/}*.*',
+                        'bower_components/zepto/*.*'
                     ]
                 }]
             },
@@ -345,8 +364,8 @@ module.exports = function (grunt) {
         'uglify',
         'copy:dist',
         'rev',
-        'usemin'//,
-        //'htmlmin'
+        'usemin',
+        'htmlmin'
     ]);
 
     grunt.registerTask('default', [
