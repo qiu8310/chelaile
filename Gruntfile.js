@@ -186,9 +186,7 @@ module.exports = function (grunt) {
         // Automatically inject Bower components into the HTML file
         bowerInstall: {
             app: {
-                src: ['<%= config.app %>/{,*/}*.html'],
-                ignorePath: '<%= config.app %>/',
-                exclude: []
+                src: ['<%= config.app %>/{,*/}*.html']
             },
             sass: {
                 src: ['<%= config.app %>/styles/{,*/}*.{scss,sass}'],

@@ -2,7 +2,7 @@
 
 
 body {
-    background: white;
+    background-color: white;
 }
 
 // header
@@ -94,6 +94,13 @@ $list-stripe-border: #eee;
         height: 64px;
         overflow: hidden;
         border-bottom: 1px solid $list-stripe-border;
+    }
+
+    li {
+        background: $list-stripe-a;
+    }
+    li:nth-child(2n+2) {
+        background: $list-stripe-b;
     }
     li .wrap {
         display: block;
