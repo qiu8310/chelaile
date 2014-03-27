@@ -127,7 +127,7 @@ $list-stripe-border: #eee;
             margin-bottom: -2px;
             height: 13px;
             padding: 1px 7px;
-            line-height: 13px;
+            line-height: 14px;
             border-radius: 7px;
         }
     }
@@ -138,17 +138,10 @@ $list-stripe-border: #eee;
     }
 
     i {
-        color: #adadad;
         position: absolute;
         display: block;
-        top: 0;
-        right: 0;
-        height: 100%;
-        line-height: 64px;
-        width: 50px;
-        font-size: 2.3rem;
-        text-align: center;
-        font-style: normal;
+        top: 21px;
+        right: 15px;
     }
 
     .wrap {
@@ -169,11 +162,18 @@ $list-stripe-border: #eee;
 }
 
 
+
 .sprite {
     background: url(../images/sprite.png) no-repeat top left;
-    background-size: 18px 50px;
+    background-size: 32px auto;
     display: block;
+    overflow:hidden;
 }
-.sprite-icon-logo{ background-position: 0 0; width: 10px; height: 16px; }
-.sprite-icon-opts{ background-position: 0 -18px; width: 13px; height: 12px; }
-.sprite-icon-search{ background-position: 0 -32px; width: 18px; height: 18px; }
+
+.sprite-arrow-right {width:21px; height:21px; background-position: -0px -0px}
+.sprite-icon-back {width:11px; height:19px; background-position: -19px -22px}
+.sprite-icon-delete {width:15px; height:15px; background-position: -0px -41px}
+.sprite-icon-history {width:14px; height:15px; background-position: -16px -42px}
+.sprite-icon-logo {width:10px; height:16px; background-position: -23px -0px}
+.sprite-icon-opts {width:13px; height:11px; background-position: -0px -57px}
+.sprite-icon-search {width:18px; height:18px; background-position: -0px -22px}
