@@ -40,7 +40,7 @@
             </struct>
         </struct>
         <key>shapePadding</key>
-        <uint>2</uint>
+        <uint>10</uint>
         <key>jpgQuality</key>
         <uint>80</uint>
         <key>pngOptimizationLevel</key>
@@ -50,7 +50,7 @@
         <key>textureFormat</key>
         <enum type="SettingsBase::TextureFormat">png</enum>
         <key>borderPadding</key>
-        <uint>2</uint>
+        <uint>0</uint>
         <key>maxTextureSize</key>
         <QSize>
             <key>width</key>
@@ -61,7 +61,7 @@
         <key>fixedTextureSize</key>
         <QSize>
             <key>width</key>
-            <int>-1</int>
+            <int>128</int>
             <key>height</key>
             <int>-1</int>
         </QSize>
@@ -148,6 +148,11 @@
             <filename>../images/sprite-icon-logo.png</filename>
             <filename>../images/sprite-icon-opts.png</filename>
             <filename>../images/sprite-icon-search.png</filename>
+            <filename>../images/sprite-opt-aboutus.png</filename>
+            <filename>../images/sprite-opt-feedback.png</filename>
+            <filename>../images/sprite-opt-morecity.png</filename>
+            <filename>../images/sprite-opt-share.png</filename>
+            <filename>../images/sprite-opt-update.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

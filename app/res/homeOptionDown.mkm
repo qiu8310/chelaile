@@ -1,0 +1,12 @@
+<MKM version="2.0" imageFileUrl="file:///D:/dev/chelaile/app/res/homeOptionDown.png">
+  <Marks>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3116489" offsetX="25" offsetY="10" x="522" y="158"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="3183567" offsetX="25" offsetY="10" x="331" y="464"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="16777215" offsetX="25" offsetY="10" x="421" y="497"/>
+    <LengthMark direction="3" color="16711680" length="84" x="508" y="295"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="5" color="16711680" targetColor="3384544" offsetX="25" offsetY="10" x="569" y="263"/>
+    <LengthMark direction="12" color="16711680" length="321" x="299" y="198"/>
+    <LengthMark direction="12" color="16711680" length="22" x="619" y="170"/>
+    <LengthMark direction="12" color="16711680" length="28" x="298" y="178"/>
+  </Marks>
+</MKM>

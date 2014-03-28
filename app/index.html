@@ -22,20 +22,29 @@
         <!-- endbuild -->
     </head>
     <body>
-        <header>
-            <h1><i class="logo sprite sprite-icon-logo"></i>车来了<a href="">杭州</a></h1>
-            <i class="opts sprite sprite-icon-opts"></i>
-        </header>
 
-        <form class="search">
-            <div class="search-box">
-                <input type="search" placeholder="请输入线路" />
-                <i class="sprite sprite-icon-search"></i>
-            </div>
-        </form>
+        <section class="page pageHome">
+            <header>
+                <h1><i class="logo sprite sprite-icon-logo"></i>车来了<a href="">杭州</a></h1>
+                <i class="opts sprite sprite-icon-opts"></i>
 
-        <section class="list-home">
-            <ul>
+                <ul class="cityList">
+                    <li class="selected"><i class="sprite sprite-opt-morecity"></i><a href="">更多城市</a></li>
+                    <li><i class="sprite sprite-opt-share"></i><a href="">分享给好友</a></li>
+                    <li><i class="sprite sprite-opt-feedback"></i><a href="">反馈意见</a></li>
+                    <li><i class="sprite sprite-opt-update"></i><a href="">检查更新</a></li>
+                    <li><i class="sprite sprite-opt-aboutus"></i><a href="">关于我们</a></li>
+                </ul>
+            </header>
+
+            <form class="search-fake">
+                <div class="search-box">
+                    <input type="search" placeholder="请输入线路" />
+                    <i class="sprite sprite-icon-search"></i>
+                </div>
+            </form>
+
+            <ul class="homeList deleteEnable">
                 <li>
                     <a class="wrap">
                         <h2><span>715路</span><label>上班</label></h2>
@@ -69,13 +78,53 @@
                     <div class="del">删除</div>
                 </li>
             </ul>
+
+
         </section>
 
-        <!-- build:js scripts/vendor.js -->
-        <!-- bower:js -->
+        <section class="page pageSearch" style="display:none;">
+            <form class="search">
+                <div class="search-box">
+                    <input type="search" name="search" placeholder="请输入线路">
+                    <i class="clear sprite sprite-icon-delete"></i>
+                    <a href="" class="cancel">取消</a>
+                </div>
+            </form>
+            <ul class="searchList deleteEnable">
+                <li>
+                    <a class="wrap">
+                        <i class="sprite sprite-icon-history"></i>
+                        <div class="content">
+                            <h2><span>715路</span></h2>
+                            <p>羊肉公交战 &rarr; 人肉肌场</p>
+                        </div>
+                        <i class="sprite sprite-arrow-right"></i>
+                    </a>
+                    <div class="del">删除</div>
+                </li>
+                <li>
+                    <a class="wrap">
+                        <i class="sprite sprite-icon-search"></i>
+                        <div class="content">
+                            <h2><span>715路</span></h2>
+                            <p>羊肉公交战 &rarr; 人肉肌场</p>
+                        </div>
+                        <i class="sprite sprite-arrow-right"></i>
+                    </a>
+                    <div class="del">删除</div>
+                </li>
+            </ul>
+        </section>
+
+
+
+
+        <!-- build:js scripts/zepto.js -->
         <script src="bower_components/zepto/zepto.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js scripts/hammer.js -->
         <script src="bower_components/hammerjs/hammer.js"></script>
-        <!-- endbower -->
         <!-- endbuild -->
 
         <!-- build:js({app,.tmp}) scripts/main.js -->
