@@ -43,10 +43,40 @@ var util = {
 function _ (selector, ctx) { return (ctx || document).querySelector(selector); }
 function __(selector, ctx) { return [].slice.call((ctx || document).querySelectorAll(selector)); }
 
+
+/* common */
+$(function() {
+	// touchable element
+	var $doc = $(document),
+		lastTouchedElem;
+	$doc.delegate('.touchable', 'touchstart', function() {
+		if (lastTouchedElem) {
+			lastTouchedElem.removeClass('touched');
+		}
+		lastTouchedElem = $(this).addClass('touched');
+	});
+	$doc.on('touchmove, touchcancel, touchend', function() {
+		if (lastTouchedElem) {
+			lastTouchedElem.removeClass('touched');
+		}
+	});
+
+	// back button
+	var backElem = _('header .back');
+	if (backElem) {
+		Hammer(backElem).on('tap', function() {
+			window.history.back();
+			return false;
+		});
+	}
+});
+
+/* index page */
 $(function() {
 	// 处理删除按钮
 	var MAX_WIDTH = 70,
-		eles = __('.deleteEnable');
+		eles = __('.deleteEnable'),
+		cancelSearchEles = _('.search .cancel');
 
 	function dragHandler(e) {
 		e.gesture.preventDefault();
@@ -129,13 +159,40 @@ $(function() {
 		$('.search input').focus();
 	});
 
-	Hammer(_('.search .cancel')).on('tap', function(e) {
-		show('home');
-		e.gesture.preventDefault();
-		e.gesture.stopPropagation();
+	if (cancelSearchEles) {
+		Hammer(cancelSearchEles).on('tap', function(e) {
+			show('home');
+			e.gesture.preventDefault();
+			e.gesture.stopPropagation();
+			e.preventDefault();
+			e.stopPropagation();
+		});
+	}
+});
+
+/* info page */
+$(function(){
+	var infoDropElem = _('.busBoard .dropdown');
+	if (!infoDropElem) { return ; }
+	var chosedBusesElem = _('.chosedBuses'),
+		choseBusesElem = _('.choseBuses'),
+		busBoardElem = _('.busBoard'),
+		busesMapElem = _('.busesMap');
+
+	Hammer(infoDropElem).on('tap', function(e) {
+		if (busBoardElem.classList.contains('fixedBottom')) {
+			chosedBusesElem.classList.add('hide');
+			choseBusesElem.classList.add('hide');
+			busBoardElem.classList.remove('fixedBottom');
+			busesMapElem.classList.remove('hide');
+		} else if (chosedBusesElem.classList.contains('hide')) {
+			chosedBusesElem.classList.remove('hide');
+		} else {
+			choseBusesElem.classList.remove('hide');
+			busBoardElem.classList.add('fixedBottom');
+			busesMapElem.classList.add('hide');
+		}
 		e.preventDefault();
-		e.stopPropagation();
+		e.gesture.preventDefault();
 	});
-
-
 });

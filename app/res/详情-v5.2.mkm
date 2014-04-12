@@ -1,0 +1,16 @@
+<MKM version="2.0" imageFileUrl="file:///G:/zhongleiqiu/Desktop/webapp/app/res/%e8%af%a6%e6%83%85-v5.2.psd">
+  <Marks>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="13421772" offsetX="25" offsetY="10" x="326" y="861"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="16382457" offsetX="25" offsetY="10" x="53" y="872"/>
+    <LengthMark direction="3" color="16711680" length="98" x="257" y="862"/>
+    <LengthMark direction="12" color="16711680" length="52" x="0" y="427"/>
+    <LengthMark direction="12" color="16711680" length="44" x="102" y="426"/>
+    <LengthMark direction="12" color="16711680" length="10" x="185" y="428"/>
+    <LengthMark direction="3" color="16711680" length="30" x="437" y="241"/>
+    <LengthMark direction="12" color="16711680" length="20" x="620" y="287"/>
+    <LengthMark direction="12" color="16711680" length="37" x="502" y="288"/>
+    <LengthMark direction="3" color="16711680" length="40" x="447" y="269"/>
+    <LengthMark direction="3" color="16711680" length="148" x="270" y="242"/>
+    <ColorMark defaultDirection="9" colorSystem="hex" direction="9" color="16711680" targetColor="13421772" offsetX="25" offsetY="10" x="174" y="391"/>
+  </Marks>
+</MKM>

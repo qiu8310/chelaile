@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>车来了 - 最精准的实时公交App</title>
+        <meta name="keywords" content="车来了，智能公交，实时公交">
+        <meta name="description" content="最精准的实时公交，实时位置尽览无余，多线路车辆到站查询，到站提醒/时间预测，周边站点，换乘">
+
+        <meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="format-detection" content="telephone=no;address=no;email=no;" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <link rel="shortcut icon" href="/favicon.ico">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+    </head>
+    <body>
+        <header>
+            <div class="headerLeft">
+                <a class="ir touchable back" href="#">Back</a>
+            </div>
+            <div class="headerMain">
+                <h2>326路</h2>
+            </div>
+            <div class="headerRight">
+                <a class="ir touchable">Option</a>
+            </div>
+            <ul class="optMenu">
+                <li class="save"><a class="touchable" href=""><span>收藏</span></a></li>
+                <li class="unsave"><a class="touchable" href=""><span>取消</span></a></li>
+                <li class="share"><a class="touchable" href=""><span>分享</span></a></li>
+            </ul>
+        </header>
+
+        <section class="chosedBuses hide">
+            <ul>
+                <li><a href="">35路</a></li>
+                <li class="selected"><a href="">326路</a></li>
+                <li><a href="">325路</a></li>
+                <li><a href="">445路</a></li>
+                <li><a href="">122路无级线路XXX</a></li>
+                <li><a href="">325路</a></li>
+                <li><a href="">445路</a></li>
+            </ul>
+        </section>
+        <section class="choseBuses hide">
+            <p>经过<span class="currentStop">市三医院</span>的线路们（点击添加标签）</p>
+            <ul>
+                <li class="selected">K7</li>
+                <li>326</li>
+                <li class="selected">B支2路区间XXXXXXX</li>
+                <li class="selected">K22</li>
+                <li class="selected">608</li>
+                <li>16</li>
+                <li>1D6</li>
+                <li>$$$$$$</li>
+            </ul>
+        </section>
+        <section class="busBoard">
+            <a class="dropdown touchable"></a>
+            <h2>城站火车站 <i class="to"></i> 六合路口</h2>
+            <p>首末班车： 5:20 - 21:50</p>
+        </section>
+
+        <section class="busesMap">
+            <div class="mapNote">
+                <ul>
+                    <li>途中</li>
+                    <li>到站</li>
+                </ul>
+            </div>
+            <div class="viewport">
+                <!-- @TODO: 宽度是 30 + N * 25, 其中 N 代表站点数 -->
+                <div class="map" style="width:530px;">
+                    <ul class="busStops">
+                        <li class="prev">
+                            <div class="meta">
+                            </div>
+                            <a>1凤起路</a>
+                        </li>
+                        <li class="prev"><a>2十四中</a></li>
+                        <li class="curr">
+                            <div class="meta">
+                                <i class="bus-spot"></i>
+                            </div>
+                            <a>3省府大楼东</a>
+                        </li>
+                        <li class="next"><a>4武林门南</a></li>
+                        <li class="next"><a>5密渡桥路口</a></li>
+                        <li class="next">
+                            <div class="meta">
+                                <i class="bus-run"><span>2辆</span></i>
+                            </div>
+                            <a>6沈塘桥</a>
+                        </li>
+                        <li class="next"><a>7石灰桥</a></li>
+                        <li class="next"><a>8打索桥</a></li>
+                        <li class="next"><a>9余杭塘上</a></li>
+                        <li class="next">
+                            <div class="meta">
+                                <i class="bus-stop"><span>5辆</span></i>
+                            </div>
+                            <a>10董家新村</a>
+                        </li>
+                        <li class="next"><a>11大关桥西</a></li>
+                        <li class="next"><a>12康家桥</a></li>
+                        <li class="next"><a>13长征桥</a></li>
+                        <li class="next"><a>14长征桥北</a></li>
+                        <li class="next"><a>15勤俭桥北</a></li>
+                        <li class="next"><a>16拱宸桥西</a></li>
+                        <li class="next"><a>17高家花园</a></li>
+                        <li class="next"><a>18小河路公交站</a></li>
+                        <li class="next"><a>19小河路公交站</a></li>
+                        <li class="next">
+                            <div class="meta">
+                                <i class="bus-run"></i>
+                            </div>
+                            <a>20小公交站</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="fixedBottom">
+                <a class="switch touchable" href=""><span>转向</span></a>
+                <a class="refresh touchable" href=""><span>刷新</span></a>
+            </div>
+        </section>
+
+        <!-- build:js scripts/zepto.js -->
+        <script src="bower_components/zepto/zepto.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js scripts/hammer.js -->
+        <script src="bower_components/hammerjs/hammer.js"></script>
+        <!-- endbuild -->
+
+        <!-- build:js({app,.tmp}) scripts/main.js -->
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
+</body>
+</html>

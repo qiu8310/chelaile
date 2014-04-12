@@ -26,3 +26,17 @@ html, body, ul, li, ol, p { margin: 0; padding: 0; }
 ul { list-style: none; }
 h1, h2, h3, h4, h5, h6 { font-size: 1.5rem; font-weight: normal; margin: 0; padding: 0; line-height: 1; }
 a, a:hover, a:link, a:visited, a:active { color: inherit; text-decoration: none; }
+
+
+// header
+$header-bg: #009999;
+$header-bg-deepen: #028989;
+$header-fg: white;
+
+// list & search
+$light-color: $header-bg;
+$dark-color: $header-bg-deepen;
+$bright-color: #ea68a2;
+$white-color: #ffffff;
+$gray-color: #999999;
+

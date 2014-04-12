@@ -1,332 +1,406 @@
 @import 'base';
 
-
-body {
-    background-color: white;
+.ir {
+	background-color: transparent;
+	border: 0;
+	overflow: hidden;
+	*text-indent: -9999px;
 }
-
-.page {
-    width: 100%;
-    overflow: hidden;
-    height: auto;
+.ir:before {
+	content: "";
+	display: block;
+	width: 0;
+	height: 100%;
 }
+.show { display: block; }
+.hide {	display: none;  }
 
-// header
-$header-bg: #33a4e0;
-$header-bg-deepen: #2f8dc9;
-$header-fg: white;
-
+$headerHeight: 43px;
 header {
-    width: 100%;
-    height: 43px;
-    background: $header-bg;
+	display: flex;
+	-webkit-box-align: center;
+	height: $headerHeight;
+	background: $light-color;
 
-    h1 {
-        font-size: 1.8rem;
-        color: $header-fg;
-        line-height: 43px;
-        margin-left: 30px;
+	.headerLeft, .headerRight {
+		flex: 1;
+		width: 0;
+		cursor: pointer;
+		a {
+			display: block;
+			width: 45px;
+			height: $headerHeight;
+		}
+		a.touched {
+			background-color: $dark-color;
+		}
+	}
+	.headerLeft {
+		text-align: left;
+		a {
+			background: url(../images/btn-back.png) no-repeat center center;
+			background-size: 21px 21px;
+		}
+	}
+	.headerMain {
+		min-width: 160px;
+		max-width: 220px;
+		text-align: center;
+		height: $headerHeight;
+		overflow: hidden;
 
-        a {
-            display: inline-block;
-            font-size: 1.2rem;
-            border-left: 1px solid $header-fg;
-            margin-left: 5px;
-            padding-left: 5px;
-            height: 12px;
-            line-height: 12px;
-        }
-    }
+		h2 {
+			font-size: 2rem;
+			color: $white-color;
+			line-height: $headerHeight;
+		}
+	}
+	.headerRight {
+		text-align: right;
+		a {
+			float: right;
+			background: url(../images/btn-opt.png) no-repeat center center;
+			background-size: 19px 18px;
+		}
+	}
 
-    .logo {
-        float: left;
-        margin: 14px 0 0 -15px;
-    }
-
-    .opts {
-        float: right;
-        margin: -26px 15px 0px 0px;
-    }
-
-    position: relative;
-    .cityList {
-        position: absolute;
-        z-index: 99;
+	position: relative;
+	.optMenu {
+		position: absolute;
+		z-index: 99;
         right: 10px;
         top: 43px;
         width: 160px;
         box-shadow: 0 2px 6px rgba(0, 0, 0, .47);
-
         li {
             line-height: 42px;
             font-size: 1.2rem;
             color: #fff;
-            background: #33a4e0;
-            border-bottom: 1px solid #3093cf;
+            background-color: $header-bg;
+            border-bottom: 1px solid #028c8c;
         }
-
-        i {
-            margin: 9px 13px 0 13px;
-            float: left;
-        }
-
         a {
             display: block;
+            text-align: center;
             width: 100%;
             height: 100%;
         }
-
-        .selected {
-            background: #2f8dc9;
-        }
-    }
-}
-
-
-// list & search
-$light-color: #3399db;
-$dark-color: #999999;
-$white-color: #fefefe;
-
-.search-fake {
-    overflow: hidden;
-
-    .sprite-icon-search {
-        display: block;
-        margin: -26px 0px 0px 7px;
-    }
-
-    .search-box {
-        margin: 7px 10px;
-        border: 1px solid $light-color;
-        border-radius: 2px;
-        height: 34px;
-        font-size: 1.3rem;
-
-        input {
-            display: block;
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            color: $dark-color;
-            padding: 0;
-            padding-left: 32px;
-        }
-        input::-webkit-input-placeholder {
-            color: $dark-color;
-        }
-    }
-}
-.search {
-    overflow: hidden;
-    height: 46px;
-    width: 100%;
-    background: white;
-    border-bottom: 1px solid #d1d1d1;
-
-    .search-box {
-        height: 30px;
-        margin: 9px 10px 7px 10px;
-        padding-right: 44px;
-        font-size: 1.3rem;
-
-        input {
-            background: #e7e7e7;
-            padding: 0;
-            padding-left: 7px;
-            border-radius: 2px;
-            display: block;
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            color: #888;
-        }
-        input::-webkit-input-placeholder {
-            color: #888;
-        }
-
-        .clear {
-            float: right;
-            margin-top: -23px;
-            margin-right: 10px;
-        }
-
-        .cancel {
-            color: $light-color;
-            float: right;
-            line-height: 30px;
-            width: 40px;
-            text-align: right;
-            margin-top: -30px;
-            margin-right: -40px;
-        }
-    }
-}
-
-input[type="search"]::-webkit-search-cancel-button {
-    display: none;
-}
-
-
-$list-delete-bg: #e1382e;
-$list-delete-fg: white;
-
-$list-stripe-a: white;
-$list-stripe-b: #f9f9f9;
-$list-stripe-border: #eee;
-
-.homeList {
-    li {
-        font-size: 1.1rem;
-        display: block;
-        width: 100%;
-        height: 64px;
-        overflow: hidden;
-        border-bottom: 1px solid $list-stripe-border;
-    }
-
-    li {
-        background: $list-stripe-a;
-    }
-    li:nth-child(2n+2) {
-        background: $list-stripe-b;
-    }
-    li .wrap {
-        display: block;
-        background: $list-stripe-a;
-    }
-    li:nth-child(2n+2) .wrap {
-        background: $list-stripe-b;
-    }
-
-    h2 {
-
-        color: $light-color;
-        line-height: 26px;
-        overflow: hidden;
-
         span {
-            display: inline-block;
-            font-size: 1.5rem;
+        	padding-left: 25px;
+        }
+        .save span {
+        	background: url(../images/btn-save.png) no-repeat left center;
+        	background-size: 22px 22px;
+        }
+        .unsave span {
+        	background: url(../images/btn-unsave.png) no-repeat left center;
+        	background-size: 22px 22px;
+        }
+        .share span {
+        	background: url(../images/btn-share.png) no-repeat left center;
+        	background-size: 22px 22px;
         }
 
-        label {
-            font-size: 1.1rem;
-            color: $white-color;
-            background: $light-color;
-
-            display: inline-block;
-            overflow: hidden;
-            margin-left: 10px;
-            margin-bottom: -2px;
-            height: 13px;
-            padding: 1px 7px;
-            line-height: 14px;
-            border-radius: 7px;
-        }
-    }
-
-    p {
-        line-height: 18px;
-        color: $dark-color;
-    }
-
-    i {
-        position: absolute;
-        display: block;
-        top: 21px;
-        right: 15px;
-    }
-
-    .wrap {
-        padding: 10px 15px;
-    }
+	}
 }
 
-.deleteEnable {
-    .wrap {
-        position: relative;
-        z-index: 10;
-        background: $list-stripe-a;
-    }
-    .del {
-        float: right;
-        z-index: 9;
-        height: 64px;
-        width: 70px;
-        line-height: 64px;
-        text-align: center;
-        color: $list-delete-fg;
-        background: $list-delete-bg;
-        font-size: 1.5rem;
-        margin-top: -65px;
-    }
+.chosedBuses {
+	margin-top: 1px;
+	background-color: $light-color;
+	box-sizing: border-box;
+	padding: 0 8px;
+	font-size: 0;
+
+	li {
+		display: inline-block;
+		text-align: center;
+		height: 25px;
+
+		a {
+			font-size: 1.2rem;
+			display: block;
+			width: 70px;
+			padding: 0 2px;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			color: #8fc9c9;
+			line-height: 19px;
+			margin-top: 3px;
+			border-left: 1px solid $white-color;
+		}
+		&.selected a {
+			color: $white-color;
+		}
+
+		&:last-child a {
+			border-right: 1px solid $white-color;
+		}
+	}
 }
 
-.searchList {
-    li {
-        height: 64px;
-        border-bottom: 1px solid $list-stripe-border;
-        overflow: hidden;
-    }
-    .wrap {
-        display: block;
-        overflow: hidden;
-    }
-    .sprite-icon-history {
-        float: left;
-        margin: 25px 0 0 15px;
-    }
+.choseBuses {
+	box-sizing: border-box;
+	padding: 0 35px;
+	font-size: 0px;
 
-    .sprite-icon-search {
-        float: left;
-        margin: 24px 0 0 12px;
-    }
+	li {
+		display: inline-block;
+		font-size: 1.2rem;
+		text-align: center;
+		color: $light-color;
+		height: 21px;
+		line-height: 21px;
+		width: 80px;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		margin: 0 2px 2px 0;
 
-    .content {
-        padding: 11px 35px 11px 40px;
+		&.selected {
+			background-color: #99cccc;
+		}
+	}
 
-        h2 {
-            font-size: 1.5rem;
-            color: #666;
-            line-height: 22px;
-        }
-        p {
-            font-size: 1.1rem;
-            color: #999;
-            line-height: 16px;
-            margin-top: 4px;
-        }
-    }
+	p {
+		font-size: 1.2rem;
+		color: #999;
+		line-height: 26px;
+		margin-bottom: 6px;
+	}
+	.currentStop {
+		color: $light-color;
+	}
+}
 
-    .sprite-arrow-right {
-        float: right;
-        margin: -40px 15px 0 0;
-    }
+.busBoard {
+	position: relative;
+	text-align: center;
+	background-color: #f9f9f9;
+	height: 58px;
+	border-bottom: 1px solid #f5f5f5;
+
+	.dropdown {
+		display: block;
+		position: relative;
+		top: -6px;
+		width: 32px;
+		height: 16px;
+		margin: 0 auto;
+		border-radius: 6px;
+		background-color: $light-color;
+
+		&.touched {
+			background-color: $dark-color;
+		}
+
+		&::after {
+			content: ">";
+			display: block;
+			line-height: 16px;
+			color: $white-color;
+			transform: rotate(90deg);
+		}
+	}
+
+	&.fixedBottom {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+
+		.dropdown::after {
+			content: "<";
+		}
+	}
+
+	h2 {
+		font-size: 13px;
+		color: #999;
+		line-height: 22px;
+	}
+	.to {
+		display: inline-block;
+		width: 0;
+		height: 0;
+		border-left: 6px solid #999;
+		border-top: 3px solid transparent;
+		border-bottom: 3px solid transparent;
+		vertical-align: middle;
+		margin-top: -3px;
+	}
+	p {
+		font-size: 11px;
+		color: #9d9d9d;
+	}
 }
 
 
+.busesMap {
+	.mapNote {
+		margin-top: 15px;
+		float: right;
+		li {
+			display: inline-block;
+			color: #666;
+			margin: 0 10px 0 6px;
+			font-size: 1rem;
+			line-height: 18px;
+			padding-left: 25px;
+		}
+		li:first-child {
+			background: url(../images/bus-run.png) no-repeat left center;
+			background-size: 21px 11px;
+		}
+		li:last-child {
+			background: url(../images/bus-stop.png) no-repeat left center;
+			background-size: 21px 11px;
+		}
+	}
+	.viewport {
+		overflow: hidden;
+		width: 100%;
+		padding-top: 41px;
+	}
+	.fixedBottom {
+		position: fixed;
+		z-index: 100;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 50px;
+		display: flex;
+		border-top: 1px solid #ccc;
+		a {
+			display: block;
+			flex: 1;
+			line-height: 50px;
+			text-align: center;
+			color: #666;
+			font-size: 1.3rem;
+			background-color: #f9f9f9;
 
-.sprite {
-    background: url(../images/sprite.png) no-repeat top left;
-    background-size: 64px auto;
-    display: inline-block;
-    overflow:hidden;
+			&.touched {
+				background-color: #d9d9d9;
+			}
+			span {
+				display: inline-block;
+				padding-left: 26px;
+			}
+		}
+		.switch span {
+			background: url(../images/btn-switch.png) no-repeat left center;
+			background-size: 22px 22px;
+		}
+		.refresh span {
+			background: url(../images/btn-refresh.png) no-repeat left center;
+			background-size: 22px 22px;
+		}
+	}
 }
 
+.map {
+	padding-top: 15px;
+	border-top: 1px solid #ccc;
+	.busStops {
+		font-size: 0;
+		margin-left: 25px;
+		li {
+			display: inline-block;
+			position: relative;
+			vertical-align: top;
+			width: 25px;
+			border-top: 2px solid $gray-color;
+		}
+		li::before {
+			content: "";
+			display: block;
+			width: 5px;
+			height: 5px;
+			border: 2px solid $light-color;
+			border-radius: 5px;
+			margin-top: -5px;
+			margin-left: -3px;
+			background: #fff;
+		}
+		a {
+			font-size: 1.4rem;
+			display: block;
+			line-height: 15px;
+			text-align: center;
+			width: 20px;
+			height: auto;
+			margin-left: -10px;
+			margin-top: 10px;
+			word-break: break-all;
+			word-wrap: break-word;
+		}
+		.prev {
+			border-top: 2px solid $light-color;
+			a {
+				color: $light-color;
+			}
+		}
+		.curr {
+			&::before {
+				border: 2px solid $bright-color;
+			}
+			a {
+				color: $bright-color;
+			}
+		}
+		.next {
+			&::before {
+				border: 2px solid $gray-color;
+			}
+			a {
+				color: $gray-color;
+			}
+		}
+		li:last-child {
+			border-top: 2px solid transparent;
+		}
+	}
 
-.sprite-arrow-right {width:21px; height:21px; background-position: -0px -90px}
-.sprite-icon-back {width:11px; height:19px; background-position: -52px -60px}
-.sprite-icon-delete {width:15px; height:15px; background-position: -30px -82px}
-.sprite-icon-history {width:14px; height:15px; background-position: -26px -102px}
-.sprite-icon-logo {width:11px; height:16px; background-position: -49px -100px}
-.sprite-icon-opts {width:13px; height:11px; background-position: -50px -84px}
-.sprite-icon-search {width:18px; height:18px; background-position: -30px -60px}
-
-.sprite-opt-aboutus {width:25px; height:25px; background-position: -30px -30px}
-.sprite-opt-feedback {width:25px; height:25px; background-position: -0px -60px}
-.sprite-opt-morecity {width:25px; height:25px; background-position: -30px -0px}
-.sprite-opt-share {width:25px; height:25px; background-position: -0px -30px}
-.sprite-opt-update {width:25px; height:25px; background-position: -0px -0px}
+	.meta {
+		position: absolute;
+		top: -29px;
+		left: -9px;
+		i {
+			display: inline-block;
+			width: 21px;
+			height: 11px;
+		}
+		span {
+			font-size: 1.4rem;
+			position: absolute;
+			top: -22px;
+			left: -10px;
+			display: block;
+			width: 40px;
+			text-align: center;
+			font-style: normal;
+		}
+		.bus-run {
+			background: url(../images/bus-run.png) no-repeat center center;
+			background-size: 21px 11px;
+			span {
+				color: $light-color;
+			}
+		}
+		.bus-spot {
+			background: url(../images/bus-spot.png) no-repeat center center;
+			background-size: 21px 11px;
+			span {
+				color: $bright-color;
+			}
+		}
+		.bus-stop {
+			background: url(../images/bus-stop.png) no-repeat center center;
+			background-size: 21px 11px;
+			span {
+				color: $bright-color;
+			}
+		}
+	}
+}
