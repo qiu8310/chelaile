@@ -27,7 +27,7 @@ html {
       tap-highlight-color: rgba(255,255,255,0);
 }
 
-.hidden { display: none; }
+.hidden { display: none !important; }
 
 html, body, ul, li, ol, p { margin: 0; padding: 0; }
 ul { list-style: none; }
