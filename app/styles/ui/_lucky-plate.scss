@@ -1,0 +1,151 @@
+@mixin lucky-plate() {
+  $size: 278px;
+  $cards-size: 253px;
+  $pointer-size: 130px;
+  $start-size: 100px;
+
+  display: block;
+  @include square($size);
+  border-radius: 50%;
+  position: relative;
+  background-color: #83cc34;
+
+  .pointer {
+    position: absolute;
+    display: block;
+    z-index: 10;
+    @include square($pointer-size);
+    top: ($size - $pointer-size) / 2;
+    left: ($size - $pointer-size) / 2;
+
+    background: #ce1800;
+    border-radius: 50%;
+
+    &::after {
+      content: " ";
+      display: block;
+      position: absolute;
+      left: ($pointer-size - 12px) / 2;
+      top: -24px;
+
+      @include square(0px);
+      border-bottom: 25px solid #ce1800;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+    }
+  }
+
+  .mask {
+    $thick: 8px;
+    $small: $pointer-size + $thick + 2px;
+    $big: $cards-size;
+    &::before , &::after {
+      display: block;
+      content: " ";
+      position: absolute;
+      z-index: 4;
+      border-radius: 50%;
+      border: $thick solid #ffeb00;
+    }
+    &::before {
+      top: - ($small - $cards-size) / 2;
+      left: - ($small - $cards-size) / 2;
+      @include square($small);
+    }
+    &::after {
+      top: - ($big - $cards-size) / 2;
+      left: - ($big - $cards-size) / 2;
+      @include square($big);
+    }
+  }
+
+  .cards, .cards-shadow {
+    position: absolute;
+    top: ($size - $cards-size) / 2;
+    left: ($size - $cards-size) / 2;
+    z-index: 5;
+
+    @include square($cards-size);
+    overflow: hidden;
+    border-radius: 50%;
+    background: #ffeb00;
+
+    $card: 3.4 * $cards-size / 12;  // 边长
+    li {
+      display: block;
+      position: absolute;
+
+      left: ($cards-size - $card) / 2;
+      top: 0;
+
+      font-size: 1.2rem;
+      text-align: center;
+      @include square(0);
+      transform-origin: 50% $cards-size / 2;
+
+      border-top: $cards-size / 2 solid transparent;
+      border-left: $card / 2 solid transparent;
+      border-right: $card / 2 solid transparent;
+
+      span {
+        color: #000;
+        display: inline-block;
+        @include square(44px);
+        line-height: 19px;
+        text-align: center;
+        vertical-align: middle;
+        position: absolute;
+        top: -113px;
+        left: -22px;
+      }
+    }
+
+    li:nth-child(2n+1) {
+      border-top: $cards-size / 2 solid #ffd200;
+    }
+
+    $cols: 12;
+    $deg: 360deg / $cols;
+
+    @for $i from 1 through $cols {
+      li:nth-child(#{$i}) {
+        transform: rotate(($i - 1) * $deg);
+      }
+    }
+  }
+
+  .cards-shadow {
+    box-shadow: 0 8px 8px rgba(24, 24, 24, .25);
+  }
+
+  .start {
+    position: absolute;
+    top: ($pointer-size - $start-size) / 2;
+    left: ($pointer-size - $start-size) / 2;
+    z-index: 100;
+
+    -webkit-appearance: none;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+
+    background-image: none;
+    background: #fe6b00;
+    color: white;
+    font-size: 2.7rem;
+    font-weight: bold;
+
+    @include square($start-size);
+    border-radius: 50%;
+    box-shadow: 0 3px 6px #b14b00;
+
+    border: none;
+    outline: none;
+
+    span {
+      display: block;
+    }
+  }
+
+}

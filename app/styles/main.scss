@@ -1,0 +1,20 @@
+@import 'partial';
+@import 'ui';
+
+
+$main-color: #009345;
+
+body {
+    background: $main-color;
+    font-size: 1.3rem;
+    color: #fff;
+}
+
+
+body > header {
+  @include header();
+}
+
+.lucky-plate {
+  @include lucky-plate();
+}
