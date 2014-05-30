@@ -17,7 +17,7 @@ define(['libs/utils'], function(utils) {
 
 
   function indexToDegree(index) {
-    return deg * utils.circle(12 - index, indexes);
+    return deg * utils.circle(indexes - index, indexes);
   }
 
   function transitionend() {

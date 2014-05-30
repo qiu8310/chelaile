@@ -28,7 +28,7 @@ define(function() {
     https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking#_gat.GA_EventTracker_._trackEvent
   */
   return {
-    track: function(category, action, opt_label, opt_value) {
+    gaTrack: function(category, action, opt_label, opt_value) {
 
       var cb = arguments[arguments.length - 1];
 

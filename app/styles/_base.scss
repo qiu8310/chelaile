@@ -57,8 +57,27 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 .ios-declare::after {
   content: "* 此活动与苹果公司无关";
   color: rgba(255, 255, 255, .5);
+  margin-left: 20px;
   font-size: 1rem;
-  line-height: 8rem;
+  //line-height: 8rem;
+}
+
+.download-btns {
+  a {
+    width: 240px;
+    border-radius: 6px;
+    @include center-block();
+  }
+}
+
+
+// lls ad
+.lls-ad {
+  display: block;
+  @include size(100%, 49px);
+  margin: 10px 0 25px;
+  background: url(../images/ui/lls-ad.png) no-repeat center center;
+  background-size: 179px 49px;
 }
 
 // 音频播放器基本样式

@@ -11,7 +11,7 @@ define(['libs/env', 'libs/storage', 'libs/ajax'], function(Env, Storage, ajax) {
   }
 
   return function(path, params) {
-
+    params = params || {};
     if (!id) {
       id = Storage.get('activity_id');
     }

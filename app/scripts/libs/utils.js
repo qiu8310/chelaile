@@ -53,7 +53,8 @@ define(function() {
      */
     appendQuery: function(url, query) {
       if (query == '') return url;
-      return (url + '&' + query).replace(/[&?]{1,2}/, '?');
+      var parts = url.split('#');
+      return (parts[0] + '&' + query).replace(/[&?]{1,2}/, '?') + (parts.length === 2 ? ('#' + parts[1]) : '');
     },
 
 

@@ -38,7 +38,6 @@ define(
 
     // 抽奖结束
     function end(i) {
-        controller.classList.remove('disabled');
 
         var key = keys[i],
           star = stars[key];
@@ -51,31 +50,36 @@ define(
         // 结果信息
         star.result = utils.render(Data.game_result[gender], {username: username, starname: star.name});
 
-        // dialog
-        var dialog = Dialog.tpl(utils.render(tpl_result, star), 'dialog-game-end');
+        utils.delay(300, function() {
 
-        // 按钮点击
-        utils._('.btn-beg-bless', dialog.getContainer()).addEventListener('click', function(e) {
-          dialog.close();
-          initGame();
+          controller.classList.remove('disabled');
 
-          // 分享窗口
-          dialog = Dialog.tpl(utils.render(tpl_share, star), 'dialog-share');
+          // dialog
+          var dialog = Dialog.tpl(utils.render(tpl_result, star), 'dialog-game-end');
 
-          // 分享 或 取消
-          var container = dialog.getContainer();
-          utils._('.btn-cancel', container).addEventListener('click', function(e){
+          // 按钮点击
+          utils._('.btn-beg-bless', dialog.getContainer()).addEventListener('click', function(e) {
             dialog.close();
-            e.preventDefault();
-          });
-          utils._('.btn-sure', container).addEventListener('click', function(e){
-            dialog.close();
-            share_callback && share_callback(star.result);
-            e.preventDefault();
-          });
+            //initGame();
 
-          e.preventDefault();
-        }, false);
+            // 分享窗口
+            dialog = Dialog.tpl(utils.render(tpl_share, star), 'dialog-share');
+
+            // 分享 或 取消
+            var container = dialog.getContainer();
+            utils._('.btn-cancel', container).addEventListener('click', function(e){
+              dialog.close();
+              e.preventDefault();
+            });
+            utils._('.btn-sure', container).addEventListener('click', function(e){
+              dialog.close();
+              share_callback && share_callback(star.result);
+              e.preventDefault();
+            });
+
+            e.preventDefault();
+          }, false);
+        });
     }
 
     function canGame() {

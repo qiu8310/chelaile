@@ -37,29 +37,50 @@ require([
 ) {
     'use strict';
 
-    // 初始化页面的一些基本信息
-    if (Agent.isIOS) {
-        // 加上 “此活动与苹果无关声明”
-        var gameElem = utils._('#game');
-        if (gameElem) gameElem.classList.add('ios-declare');
 
-        // 苹果系统不需要 header
-        var headerElem = utils._('body > header');
-        if (headerElem) headerElem.style.display = 'none';
-    } else {
-        // 其它系统首页的 back 需要使用 Native 的 back，即系统调用
-        var backElem = utils._('.header-left a');
-        if (backElem) {
-            backElem.addEventListener('click', function(e) {
-                if (backElem.classList.contains('back-to-app')) {
-                    Native.back();
-                } else {
-                    window.history.back();
-                }
-                e.preventDefault();
-            }, false);
+    function page(path, urlObj) {
+        // 保存 token
+        var token = urlObj.params.token,
+            act_id = urlObj.params.activity_id;
+
+        token && Storage.set('token', token);
+        act_id && Storage.set('activity_id', act_id);
+
+        // 分享过来的页面
+        if (urlObj.params.share === 'yes') {
+            if (Agent.isIOS) {
+                utils._('.download-ios').classList.remove('hidden');
+            } else if (Agent.isAndroid) {
+                utils._('.download-ios').classList.remove('hidden');
+            }
+            utils._('.share-ad').classList.remove('hidden');
+        }
+
+        // 初始化页面的一些基本信息
+        if (Agent.isIOS) {
+            // 加上 “此活动与苹果无关声明”
+            var gameElem = utils._('#ios-relative');
+            if (gameElem) gameElem.classList.add('ios-declare');
+
+            // 苹果系统不需要 header
+            var headerElem = utils._('body > header');
+            if (headerElem) headerElem.style.display = 'none';
+        } else {
+            // 有 header 的系统首页的 back 需要使用 Native 的 back，即系统调用
+            var backElem = utils._('.header-left a');
+            if (backElem) {
+                backElem.addEventListener('click', function(e) {
+                    if (backElem.classList.contains('back-to-app')) {
+                        Native.back();
+                    } else {
+                        window.history.back();
+                    }
+                    e.preventDefault();
+                }, false);
+            }
         }
     }
+
 
 
     // 首页脚本
@@ -68,12 +89,15 @@ require([
         gameon(
             // 点击了 "开始游戏"
             function() {
-                Stat.track('test', 'start', 'start game');
+                Stat.gaTrack('play_game', 'click', '开始游戏点击');
+                api('/lottery');
             },
             // 点击了 "分享"
             function(text) {
-                var url = location.href.split('#').shift() + '#game';
-                Native.share(url, text);
+                Stat.gaTrack('share', 'click', '分享点击', function() {
+                    var url = location.href.split('?').shift() + '?share=yes&activity_id=' + urlObj.params.activity_id + '#game';
+                    Native.share(url, text);
+                });
             }
         );
 
@@ -106,7 +130,7 @@ require([
         api('/', {
             success: function(data) {
                 Act = data && data.activity;
-                User = data && data.user || {};
+                User = data && data.user;
                 Event = Act.events && Act.events[0] || {};
                 var status = Event && utils.indexOf(statuses, Event.type) > -1 ? Event.type : defaultStatus;
                 status = statusMap[status];
@@ -142,19 +166,27 @@ require([
         utils._('#btn-normal').addEventListener('click', handler, false);
 
         function handler(e) {
-            if (!Act || !User) {
+            if (!Act) {
                 Dialog.alert('系统错误，请稍后再来');
+            } else if (!User) {
+                Dialog.alert('您尚末登录');
             } else if (Act.have_content_module) {
                 Dialog.alert('您已成功购买', {btns: {cancel: '取消'}});
             } else if (MSG[Event._status]['coin'] > User.coin) {
                 Dialog.alert('您的钻石余额不足，请先去充值');
             } else {
                 var id = e.target.id.split('-').pop();
-                Dialog.confirm(MSG[Event._status]['confirm'], function(sure) {
+                var money = MSG[Event._status]['coin'] / 10;
+                var msg = MSG[Event._status]['confirm'];
+
+                Stat.gaTrack('buy_course', 'click', money + '元购买课程');
+
+                Dialog.confirm(msg, function(sure) {
                     if (!sure) return ;
                     api('/' + Event.type, {
                         type: 'POST',
                         success: function() {
+                            Stat.gaTrack('buy_course', 'result', money + '元购买课程成功');
                             Act.have_content_module = true;
                             User.coin = User.coin - MSG[Event._status]['coin'];
                             if (Event._status === 'group') {
@@ -164,6 +196,7 @@ require([
                             }
                         },
                         error: function() {
+                            Stat.gaTrack('buy_course', 'result', money + '元购买课程失败');
                             Dialog.alert('系统错误，请稍后再来');
                         }
                     });
@@ -189,15 +222,8 @@ require([
 
     // 路由
     Router
-        // 所有页面都执行
-        .all(function(path, urlObj) {
-            // 保存 token
-            var token = urlObj.params.token,
-                act_id = urlObj.params.activity_id;
-
-            token && Storage.set('token', token);
-            act_id && Storage.set('activity_id', act_id);
-        })
+        // 所有页面都执行，而且是首先执行
+        .all(page)
 
         // 首页
         .on('index', page_index)
