@@ -1,6 +1,5 @@
 define(['libs/utils'], function(utils) {
 
-  'use strict';
   var empty = function(){},
       rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       scriptTypeRE = /^(?:text|application)\/javascript/i,
