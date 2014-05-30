@@ -479,7 +479,7 @@ module.exports = function (grunt) {
         'cssmin',
         //'responsive_images:dev',
         'concat',
-        //'uglify',
+        'uglify',
         'copy',
         'rev',
         'usemin',

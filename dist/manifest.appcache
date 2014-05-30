@@ -1,9 +1,10 @@
 CACHE MANIFEST
-# Time: Fri May 30 2014 19:56:03 GMT+0800 (CST)
+# Time: Fri May 30 2014 19:58:36 GMT+0800 (CST)
 
 CACHE:
-scripts/f20d4679.main.js
+scripts/9c924c3f.main.js
 styles/1ffe3180.main.css
+bower_components/requirejs/require.js
 images/390fe4b5.progress.png
 images/60a00ded.bg-text.png
 images/75858214.icon-time.png
