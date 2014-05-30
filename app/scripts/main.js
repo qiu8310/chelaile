@@ -20,7 +20,7 @@ require([
     'libs/partial',
     'libs/storage',
     'worldcup/api',
-    'libs/track',
+    'libs/stat',
     'libs/audio-player'
 ], function (
     gameon,
@@ -32,7 +32,7 @@ require([
     partial,
     Storage,
     api,
-    track,
+    Stat,
     AudioPlayer
 ) {
     'use strict';
@@ -68,7 +68,7 @@ require([
         gameon(
             // 点击了 "开始游戏"
             function() {
-
+                Stat.track('test', 'start', 'start game');
             },
             // 点击了 "分享"
             function(text) {

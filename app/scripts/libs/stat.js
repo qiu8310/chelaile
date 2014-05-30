@@ -1,12 +1,16 @@
-define(['libs/utils'], function(utils) {
+define(function() {
 
   'use strict';
   // 要确保加了 GA 统计
 
-  var ga = window._gaq;
+  var ga = _gaq;
 
 
   /*
+    https://developers.google.com/analytics/devguides/collection/gajs/methods/
+
+    ga.push(['_setCustomVar', index, key, value, scope]);
+
     index 自定义变量的类别，可以设置的范围是1-5
     name  自定义变量的名称，名称与值相对应。这里设置的内容将出现在自定义变量报告的最高一级。
     value 自定义变量的值，这个值与名称应该成对出现。
@@ -18,10 +22,25 @@ define(['libs/utils'], function(utils) {
       https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingCustomVariables?hl=zh-cn
       http://bluewhale.cc/2010-10-07/google-analytics-custom-variables.html#ixzz33AVXiQCU
 
+
+    trackEvent:
+
+    https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking#_gat.GA_EventTracker_._trackEvent
   */
-  return function(index, key, value, scope) {
+  return {
+    track: function(category, action, opt_label, opt_value) {
 
-    ga.push(['_setCustomVar', index, key, value, scope]);
+      var cb = arguments[arguments.length - 1];
 
-  }
+      if (typeof opt_label !== 'string') opt_label = undefined;
+      if (typeof opt_value !== 'number') opt_value = undefined;
+
+      ga.push(['_trackEvent', category, action, opt_label, opt_value]);
+
+      if (typeof cb === 'function') {
+        setTimeout(cb, 200);
+      }
+    }
+
+  };
 });
