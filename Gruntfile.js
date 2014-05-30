@@ -394,6 +394,7 @@ module.exports = function (grunt) {
                     'styles/*.css',
                     'bower_components/*/*.*',
                     'images/{,*/}*.png',
+                    '!images/stars/*.png',
                     '*.{png,ico}'
                 ],
                 dest: 'dist/manifest.appcache'
