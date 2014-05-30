@@ -4,13 +4,13 @@ define(function() {
   var Storage = window.localStorage;
   return {
     set: function(key, val) {
-      return Storage && (Storage[key] = val);
+      if(Storage) Storage[key] = val;
     },
     get: function(key) {
       return Storage && Storage[key];
     },
     del: function(key) {
-      return Storage && Storage.removeItem(key);
+      if(Storage) Storage.removeItem(key);
     }
   };
 

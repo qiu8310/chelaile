@@ -41,7 +41,7 @@ require([
         // 保存 token
         var token = urlObj.params.token,
             act_id = urlObj.params.activity_id;
-
+        alert(token);
         if (token) Storage.set('token', token);
         if (act_id) Storage.set('activity_id', act_id);
 

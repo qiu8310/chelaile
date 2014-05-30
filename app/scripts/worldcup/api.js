@@ -21,7 +21,7 @@ define(['libs/env', 'libs/storage', 'libs/ajax'], function(Env, Storage, ajax) {
     params.data = params.data || {};
     // params.data.timestamp = Date.now(); // 我默认开启了 ajax 的 cache，所以这里不用了
     params.data.token = params.data.token || Storage.get('token');
-
+    alert(params.data.token);
     ajax(params);
 
     // $.ajax({
