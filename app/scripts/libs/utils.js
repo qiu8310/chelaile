@@ -5,7 +5,7 @@ define(function() {
 
   'use strict';
 
-  var reg_word = /^[\w]+$/;
+  //var reg_word = /^[\w]+$/;
 
   var self = {
     _: function(selector, ctx) {
@@ -52,7 +52,7 @@ define(function() {
      *  在 URL 上添加新的参数
      */
     appendQuery: function(url, query) {
-      if (query == '') return url;
+      if (query === '') return url;
       var parts = url.split('#');
       return (parts[0] + '&' + query).replace(/[&?]{1,2}/, '?') + (parts.length === 2 ? ('#' + parts[1]) : '');
     },
@@ -69,7 +69,7 @@ define(function() {
      *  生成随机数
      */
     random: function (min, max) {
-      if (max == null) {
+      if (typeof max === 'undefined') {
         max = min;
         min = 0;
       }
@@ -104,7 +104,7 @@ define(function() {
      */
     onInputChange: function(inputElem, cb) {
       function change() {
-        cb && cb(self.trim(inputElem.value));
+        if (cb) cb(self.trim(inputElem.value));
       }
       inputElem.addEventListener('change', change, false);
       inputElem.addEventListener('keyup', change, false);
@@ -180,9 +180,9 @@ define(function() {
       var style,
         t;
 
-      style = typeof val === 'undefined'
-          ? window.getComputedStyle(elem, null)
-          : elem.style;
+      style = typeof val === 'undefined' ?
+          window.getComputedStyle(elem, null) :
+          elem.style;
 
       if (!(key in style)) {
         ['Webkit', 'O', 'Moz', 'ms'].forEach(function (prefix) {
@@ -191,9 +191,9 @@ define(function() {
         });
       }
 
-      return typeof val === 'undefined'
-          ? style[key]
-          : (style[key] = val);
+      return typeof val === 'undefined' ?
+          style[key] :
+          (style[key] = val);
     },
 
     /**

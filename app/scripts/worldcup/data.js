@@ -1,4 +1,5 @@
 define(function() {
+  'use strict';
   return {
     game_result: {
       woman: '哇塞，#{username}理想的另一半是#{starname}啊，你羡慕吗？',
@@ -137,5 +138,5 @@ define(function() {
         desc: '从1996年欧洲杯崭露头角，到1998年世界杯扬名立万，再到2006年世界杯光辉，他遗憾谢幕。'
       }
     }
-  }
+  };
 });

@@ -14,25 +14,25 @@ define(
     var stars = Data.stars, keys = [];
 
 
-    var tpl_result = '<div class="result"><img src="#{avatar}"><p>#{result}</p></div><div class="intro"><h1><span class="star-nick">#{nick}</span>&nbsp;<span class="star-name">#{name}</span></h1><p>#{desc}</p><a href="" class="btn btn-beg-bless">求祝福</a></div>'
+    var tpl_result = '<div class="result"><img src="#{avatar}"><p>#{result}</p></div><div class="intro"><h1><span class="star-nick">#{nick}</span>&nbsp;<span class="star-name">#{name}</span></h1><p>#{desc}</p><a href="" class="btn btn-beg-bless">求祝福</a></div>';
 
     var tpl_share = '<div class="result"><img src="#{avatar}"><p>#{result}</p><p class="from">from 英语流利说</p></div><div class="btns"><a href="" class="btn btn-orange btn-sure">分享</a><a href="" class="btn btn-cancel">取消</a><div>';
 
     // init
     function initGame() {
       container.style.visibility = 'hidden';
-      var key, names, html = [];
+      var key, html = [];
       for (key in stars) {
         keys.push(key);
       }
       keys = utils.shuffle(keys).slice(0, CARD_LENGTH);
 
       utils.each(keys, function(key) {
-        html.push('<li><span>' + stars[key]['name'] + '</span></li>')
+        html.push('<li><span>' + stars[key].name + '</span></li>');
       });
       utils._('.cards ul', container).innerHTML = html.join('');
       container.style.visibility = 'visible';
-    };
+    }
     initGame();
 
 
@@ -73,7 +73,7 @@ define(
             });
             utils._('.btn-sure', container).addEventListener('click', function(e){
               dialog.close();
-              share_callback && share_callback(star.result);
+              if (share_callback) share_callback(star.result);
               e.preventDefault();
             });
 

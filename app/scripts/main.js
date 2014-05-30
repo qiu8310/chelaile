@@ -32,8 +32,7 @@ require([
     partial,
     Storage,
     api,
-    Stat,
-    AudioPlayer
+    Stat
 ) {
     'use strict';
 
@@ -43,8 +42,8 @@ require([
         var token = urlObj.params.token,
             act_id = urlObj.params.activity_id;
 
-        token && Storage.set('token', token);
-        act_id && Storage.set('activity_id', act_id);
+        if (token) Storage.set('token', token);
+        if (act_id) Storage.set('activity_id', act_id);
 
         // 分享过来的页面
         if (urlObj.params.share === 'yes') {
@@ -124,7 +123,7 @@ require([
                 confirm: '购买课程会从您账户中扣除240颗流利钻，确认报名？',
                 coin: 240
             }
-        }
+        };
 
         // 请求首页数据
         api('/', {
@@ -135,7 +134,6 @@ require([
                 var status = Event && utils.indexOf(statuses, Event.type) > -1 ? Event.type : defaultStatus;
                 status = statusMap[status];
                 Event._status = status;
-                console.log(Act, User);
                 if (status === 'group') {
                     // 进度条
                     var progress,
@@ -152,19 +150,16 @@ require([
                     // 已完成比例
                     var dom_finish = utils._('.progress .finish-rate');
                     tpl = dom_finish.innerText || dom_title.textContent;
-                    progress = Math.round(user_count * 1000 / total) / 10
+                    progress = Math.round(user_count * 1000 / total) / 10;
                     dom_finish.innerText = tpl.replace(/\d+\%/, progress + '%');
                 }
                 partial(status);
             },
-            error: function(status) {
+            error: function() {
                 Dialog.alert('系统错误，请重试');
             }
         });
 
-        utils._('#btn-group').addEventListener('click', handler, false);
-        utils._('#btn-second').addEventListener('click', handler, false);
-        utils._('#btn-normal').addEventListener('click', handler, false);
 
         function handler(e) {
             if (!Act) {
@@ -173,12 +168,12 @@ require([
                 Dialog.alert('您尚末登录');
             } else if (Act.have_content_module) {
                 Dialog.alert('您已成功购买', {btns: {cancel: '取消'}});
-            } else if (MSG[Event._status]['coin'] > User.coin) {
+            } else if (MSG[Event._status].coin > User.coin) {
                 Dialog.alert('您的钻石余额不足，请先去充值');
             } else {
-                var id = e.target.id.split('-').pop();
-                var money = MSG[Event._status]['coin'] / 10;
-                var msg = MSG[Event._status]['confirm'];
+                //var id = e.target.id.split('-').pop();
+                var money = MSG[Event._status].coin / 10;
+                var msg = MSG[Event._status].confirm;
 
                 Stat.gaTrack('buy_course', 'click', money + '元购买课程');
 
@@ -189,7 +184,7 @@ require([
                         success: function() {
                             Stat.gaTrack('buy_course', 'result', money + '元购买课程成功');
                             Act.have_content_module = true;
-                            User.coin = User.coin - MSG[Event._status]['coin'];
+                            User.coin = User.coin - MSG[Event._status].coin;
                             if (Event._status === 'group') {
                                 Dialog.alert('预购课程成功！');
                             } else {
@@ -206,11 +201,16 @@ require([
             e.preventDefault();
         }
 
+        utils._('#btn-group').addEventListener('click', handler, false);
+        utils._('#btn-second').addEventListener('click', handler, false);
+        utils._('#btn-normal').addEventListener('click', handler, false);
+
+
         window.partial = partial;
         window.Dialog = Dialog;
     }
 
-    function page_leaderboard(path, urlObj) {
+    function page_leaderboard() {
         api('/rank_list', {
             success: function(data) {
                 console.log(data);

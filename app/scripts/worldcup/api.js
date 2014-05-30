@@ -1,22 +1,20 @@
 define(['libs/env', 'libs/storage', 'libs/ajax'], function(Env, Storage, ajax) {
-  'use strict'
+  'use strict';
 
-  var base, id;
+  var base;
   if (Env.isLocal) {
-    base = 'http://192.168.1.198:3000/api/events/activities/';
+    base = 'http://192.168.1.198:3000/api/events/activities/5388424b0af9963bf3000001';
   } else if (Env.isStaging) {
-    base = 'http://staging.llsapp.com/api/events/activities/';
+    base = 'http://staging.llsapp.com/api/events/activities/5388424b0af9963bf3000001';
   } else {
+    // TODO  添加 activity id
     base = 'http://api.llsapp.com/api/events/activities/';
   }
 
   return function(path, params) {
     params = params || {};
-    if (!id) {
-      id = Storage.get('activity_id');
-    }
 
-    params.url = base + id + path;
+    params.url = base + path;
     params.type = params.type || 'get';
     params.dataType = params.dataType || 'json';
 
