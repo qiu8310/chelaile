@@ -1,9 +1,9 @@
 CACHE MANIFEST
-# Time: Thu May 29 2014 17:20:58 GMT+0800 (CST)
+# Time: Fri May 30 2014 16:41:10 GMT+0800 (CST)
 
 CACHE:
-scripts/c0479c4f.main.js
-styles/3317ec27.main.css
+scripts/793dc441.main.js
+styles/1ffe3180.main.css
 images/390fe4b5.progress.png
 images/60a00ded.bg-text.png
 images/75858214.icon-time.png
@@ -11,7 +11,6 @@ images/965ce423.bg.png
 images/c1fbd521.leader-bg.png
 images/c2b238f6.checked.png
 images/e8049246.game-banner.png
-images/stars
 images/stars/01.png
 images/stars/02.png
 images/stars/03.png
@@ -38,9 +37,9 @@ images/stars/23.png
 images/stars/24.png
 images/stars/25.png
 images/stars/26.png
-images/ui
 images/ui/329a04bf.audio-play.png
 images/ui/684aef0b.icon-back.png
+images/ui/954971e4.lls-ad.png
 images/ui/96c3d7c5.audio-stop.png
 images/ui/b5a66153.icon-vote.png
 9176acc1.favicon.ico
