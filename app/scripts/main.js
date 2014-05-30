@@ -146,12 +146,12 @@ require([
 
                     // 几人报名
                     var dom_title = utils._('.progress .title'),
-                        tpl = dom_title.innerText;
+                        tpl = dom_title.innerText || dom_title.textContent;
                     dom_title.innerText = tpl.replace(/\d+/, user_count);
 
                     // 已完成比例
                     var dom_finish = utils._('.progress .finish-rate');
-                    tpl = dom_finish.innerText;
+                    tpl = dom_finish.innerText || dom_title.textContent;
                     progress = Math.round(user_count * 1000 / total) / 10
                     dom_finish.innerText = tpl.replace(/\d+\%/, progress + '%');
                 }
