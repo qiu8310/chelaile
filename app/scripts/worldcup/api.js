@@ -1,21 +1,27 @@
 define(['libs/env', 'libs/storage', 'libs/ajax'], function(Env, Storage, ajax) {
   'use strict'
 
-  var base;
-  if (Env.isStaging || Env.isLocal) {
-    // base = 'http://staging.llsapp.com/api/events/activities/5386e7fe283e552fc4000001';
-    base = 'http://192.168.1.198:3000/api/events/activities/53873438283e55eb4c000001';
+  var base, id;
+  if (Env.isLocal) {
+    base = 'http://192.168.1.198:3000/api/events/activities/';
+  } else if (Env.isStaging) {
+    base = 'http://staging.llsapp.com/api/events/activities/';
   } else {
-    base = 'http://api.llsapp.com/api/events/activities/53873438283e55eb4c000001';
+    base = 'http://api.llsapp.com/api/events/activities/';
   }
 
   return function(path, params) {
-    params.url = base + path;
+
+    if (!id) {
+      id = Storage.get('activity_id');
+    }
+
+    params.url = base + id + path;
     params.type = params.type || 'get';
     params.dataType = params.dataType || 'json';
 
     params.data = params.data || {};
-    params.data.timestamp = Date.now();
+    // params.data.timestamp = Date.now(); // 我默认开启了 ajax 的 cache，所以这里不用了
     params.data.token = params.data.token || Storage.get('token');
 
     ajax(params);

@@ -20,6 +20,7 @@ require([
     'libs/partial',
     'libs/storage',
     'worldcup/api',
+    'libs/track',
     'libs/audio-player'
 ], function (
     gameon,
@@ -31,6 +32,7 @@ require([
     partial,
     Storage,
     api,
+    track,
     AudioPlayer
 ) {
     'use strict';
@@ -175,7 +177,12 @@ require([
     }
 
     function page_leaderboard(path, urlObj) {
-
+        api('/rank_list', {
+            success: function(data) {
+                console.log(data);
+            },
+            error: function() {}
+        });
     }
 
 
@@ -185,8 +192,11 @@ require([
         // 所有页面都执行
         .all(function(path, urlObj) {
             // 保存 token
-            var token = urlObj.params.token;
+            var token = urlObj.params.token,
+                act_id = urlObj.params.activity_id;
+
             token && Storage.set('token', token);
+            act_id && Storage.set('activity_id', act_id);
         })
 
         // 首页
