@@ -118,6 +118,11 @@
             g.src='//www.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
+        <script type="text/javascript">
+        window.onerror = function(msg) {
+            alert(msg);
+        }
+        </script>
 
         <!-- build:js scripts/main.js -->
         <script type="text/javascript" data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
