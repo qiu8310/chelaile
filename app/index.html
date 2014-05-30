@@ -119,8 +119,8 @@
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
         <script type="text/javascript">
-        window.onerror = function(msg) {
-            alert(msg);
+        window.onerror = function(msg, url, line) {
+            alert(msg + line);
         }
         </script>
 
