@@ -32,7 +32,7 @@ html {
 html, body, ul, li, ol, p { margin: 0; padding: 0; }
 ul { list-style: none; }
 h1, h2, h3, h4, h5, h6 { font-size: 1.5rem; font-weight: normal; margin: 0; padding: 0; line-height: 1; }
-a, a:hover, a:link, a:visited, a:active { color: inherit; text-decoration: none; }
+a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 
 
 
@@ -51,4 +51,27 @@ a, a:hover, a:link, a:visited, a:active { color: inherit; text-decoration: none;
 
 .pull-right {
   float: right;
+}
+
+// ios 活动声明
+.ios-declare::after {
+  content: "* 此活动与苹果公司无关";
+  color: rgba(255, 255, 255, .5);
+  font-size: 1rem;
+  line-height: 8rem;
+}
+
+// 音频播放器基本样式
+.audio-control {
+  cursor: pointer;
+  background: rgba(0,0,0,.4) url(../images/ui/audio-play.png) no-repeat center center;
+  background-size: 100%;
+}
+.audio-control.stop {
+  background: url(../images/ui/audio-stop.png) no-repeat center center;
+  background-size: 100%;
+}
+.audio-control.disabled {
+  background: none;
+  cursor: none;
 }

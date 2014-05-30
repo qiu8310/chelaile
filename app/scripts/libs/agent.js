@@ -3,7 +3,7 @@ define(function() {
    *  当前用户的操作系统
    *    iOS、android、others
    */
-  'use stricts';
+  'use strict';
 
   var
     agent_str = navigator.userAgent,

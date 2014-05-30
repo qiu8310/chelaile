@@ -1,5 +1,6 @@
 @import 'partial';
 @import 'ui';
+@import 'base';
 
 
 $main-color: #009345;
@@ -11,15 +12,35 @@ body {
     color: #fff;
 }
 
+// 引入 dialog 样式
+.dialog {
+  @include dialog();
+}
+
+
+// 引入 btn 样式
 .btn {
   @include btn(40px);
   background: $main-color;
   color: white;
 }
 
-.btn-orange {
+.btn-sure, .btn-orange {
   background: #fe6b00;
 }
+
+.btn-cancel {
+  background-color: #484848;
+  color: #fff;
+}
+
+.btn-beg-bless {
+  background: #ed4800;
+  color: #fff;
+  width: 150px;
+  font-size: 1.6rem;
+}
+
 
 
 body > header {
@@ -28,6 +49,7 @@ body > header {
 
 .lucky-plate {
   @include lucky-plate();
+  margin-bottom: 50px;
 }
 
 .nav {
@@ -54,10 +76,12 @@ body > header {
 }
 
 .second-kill {
-  padding: 15px 0;
   text-align: center;
   label {
-    font-size: 2.0rem;
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    font-size: 1.5rem;
     font-weight: normal;
     padding-left: 30px;
     background: url(../images/icon-time.png) no-repeat left center;
@@ -106,7 +130,6 @@ body > header {
       color: $yellow-color;
     }
   }
-
 }
 
 .act-desc {
@@ -114,7 +137,10 @@ body > header {
   font-size: 1.3rem;
   line-height: 1.6;
   @include container();
-
+  em {
+    color: $yellow-color;
+    font-style: normal;
+  }
   dl {
     margin-top: 30px;
   }
@@ -134,7 +160,6 @@ body > header {
 
 .game {
   @include container();
-
   .game-banner {
     display: block;
     margin-top: 20px;
@@ -155,19 +180,19 @@ body > header {
 
     h3 {
       font-size: 1.3rem;
-      margin-bottom: 10px;
+      margin: 10px 0 15px;
     }
     .name {
       outline: none;
       display: block;
       padding: 0 5px;
       @include center-block();
-      width: 80%;
+      width: 277px;
       height: 38px;
       border: 2px solid #3a6700;
     }
     .checkbox-inline {
-      margin-top: 10px;
+      margin: 15px 0 20px;
 
       & > div {
         display: inline-block;
@@ -203,6 +228,72 @@ body > header {
   }
 }
 
+.dialog-share, .dialog-game-end {
+  color: #000;
+  .result {
+    overflow: hidden;
+    padding: 15px;
+    background: #ffd800;
+    min-height: 100px;
+    img {
+      width: 70px;
+      height: 70px;
+      float: left;
+    }
+    p {
+      font-weight: bold;
+      font-size: 1.3rem;
+      margin-left: 90px;
+      margin-top: 5px;
+    }
+  }
+  .intro {
+    padding: 15px;
+    background: #ffeb00;
+
+    h1 {
+      font-size: 1.3rem;
+      line-height: 1.6;
+    }
+    .star-name {
+      color: #3e850d;
+    }
+    .star-nick {
+      color: #000;
+    }
+    p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+  }
+  .btn {
+    @include center-block();
+    margin-top: 15px;
+    color: #fff;
+  }
+}
+
+.dialog-share {
+  background: #ffeb00;
+  .result {
+    background: #ffeb00;
+    p {
+      font-weight: normal;
+      font-size: 1.3rem;
+    }
+
+    .from {
+      margin-top: 15px;
+    }
+  }
+  .btns .btn {
+    margin-top: 0;
+  }
+  .btn-cancel {
+    background: #fff;
+    color: #484848;
+  }
+}
 
 
 $footer-height: 60px;
@@ -230,5 +321,10 @@ footer {
 .footer-placeholder {
   display: block;
   width: 100%;
-  height: $footer-height + 50;
+  height: $footer-height + 10;
+}
+
+
+.leaderboard {
+  @include leaderboard();
 }

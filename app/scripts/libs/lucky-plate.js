@@ -1,6 +1,6 @@
 define(['libs/utils'], function(utils) {
 
-  "use stricts";
+  'use strict';
 
   var indexes = 12; // 共12个方格
   var deg     = 360 / indexes; // 每个方格所占的角度
@@ -44,13 +44,13 @@ define(['libs/utils'], function(utils) {
      *  speed:      转速度 [转/秒]
      *  msecond:    停下来时运行的毫秒数，默认3000
      */
-    run: function(elem, stopIndex, callback, speed, msecond) {
+    run: function(elem, stopIndex, callbacks, speed, msecond) {
       var cards = utils._('.cards', elem),
         degree, count; // 要转到的角度， 要转的圈数
 
       // 初始化动画结束监听函数
       init(cards);
-      cb = callback;
+      cb = callbacks.runEnd;
 
       // 设置默认参数
       stopIndex = typeof stopIndex === 'number' ? stopIndex : Math.round(Math.random() * (indexes * 2));
@@ -76,6 +76,7 @@ define(['libs/utils'], function(utils) {
       lastIndex = stopIndex;
 
       // 旋转
+      callbacks.runStart && callbacks.runStart();
       animate(cards, degree, msecond);
 
     }

@@ -5,7 +5,7 @@ define(function() {
    *    isLocal     本地环境
    *    isOnline    线上环境
    */
-  'use stricts';
+  'use strict';
 
   var
     env = {},

@@ -1,0 +1,64 @@
+.__dialog-mask {
+  display: none;
+  width: auto;
+  height: auto;
+
+  overflow: auto;
+  overflow-y: scroll;
+
+  z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+// 锁住 html ，让它不能滚动
+.__dialog-lock {
+  overflow: hidden;
+}
+
+@mixin dialog($width: 290px, $bg-color: #fff, $msg-color: #666) {
+  -webkit-tap-highlight-color: rgba(255,255,255,0);
+
+  display: none;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: $bg-color;
+  width: $width;
+  min-height: 100px;
+  z-index: 2001;
+  position: absolute;
+  margin: auto;
+  left: 50%;
+  top: 50%;
+
+  .content {
+    font-size: 1.6rem;
+    margin: 30px 15px 33px;
+    line-height: 20px;
+    color: $msg-color;
+    text-align: center;
+  }
+  .btns {
+      font-size: 0;
+      margin: 10px 15px 15px;
+      text-align: center;
+  }
+  .btns .btn {
+      display: inline-block;
+      height: 44px;
+      line-height: 44px;
+      width: 120px;
+  }
+  .btn:first-child {
+      margin-right: 10px;
+  }
+
+  &:focus, &:active {
+      outline: none;
+      -webkit-tap-highlight-color: rgba(255,255,255,0);
+  }
+}

@@ -118,6 +118,13 @@
     box-shadow: 0 8px 8px rgba(24, 24, 24, .25);
   }
 
+  .start.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    filter: alpha(opacity=55);
+    opacity: .55;
+  }
+
   .start {
     position: absolute;
     top: ($pointer-size - $start-size) / 2;
@@ -133,7 +140,7 @@
     background-image: none;
     background: #fe6b00;
     color: white;
-    font-size: 2.7rem;
+    font-size: 2.4rem;
     font-weight: bold;
 
     @include square($start-size);

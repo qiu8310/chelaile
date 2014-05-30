@@ -93,7 +93,7 @@ module.exports = function (grunt) {
             options: {
                 port: 9000,
                 // change this to '0.0.0.0' to access the server from outside
-                hostname: 'localhost'
+                hostname: '0.0.0.0'
             },
             livereload: {
                 options: {
@@ -269,7 +269,9 @@ module.exports = function (grunt) {
                         '<%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
                         '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
-                        '<%= yeoman.dist %>/styles/fonts/*'
+                        '!<%= yeoman.dist %>/images/stars/*.*', // stars 不打包，不会变的图片
+                        '<%= yeoman.dist %>/styles/fonts/*',
+                        '<%= yeoman.dist %>/*.{ico,png}'
                     ]
                 }
             }
@@ -281,7 +283,7 @@ module.exports = function (grunt) {
             options: {
                 dest: '<%= yeoman.dist %>'
             },
-            html: '<%= yeoman.app %>/index.html'
+            html: '<%= yeoman.app %>/{,*/}*.html'
         },
         usemin: {
             options: {
@@ -311,11 +313,15 @@ module.exports = function (grunt) {
             }
         },
         cssmin: {
+            options: {
+                keepSpecialComments: 0 // remove all comment
+            },
             dist: {
                 files: {
                     '<%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css',
-                        '<%= yeoman.app %>/styles/{,*/}*.css'
+                        '.tmp/styles/{,*/}*.css'
+                        // '!.tmp/styles/base.css' // 不打包 base.css，让所有文件都可以共用它
+                        //'<%= yeoman.app %>/styles/{,*/}*.css' // 这里都是 scss，没有css；另外如果有的话会很乱吧
                     ]
                 }
             }
@@ -323,6 +329,8 @@ module.exports = function (grunt) {
         htmlmin: {
             dist: {
                 options: {
+                    removeComments: true,
+                    collapseWhitespace: true
                     /*removeCommentsFromCDATA: true,
                     // https://github.com/yeoman/grunt-usemin/issues/44
                     //collapseWhitespace: true,
@@ -365,6 +373,31 @@ module.exports = function (grunt) {
                 }]
             }
         },
+
+        manifest: {
+            generate: {
+                options: {
+                    basePath: 'dist/',
+                    //cache: ['scripts/*.js', 'styles/*.css'],
+                    network: ['http://*', 'https://*'],
+                    // fallback: ['/ /offline.html'],
+                    // exclude: ['views/*', '*.html'],
+                    preferOnline: true,
+                    verbose: false,
+                    timestamp: true,
+                    hash: true,
+                    master: ['index.html']
+                },
+                src: [
+                    'scripts/*.js',
+                    'styles/*.css',
+                    'images/{,*/}*',
+                    '*.{png,ico}'
+                ],
+                dest: 'dist/manifest.appcache'
+            }
+        },
+
 
         autoprefixer: {
             options: {
@@ -414,7 +447,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('serve', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
+            // return grunt.task.run(['build', 'open', 'connect:dist:keepalive']);
         }
 
         grunt.task.run([
@@ -442,12 +475,13 @@ module.exports = function (grunt) {
         'autoprefixer',
         'requirejs',
         'cssmin',
-        'responsive_images:dev',
+        //'responsive_images:dev',
         'concat',
         'uglify',
         'copy',
         'rev',
-        'usemin'
+        'usemin',
+        'manifest'
     ]);
 
     grunt.registerTask('default', [
