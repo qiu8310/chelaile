@@ -35,10 +35,17 @@ define(function() {
       if (typeof opt_label !== 'string') opt_label = undefined;
       if (typeof opt_value !== 'number') opt_value = undefined;
 
-      ga.push(['_trackEvent', category, action, opt_label, opt_value]);
+      if (ga && ga.push) {
+        ga.push(['_trackEvent', category, action, opt_label, opt_value]);
+      }
 
       if (typeof cb === 'function') {
-        setTimeout(cb, 200);
+        // time is money
+        if (ga && ga.push) {
+          setTimeout(cb, 200);
+        } else {
+          cb();
+        }
       }
     }
 

@@ -31,7 +31,7 @@ define(function() {
     if (!container) throw new Error('Dialog(' + selector + ') not exist');
 
     // 创建 mask
-    var mask = container.parentNode, style;
+    var mask = container.parentNode;
     if (!mask || !mask.classList.contains(MASK_CLASS_NAME)) {
       mask = document.createElement('div');
       mask.classList.add(MASK_CLASS_NAME);
@@ -98,7 +98,7 @@ define(function() {
       this.isOpened = false;
       return this;
     }
-  }
+  };
 
 
   // 加几个静态方法
@@ -115,7 +115,7 @@ define(function() {
     // 调换 cb 和 opts 顺序
     if (typeof cb !== 'function') {
       var t = cb;
-      cb = opts
+      cb = opts;
       opts = t;
     }
     opts = opts || {};
@@ -136,26 +136,27 @@ define(function() {
     var dialog = new Dialog(div, opts);
 
     // 监听事件
+    var handler = function(e) {
+      var cbReturn;
+      if (typeof cb === 'function') {
+        var key = e.target.getAttribute('data-key');
+        if (key === 'sure') {
+          cbReturn = cb(true);
+        } else if (key === 'cancel') {
+          cbReturn = cb(false);
+        } else {
+          cbReturn = cb(key);
+        }
+      }
+
+      if (cbReturn !== false) {
+        dialog.close();
+      }
+
+      e.preventDefault();
+    };
     for (key in opts.btns) {
-      div.querySelector('.btn-' + key).addEventListener('click', function(e) {
-        var cbReturn;
-        if (typeof cb === 'function') {
-          var key = e.target.getAttribute('data-key');
-          if (key === 'sure') {
-            cbReturn = cb(true);
-          } else if (key === 'cancel') {
-            cbReturn = cb(false);
-          } else {
-            cbReturn = cb(key);
-          }
-        }
-
-        if (cbReturn !== false) {
-          dialog.close();
-        }
-
-        e.preventDefault();
-      });
+      div.querySelector('.btn-' + key).addEventListener('click', handler);
     }
 
     dialog.open();
@@ -189,7 +190,7 @@ define(function() {
     div.innerHTML = tpl;
     var dialog = new Dialog(div);
     return dialog.open();
-  }
+  };
 
   return Dialog;
 

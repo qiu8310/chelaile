@@ -24,18 +24,18 @@ define(['libs/url-parser'], function(parse) {
       _pathMap[path] = true;
 
       if (_path === path || path === '_all_') {
-        ( typeof callback === 'function' ) && ( callback.call(this, _path, urlObj) );
+        if ( typeof callback === 'function' ) callback.call(this, _path, urlObj);
       }
 
       return this;
     },
     other: function(callback) {
       if (!(_path in _pathMap)) {
-        ( typeof callback === 'function' ) && ( callback.call(this, _path, urlObj) );
+        if ( typeof callback === 'function' ) callback.call(this, _path, urlObj);
       }
       return this;
     }
-  }
+  };
 
 
 });

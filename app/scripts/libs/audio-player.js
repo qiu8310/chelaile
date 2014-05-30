@@ -79,4 +79,7 @@ define([], function() {
   })();
 
 
+  return AudioPlayer;
+
+
 });

@@ -90,7 +90,7 @@ require([
             // 点击了 "开始游戏"
             function() {
                 Stat.gaTrack('play_game', 'click', '开始游戏点击');
-                api('/lottery');
+                api('/lottery', {type: 'POST'});
             },
             // 点击了 "分享"
             function(text) {
@@ -135,6 +135,7 @@ require([
                 var status = Event && utils.indexOf(statuses, Event.type) > -1 ? Event.type : defaultStatus;
                 status = statusMap[status];
                 Event._status = status;
+                console.log(Act, User);
                 if (status === 'group') {
                     // 进度条
                     var progress,
@@ -190,7 +191,7 @@ require([
                             Act.have_content_module = true;
                             User.coin = User.coin - MSG[Event._status]['coin'];
                             if (Event._status === 'group') {
-                                Dialog.alert('秒杀成功！');
+                                Dialog.alert('预购课程成功！');
                             } else {
                                 Native.addModule(Act.content_module_id);
                             }

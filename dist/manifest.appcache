@@ -1,9 +1,10 @@
 CACHE MANIFEST
-# Time: Fri May 30 2014 16:41:10 GMT+0800 (CST)
+# Time: Fri May 30 2014 19:22:12 GMT+0800 (CST)
 
 CACHE:
-scripts/793dc441.main.js
+scripts/2fb053b9.main.js
 styles/1ffe3180.main.css
+bower_components/requirejs/require.js
 images/390fe4b5.progress.png
 images/60a00ded.bg-text.png
 images/75858214.icon-time.png
@@ -45,8 +46,7 @@ images/ui/b5a66153.icon-vote.png
 9176acc1.favicon.ico
 
 NETWORK:
-http://*
-https://*
+*
 
 SETTINGS:
 prefer-online

@@ -185,6 +185,7 @@ module.exports = function (grunt) {
             },
             all: [
                 '<%= yeoman.app %>/scripts/{,*/}*.js',
+                '!<%= yeoman.app %>/scripts/libs/ajax.js',
                 '!<%= yeoman.app %>/scripts/vendor/*',
                 'test/spec/{,*/}*.js'
             ]
@@ -379,7 +380,7 @@ module.exports = function (grunt) {
                 options: {
                     basePath: 'dist/',
                     //cache: ['scripts/*.js', 'styles/*.css'],
-                    network: ['http://*', 'https://*'],
+                    network: ['*'],
                     // fallback: ['/ /offline.html'],
                     // exclude: ['views/*', '*.html'],
                     preferOnline: true,
@@ -391,6 +392,7 @@ module.exports = function (grunt) {
                 src: [
                     'scripts/*.js',
                     'styles/*.css',
+                    'bower_components/*/*.*',
                     'images/{,*/}*.png',
                     '*.{png,ico}'
                 ],

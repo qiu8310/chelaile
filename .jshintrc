@@ -1,21 +1,29 @@
 {
     "node": true,
+    "strict": true,
     "browser": true,
     "esnext": true,
     "bitwise": true,
-    "camelcase": true,
-    "curly": true,
+    "camelcase": false,
+    "curly": false,
     "eqeqeq": true,
     "immed": true,
-    "indent": 4,
+    "indent": false,
     "latedef": true,
-    "newcap": true,
+    "newcap": false,
     "noarg": true,
     "quotmark": "single",
     "regexp": true,
     "undef": true,
     "unused": true,
+    "asi": false,
     "strict": true,
     "trailing": true,
-    "smarttabs": true
+    "smarttabs": true,
+    "globals": {
+        "require": true,
+        "define": true,
+        "_gaq": true
+    }
+
 }

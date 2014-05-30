@@ -19,5 +19,5 @@ define(function() {
     addModule: function(moduleId) {
       window.location.href = 'lls://module/' + moduleId + '/add';
     }
-  }
+  };
 });

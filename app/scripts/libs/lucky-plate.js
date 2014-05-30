@@ -76,7 +76,7 @@ define(['libs/utils'], function(utils) {
       lastIndex = stopIndex;
 
       // 旋转
-      callbacks.runStart && callbacks.runStart();
+      if (callbacks.runStart) callbacks.runStart();
       animate(cards, degree, msecond);
 
     }
