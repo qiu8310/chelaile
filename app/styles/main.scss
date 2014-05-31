@@ -29,6 +29,11 @@ body {
   background: #fe6b00;
 }
 
+.btn-yellow {
+  background: $yellow-color;
+  color: #484848;
+}
+
 .btn-cancel {
   background-color: #484848;
   color: #fff;
@@ -133,16 +138,23 @@ body > header {
 }
 
 .act-desc {
-  margin-top: 30px;
+  margin-top: 20px;
   font-size: 1.3rem;
   line-height: 1.6;
+  &.act-rule {
+    margin-top: 0px;
+  }
   @include container();
   em {
     color: $yellow-color;
     font-style: normal;
+    &.big {
+      font-size: large;
+    }
   }
+
   dl {
-    margin-top: 30px;
+    margin-top: 10px;
   }
   dt, dd {
     margin-bottom: 15px;
@@ -159,6 +171,7 @@ body > header {
 }
 
 .game {
+  margin-top: 18px;
   @include container();
   .game-banner {
     display: block;
@@ -297,15 +310,10 @@ body > header {
 
 
 $footer-height: 60px;
-footer {
-  position: fixed;
-  z-index: 500;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.buy-buttons {
   width: 100%;
   height: $footer-height;
-  background: white;
+  background: transparent;
   text-align: center;
 
   .btn {

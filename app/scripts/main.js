@@ -36,16 +36,26 @@ require([
 ) {
     'use strict';
 
-
     function page(path, urlObj) {
         // 保存 token
-        var token = urlObj.params.token,
-            act_id = urlObj.params.activity_id;
+        var token = urlObj.params.token,    // 用户 token
+            version = urlObj.params.version,    // 版本号, 要么无、要么是v6，v6版的app和之前的 token 不兼容
+            app_id = urlObj.params.app_id,
+            device_id = urlObj.params.device_id; // 设备 ID
         if (token) Storage.set('token', token);
-        if (act_id) Storage.set('activity_id', act_id);
+        if (version) Storage.set('version', version);
+        if (app_id) Storage.set('app_id', app_id);
+        if (device_id) Storage.set('device_id', device_id);
+
 
         // 分享过来的页面
         if (urlObj.params.share === 'yes') {
+            if (Agent.platform.wechat) {
+                utils.__('.download-btns .btn').forEach(function(btn) {
+                    btn.setAttribute('href', 'http://a.app.qq.com/o/simple.jsp?pkgname=com.liulishuo.engzo&g_f=991653');
+                });
+            }
+
             if (Agent.isIOS) {
                 utils._('.download-ios').classList.remove('hidden');
             } else if (Agent.isAndroid) {
@@ -82,7 +92,6 @@ require([
     }
 
 
-
     // 首页脚本
     function page_index(path, urlObj) {
         // 抽奖游戏
@@ -95,7 +104,7 @@ require([
             // 点击了 "分享"
             function(text) {
                 Stat.gaTrack('share', 'click', '分享点击', function() {
-                    var url = location.href.split('?').shift() + '?share=yes&activity_id=' + urlObj.params.activity_id + '#game';
+                    var url = location.href.split('?').shift() + '?share=yes#game';
                     Native.share(url, text);
                 });
             }

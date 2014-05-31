@@ -1,4 +1,4 @@
-define(function() {
+define(['libs/storage'], function(Storage) {
   /**
    *  当前用户的操作系统
    *    iOS、android、others
@@ -18,6 +18,10 @@ define(function() {
 
   // 微信
   agent.platform.wechat = /MicroMessenger/i.test(agent_str);
+
+  // 流利说 APP
+  // 暂时不够准确，但可以依赖于 token 来判断，但 token 只有首页才有，所以也要依赖于 Storage
+  agent.platform.lls = !!Storage.get('token');
 
   return agent;
 
