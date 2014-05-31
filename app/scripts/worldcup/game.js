@@ -83,7 +83,7 @@ define(
     }
 
     function canGame() {
-      return (utils.trim(nameInput.value)).length >= 2;
+      return (utils.trim(nameInput.value)).length >= 1;
     }
 
     function check() {
@@ -95,10 +95,15 @@ define(
     }
 
     if (controller) {
-      utils.onInputChange(nameInput, check);
-      check();
+      //utils.onInputChange(nameInput, check);
+      //check();
 
       controller.addEventListener('click', function() {
+        if (!canGame()) {
+          Dialog.alert('请输入您的大名', {timeout: 2000});
+          return false;
+        }
+
         controller.classList.add('disabled');
 
         var stop = Math.round(Math.random() * 13);

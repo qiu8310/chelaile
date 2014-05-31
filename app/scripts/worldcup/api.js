@@ -3,7 +3,8 @@ define(['libs/env', 'libs/storage', 'libs/ajax'], function(Env, Storage, ajax) {
 
   var base;
   if (Env.isLocal) {
-    base = 'http://192.168.1.198:3000/api/events/activities/5388424b0af9963bf3000001';
+    //base = 'http://192.168.1.198:3000/api/events/activities/5388424b0af9963bf3000001';
+    base = 'http://staging.llsapp.com/api/events/activities/5388424b0af9963bf3000001';
   } else if (Env.isStaging) {
     base = 'http://staging.llsapp.com/api/events/activities/5388424b0af9963bf3000001';
   } else {

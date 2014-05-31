@@ -59,8 +59,10 @@ require([
             // 加上 “此活动与苹果无关声明”
             var gameElem = utils._('#ios-relative');
             if (gameElem) gameElem.classList.add('ios-declare');
+        }
 
-            // 苹果系统不需要 header
+        if (Agent.isIOS || Agent.platform.wechat) {
+            // 苹果系统或微信下不需要 header
             var headerElem = utils._('body > header');
             if (headerElem) headerElem.style.display = 'none';
         } else {
@@ -155,14 +157,14 @@ require([
                 partial(status);
             },
             error: function() {
-                Dialog.alert('系统错误，请重试');
+                Dialog.alert('网络繁忙，请稍后再试');
             }
         });
 
 
         function handler(e) {
             if (!Act) {
-                Dialog.alert('系统错误，请稍后再来');
+                Dialog.alert('网络繁忙，请稍后再试');
             } else if (!User) {
                 Dialog.alert('您尚末登录');
             } else if (Act.have_content_module) {
@@ -192,7 +194,7 @@ require([
                         },
                         error: function() {
                             Stat.gaTrack('buy_course', 'result', money + '元购买课程失败');
-                            Dialog.alert('系统错误，请稍后再来');
+                            Dialog.alert('网络繁忙，请稍后再试');
                         }
                     });
                 });

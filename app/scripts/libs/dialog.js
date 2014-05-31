@@ -45,8 +45,11 @@ define(function() {
         if (e.target.classList.contains(MASK_CLASS_NAME)) {
           self.close();
         }
-
       }, false);
+    }
+
+    if (opts.timeout) {
+      setTimeout(function(){ self.close(); }, opts.timeout);
     }
 
     // 计算出 dialog 高度
