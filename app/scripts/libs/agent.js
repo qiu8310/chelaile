@@ -8,7 +8,6 @@ define(function() {
   var
     agent_str = navigator.userAgent,
     agent = {};
-  alert(agent_str);
   agent.isIOS = /iP(ad|hone|od)/.test(agent_str);
   agent.isAndroid = /Android/i.test(agent_str);
   agent.isOthers = !agent.isIOS && !agent.isAndroid;
