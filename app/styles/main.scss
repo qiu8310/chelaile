@@ -124,7 +124,7 @@ body > header {
   .title {
     text-align: center;
     color: $yellow-color;
-    font-size: 2.0rem;
+    font-size: 1.6rem;
     line-height: 1.8;
   }
 
@@ -317,6 +317,7 @@ $footer-height: 60px;
   text-align: center;
 
   .btn {
+    font-size: 2.5rem;
     margin-top: 10px;
     margin-right: 10px;
   }
