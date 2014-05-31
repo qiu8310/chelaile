@@ -40,8 +40,8 @@ require([
         // 保存 token
         var token = urlObj.params.token,    // 用户 token
             version = urlObj.params.version,    // 版本号, 要么无、要么是v6，v6版的app和之前的 token 不兼容
-            app_id = urlObj.params.app_id,
-            device_id = urlObj.params.device_id; // 设备 ID
+            app_id = urlObj.params.appId,
+            device_id = urlObj.params.deviceId; // 设备 ID
         if (token) Storage.set('token', token);
         if (version) Storage.set('version', version);
         if (app_id) Storage.set('app_id', app_id);
@@ -135,6 +135,26 @@ require([
             }
         };
 
+        function _progress() {
+            // 进度条
+            var progress,
+                user_count = parseInt(Event.users_count, 10) || 0,
+                total = 200;
+            progress = (total - user_count) * 100 / total;
+            utils._('.progress .mask').style.width = progress + '%';
+
+            // 几人报名
+            var dom_title = utils._('.progress .title'),
+                tpl = dom_title.innerText || dom_title.textContent;
+            dom_title.innerText = tpl.replace(/\d+/, user_count);
+
+            // 已完成比例
+            var dom_finish = utils._('.progress .finish-rate');
+            tpl = dom_finish.innerText || dom_title.textContent;
+            progress = Math.round(user_count * 1000 / total) / 10;
+            dom_finish.innerText = tpl.replace(/\d+\%/, progress + '%');
+        }
+
         // 请求首页数据
         api('/', {
             success: function(data) {
@@ -145,23 +165,7 @@ require([
                 status = statusMap[status];
                 Event._status = status;
                 if (status === 'group') {
-                    // 进度条
-                    var progress,
-                        user_count = parseInt(Event.users_count, 10) || 0,
-                        total = 200;
-                    progress = (total - user_count) * 100 / total;
-                    utils._('.progress .mask').style.width = progress + '%';
-
-                    // 几人报名
-                    var dom_title = utils._('.progress .title'),
-                        tpl = dom_title.innerText || dom_title.textContent;
-                    dom_title.innerText = tpl.replace(/\d+/, user_count);
-
-                    // 已完成比例
-                    var dom_finish = utils._('.progress .finish-rate');
-                    tpl = dom_finish.innerText || dom_title.textContent;
-                    progress = Math.round(user_count * 1000 / total) / 10;
-                    dom_finish.innerText = tpl.replace(/\d+\%/, progress + '%');
+                    _progress();
                 }
                 partial(status);
             },
@@ -195,7 +199,10 @@ require([
                             Stat.gaTrack('buy_course', 'result', money + '元购买课程成功');
                             Act.have_content_module = true;
                             User.coin = User.coin - MSG[Event._status].coin;
+
                             if (Event._status === 'group') {
+                                Event.users_count++;
+                                _progress();
                                 Dialog.alert('预购课程成功！');
                             } else {
                                 Native.addModule(Act.content_module_id);
