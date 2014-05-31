@@ -97,7 +97,7 @@ body > header {
 .progress {
   @include container();
 
-  $height: 20px;
+  $height: 14px;
   $border: 4px;
   $mask-color: #225400;
 
@@ -108,7 +108,7 @@ body > header {
     border-radius: $height / 2;
     border: $border solid $mask-color;
     background: $mask-color url(../images/progress.png) no-repeat;
-    background-size: 100%;
+    background-size: 100% $height - $border;
 
     .mask {
       //border-radius: 10px;
@@ -320,6 +320,10 @@ $footer-height: 60px;
     font-size: 2.5rem;
     margin-top: 10px;
     margin-right: 10px;
+  }
+
+  #btn-group {
+    width: 60%;
   }
 
   .btn:last-child {
