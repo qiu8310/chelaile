@@ -12,88 +12,30 @@ require.config({
 
 require([
     'libs/stat',    // stat 放最前面，里面有个 onerror 的统计脚本
+    'init',
     'worldcup/game',
     'libs/utils',
     'libs/router',
     'libs/dialog',
     'libs/native',
-    'libs/agent',
     'libs/partial',
-    'libs/storage',
     'worldcup/api',
-    'libs/audio-player'
+
 ], function (
     Stat,
+    init,
     gameon,
     utils,
     Router,
     Dialog,
     Native,
-    Agent,
     partial,
-    Storage,
     api
 ) {
     'use strict';
 
-    function page(path, urlObj) {
-        // 保存 token
-        var token = urlObj.params.token,    // 用户 token
-            version = urlObj.params.version,    // 版本号, 要么无、要么是v6，v6版的app和之前的 token 不兼容
-            app_id = urlObj.params.appId,
-            device_id = urlObj.params.deviceId; // 设备 ID
-        if (token) Storage.set('token', token);
-        if (version) Storage.set('version', version);
-        if (app_id) Storage.set('app_id', app_id);
-        if (device_id) Storage.set('device_id', device_id);
-
-
-        // 分享过来的页面
-        if (urlObj.params.share === 'yes') {
-            if (Agent.platform.wechat) {
-                utils.__('.download-btns .btn').forEach(function(btn) {
-                    btn.setAttribute('href', 'http://a.app.qq.com/o/simple.jsp?pkgname=com.liulishuo.engzo&g_f=991653');
-                });
-            }
-
-            if (Agent.isIOS) {
-                utils._('.download-ios').classList.remove('hidden');
-            } else if (Agent.isAndroid) {
-                utils._('.download-ios').classList.remove('hidden');
-            }
-            utils._('.share-ad').classList.remove('hidden');
-        }
-
-        // 初始化页面的一些基本信息
-        if (Agent.isIOS) {
-            // 加上 “此活动与苹果无关声明”
-            var gameElem = utils._('#ios-relative');
-            if (gameElem) gameElem.classList.add('ios-declare');
-        }
-
-        if (Agent.isIOS || Agent.platform.wechat) {
-            // 苹果系统或微信下不需要 header
-            var headerElem = utils._('body > header');
-            if (headerElem) headerElem.style.display = 'none';
-        } else {
-            // 有 header 的系统首页的 back 需要使用 Native 的 back，即系统调用
-            var backElem = utils._('.header-left a');
-            if (backElem) {
-                backElem.addEventListener('click', function(e) {
-                    if (backElem.classList.contains('back-to-app')) {
-                        Native.back();
-                    } else {
-                        window.history.back();
-                    }
-                    e.preventDefault();
-                }, false);
-            }
-        }
-    }
-
-
     // 首页脚本
-    function page_index(path, urlObj) {
+    function page_index() {
         // 抽奖游戏
         gameon(
             // 点击了 "开始游戏"
@@ -241,7 +183,7 @@ require([
     // 路由
     Router
         // 所有页面都执行，而且是首先执行
-        .all(page)
+        .all(init)
 
         // 首页
         .on('index', page_index)

@@ -86,17 +86,7 @@ define(
       return (utils.trim(nameInput.value)).length >= 1;
     }
 
-    function check() {
-      if (canGame()) {
-        controller.classList.remove('disabled');
-      } else {
-        controller.classList.add('disabled');
-      }
-    }
-
     if (controller) {
-      //utils.onInputChange(nameInput, check);
-      //check();
 
       controller.addEventListener('click', function() {
         if (!canGame()) {

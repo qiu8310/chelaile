@@ -76,7 +76,7 @@ define(['libs/env'], function(Env) {
       Stat.log('error', 'appevent', msg, {url: url, line: line, ua: navigator.userAgent});
     }
     return true;
-  }
+  };
   window.onbeforeunload = function () { G.onbeforeunload = true; };
 
   return Stat;
