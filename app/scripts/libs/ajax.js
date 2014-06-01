@@ -1,5 +1,4 @@
 define(['libs/utils'], function(utils) {
-
   var empty = function(){},
       //rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       scriptTypeRE = /^(?:text|application)\/javascript/i,
@@ -88,6 +87,11 @@ define(['libs/utils'], function(utils) {
 
     // 默认使用当前 url
     if (!settings.url) settings.url = window.location.toString();
+
+    // 如果跨域了，就不用加上 X-Requested-With 头部，否则请求中会先带有 OPTIONS 请求，再是你指定的 GET/POST..
+    if (!settings.crossDomain) settings.crossDomain = /^([\w-]+:)?\/\/([^\/]+)/.test(settings.url) &&
+      RegExp.$2 != window.location.host
+
 
     serializeData(settings);
     if (settings.cache === false) settings.url = utils.appendQuery(settings.url, '_=' + Date.now());

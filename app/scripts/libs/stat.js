@@ -1,33 +1,33 @@
-define(function() {
+define(['libs/env'], function(Env) {
 
   'use strict';
   // 要确保加了 GA 统计
 
-  var ga = _gaq;
+  var myga = _gaq, G = {}, Stat;
+
+  Stat = {
+    /*
+      https://developers.google.com/analytics/devguides/collection/gajs/methods/
+
+      ga.push(['_setCustomVar', index, key, value, scope]);
+
+      index 自定义变量的类别，可以设置的范围是1-5
+      name  自定义变量的名称，名称与值相对应。这里设置的内容将出现在自定义变量报告的最高一级。
+      value 自定义变量的值，这个值与名称应该成对出现。
+            通常一个名称可以对应很多个值。例如:当名称为性别时，对应的值就应该是男，女，两个值。
+      scope 自定义变量的范围，可以设置的范围是1-3。
+            其中1表示访客级别，2表示会话级别，3表示页面级别。为空时默认表示页面级别。
+
+      Read more:
+        https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingCustomVariables?hl=zh-cn
+        http://bluewhale.cc/2010-10-07/google-analytics-custom-variables.html#ixzz33AVXiQCU
 
 
-  /*
-    https://developers.google.com/analytics/devguides/collection/gajs/methods/
+      trackEvent:
 
-    ga.push(['_setCustomVar', index, key, value, scope]);
+      https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking#_gat.GA_EventTracker_._trackEvent
+    */
 
-    index 自定义变量的类别，可以设置的范围是1-5
-    name  自定义变量的名称，名称与值相对应。这里设置的内容将出现在自定义变量报告的最高一级。
-    value 自定义变量的值，这个值与名称应该成对出现。
-          通常一个名称可以对应很多个值。例如:当名称为性别时，对应的值就应该是男，女，两个值。
-    scope 自定义变量的范围，可以设置的范围是1-3。
-          其中1表示访客级别，2表示会话级别，3表示页面级别。为空时默认表示页面级别。
-
-    Read more:
-      https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingCustomVariables?hl=zh-cn
-      http://bluewhale.cc/2010-10-07/google-analytics-custom-variables.html#ixzz33AVXiQCU
-
-
-    trackEvent:
-
-    https://developers.google.com/analytics/devguides/collection/gajs/methods/gaJSApiEventTracking#_gat.GA_EventTracker_._trackEvent
-  */
-  return {
     gaTrack: function(category, action, opt_label, opt_value) {
 
       var cb = arguments[arguments.length - 1];
@@ -35,19 +35,49 @@ define(function() {
       if (typeof opt_label !== 'string') opt_label = undefined;
       if (typeof opt_value !== 'number') opt_value = undefined;
 
-      if (ga && ga.push) {
-        ga.push(['_trackEvent', category, action, opt_label, opt_value]);
+      if (myga && myga.push && Env.isOnline) {
+        myga.push(['_trackEvent', category, action, opt_label, opt_value]);
       }
 
       if (typeof cb === 'function') {
         // time is money
-        if (ga && ga.push) {
+        if (myga && myga.push) {
           setTimeout(cb, 200);
         } else {
           cb();
         }
       }
-    }
+    },
 
+    /**
+     *  记录日志
+     *  data & from is must, others is optial
+     *  http://fcbst.sinaapp.com/log.php?time=&msg=string&data={}from=&type=[error/success/info/warning]
+     *
+     *  查看日志
+     *  http://fcbst.sinaapp.com/logs.php
+     */
+    log: function(type, category, msg, data) {
+
+      var url = 'http://fcbst.sinaapp.com/log.php?from=' + encodeURIComponent(category) + '&type=' + encodeURIComponent(type);
+      if (typeof msg !== 'undefined') url += '&msg=' + encodeURIComponent(msg);
+      if (typeof data !== 'undefined') url += '&data=' + encodeURIComponent(JSON.stringify(data));
+
+      if (Env.isOnline) {
+        (new Image()).src = url;
+      } else {
+        console.error('logError: Category['+category+'] Msg['+msg+'] Data['+data+']');
+      }
+    }
   };
+
+  window.onerror = function (msg, url, line) {
+    if ( !G.onbeforeunload ) {
+      Stat.log('error', 'appevent', msg, {url: url, line: line, ua: navigator.userAgent});
+    }
+    return true;
+  }
+  window.onbeforeunload = function () { G.onbeforeunload = true; };
+
+  return Stat;
 });
