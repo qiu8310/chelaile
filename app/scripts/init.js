@@ -64,6 +64,39 @@ define([
           utils.__('.download-btns .btn').forEach(function(btn) {
               btn.setAttribute('href', 'http://a.app.qq.com/o/simple.jsp?pkgname=com.liulishuo.engzo&g_f=991653');
           });
+
+          document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+            var shareUrl = location.href.split('?').shift() + '?share=yes#game',
+              title = '英语流利说：测测你的另一半';
+            // 发送给好友
+            WeixinJSBridge.on('menu:share:appmessage', function () {
+              WeixinJSBridge.invoke('sendAppMessage', {
+                //"appid": "123",
+                "img_url": "http://api.llsapp.com/ops-activity/images/wechat-logo.png",
+                //"img_width": "160",
+                //"img_height": "160",
+                "link": shareUrl,
+                "desc":  Storage.get('worldcup-result'),
+                "title": title
+              }, function (res) {
+                //_report('send_msg', res.err_msg);
+              });
+            });
+
+            // 分享到朋友圈
+            WeixinJSBridge.on('menu:share:timeline', function () {
+              WeixinJSBridge.invoke('shareTimeline', {
+                "img_url": "http://api.llsapp.com/ops-activity/images/wechat-logo.png",
+                //"img_width": "160",
+                //"img_height": "160",
+                "link": shareUrl,
+                "desc":  Storage.get('worldcup-result'),
+                "title": title
+              }, function (res) {
+                //_report('timeline', res.err_msg);
+              });
+            });
+          }, false);
       }
 
       if (Agent.isIOS) {

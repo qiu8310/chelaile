@@ -1,6 +1,6 @@
 define(
-  ['libs/utils', 'libs/lucky-plate', 'worldcup/data', 'libs/dialog'],
-  function(utils, LuckyPlate, Data, Dialog) {
+  ['libs/utils', 'libs/lucky-plate', 'worldcup/data', 'libs/dialog', 'libs/agent', 'libs/storage'],
+  function(utils, LuckyPlate, Data, Dialog, Agent, Storage) {
   'use strict';
 
   // 抽奖游戏
@@ -49,6 +49,7 @@ define(
 
         // 结果信息
         star.result = utils.render(Data.game_result[gender], {username: username, starname: star.name});
+        Storage.set('worldcup-result', star.result);
 
         utils.delay(300, function() {
 
@@ -60,6 +61,12 @@ define(
           // 按钮点击
           utils._('.btn-beg-bless', dialog.getContainer()).addEventListener('click', function(e) {
             dialog.close();
+
+            if (!Agent.platform.lls) {
+              Dialog.alert('想要更多惊喜吗？登录英语流利说吧');
+              e.preventDefault();
+              return false;
+            }
             //initGame();
 
             // 分享窗口

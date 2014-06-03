@@ -19,6 +19,7 @@ require([
     'libs/dialog',
     'libs/native',
     'libs/partial',
+    'libs/agent',
     'worldcup/api',
 
 ], function (
@@ -30,6 +31,7 @@ require([
     Dialog,
     Native,
     partial,
+    Agent,
     api
 ) {
     'use strict';
@@ -121,7 +123,11 @@ require([
             if (!Act) {
                 Dialog.alert('网络繁忙，请稍后再试');
             } else if (!User) {
-                Dialog.alert('您尚末登录');
+                if (Agent.platform.lls) {
+                    Dialog.alert('您尚末登录');
+                } else {
+                    Dialog.alert('先登录英语流利说');
+                }
             } else if (Act.have_content_module) {
                 Dialog.alert('您已成功购买', {btns: {cancel: '取消'}});
             } else if (MSG[Event._status].coin > User.coin) {

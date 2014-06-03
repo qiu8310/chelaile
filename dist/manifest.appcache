@@ -1,10 +1,11 @@
 CACHE MANIFEST
-# Time: Tue Jun 03 2014 16:02:26 GMT+0800 (CST)
+# Time: Tue Jun 03 2014 17:10:26 GMT+0800 (CST)
 
 CACHE:
-scripts/93f3fb7d.main.js
+scripts/22ec5906.main.js
 styles/02389410.main.css
 bower_components/requirejs/require.js
+images/26da8802.wechat-logo.png
 images/305ac53c.bg.png
 images/390fe4b5.progress.png
 images/60a00ded.bg-text.png
