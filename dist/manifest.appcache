@@ -1,14 +1,14 @@
 CACHE MANIFEST
-# Time: Tue Jun 03 2014 12:54:32 GMT+0800 (CST)
+# Time: Tue Jun 03 2014 14:10:10 GMT+0800 (CST)
 
 CACHE:
 scripts/ed009253.main.js
 styles/02389410.main.css
 bower_components/requirejs/require.js
+images/305ac53c.bg.png
 images/390fe4b5.progress.png
 images/60a00ded.bg-text.png
 images/75858214.icon-time.png
-images/965ce423.bg.png
 images/c1fbd521.leader-bg.png
 images/c2b238f6.checked.png
 images/e8049246.game-banner.png
