@@ -23,6 +23,12 @@
     "globals": {
         "require": true,
         "define": true,
+        "it": true,
+        "mocha": true,
+        "describe": true,
+        "expect": true,
+        "should": true,
+        "assert": true,
         "_gaq": true
     }
 

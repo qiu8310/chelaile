@@ -72,8 +72,8 @@ define(
               e.preventDefault();
             });
             utils._('.btn-sure', container).addEventListener('click', function(e){
-              dialog.close();
               if (share_callback) share_callback(star.result);
+              dialog.close();
               e.preventDefault();
             });
 

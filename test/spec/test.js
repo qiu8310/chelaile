@@ -1,13 +1,25 @@
-/* global describe, it */
+require.config({
 
-(function () {
+});
+
+
+function testPropertyAndType(Obj, property, type) {
+  describe('@' + property, function() {
+    it('should contain the property', function() {
+      assert.property(Obj, property);
+    });
+    it('should be ' + type, function() {
+      assert.typeOf(Obj[property], type);
+    });
+  });
+}
+
+
+require([
+  'testEnv',
+  'testAgent'
+  ], function() {
     'use strict';
 
-    describe('Give it some context', function () {
-        describe('maybe a bit more context here', function () {
-            it('should run here few assertions', function () {
-
-            });
-        });
-    });
-})();
+    mocha.run();
+});

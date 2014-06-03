@@ -69,7 +69,7 @@ define([
       if (Agent.isIOS) {
           utils._('.download-ios').classList.remove('hidden');
       } else if (Agent.isAndroid) {
-          utils._('.download-ios').classList.remove('hidden');
+          utils._('.download-android').classList.remove('hidden');
       }
       utils._('.share-ad').classList.remove('hidden');
     }

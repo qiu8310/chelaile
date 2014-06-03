@@ -40,6 +40,10 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass:server', 'autoprefixer']
             },
+            jshint: {
+                files: ['<%= jshint.files %>'],
+                tasks: ['jshint']
+            },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
@@ -48,6 +52,7 @@ module.exports = function (grunt) {
                     '<%= yeoman.app %>/*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
+                    'test/spec/{,*/}*.js',
                     '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
                 ]
             }
@@ -65,7 +70,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-
         responsive_images: {
             dev: {
                 options: {
@@ -110,6 +114,7 @@ module.exports = function (grunt) {
                 options: {
                     middleware: function (connect) {
                         return [
+                            lrSnippet,
                             mountFolder(connect, '.tmp'),
                             mountFolder(connect, 'test')
                         ];
@@ -129,9 +134,10 @@ module.exports = function (grunt) {
         open: {
             server: {
                 path: 'http://localhost:<%= connect.options.port %>'
-            }
-
-            ,
+            },
+            test: {
+                path: 'http://localhost:<%= connect.options.port %>'
+            },
             nexus4:{
                 path: 'http://www.browserstack.com/start#os=android&os_version=4.2&device=LG+Nexus+4&speed=1&start=true&url=http://rnikitin.github.io/examples/jumbotron/'
             },
@@ -141,7 +147,6 @@ module.exports = function (grunt) {
             iphone5:{
                 path: 'http://www.browserstack.com/start#os=ios&os_version=6.0&device=iPhone+5&speed=1&start=true&url=http://rnikitin.github.io/examples/jumbotron/'
             }
-
         },
         clean: {
             dist: {
@@ -183,11 +188,11 @@ module.exports = function (grunt) {
                 jshintrc: '.jshintrc',
                 reporter: require('jshint-stylish')
             },
-            all: [
+            files: [
                 '<%= yeoman.app %>/scripts/{,*/}*.js',
                 '!<%= yeoman.app %>/scripts/libs/ajax.js',
-                '!<%= yeoman.app %>/scripts/vendor/*',
-                'test/spec/{,*/}*.js'
+                '!<%= yeoman.app %>/scripts/vendor/*'
+                //'test/spec/{,*/}*.js'
             ]
         },
         mocha: {
@@ -277,9 +282,6 @@ module.exports = function (grunt) {
                 }
             }
         },
-
-
-
         useminPrepare: {
             options: {
                 dest: '<%= yeoman.dist %>'
@@ -372,6 +374,20 @@ module.exports = function (grunt) {
                         'generated/*'
                     ]
                 }]
+            },
+
+            test: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/scripts',
+                    src: '**',
+                    dest: '.tmp/spec'
+                }, {
+                    expand: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: 'bower_components/requirejs/require.js',
+                    dest: '.tmp'
+                }]
             }
         },
 
@@ -463,13 +479,22 @@ module.exports = function (grunt) {
         ]);
     });
 
-    grunt.registerTask('test', [
-        'clean:server',
-        'concurrent:test',
-        'autoprefixer',
-        'connect:test',
-        'mocha'
-    ]);
+    grunt.registerTask('test', function(target) {
+        var tasks = [
+            'clean:server',
+            'copy:test',
+            'concurrent:test',
+            'autoprefixer',
+            'connect:test'
+        ];
+        if (target === 'build') {   // 命令行上查看结果
+            tasks.push('mocha');
+        } else {    // 浏览器上查看结果
+            tasks.push('open:server');
+            tasks.push('watch');
+        }
+        grunt.task.run(tasks);
+    });
 
     grunt.registerTask('build', [
         'clean:dist',
@@ -481,7 +506,7 @@ module.exports = function (grunt) {
         //'responsive_images:dev',
         'concat',
         'uglify',
-        'copy',
+        'copy:dist',
         'rev',
         'usemin',
         'manifest'
@@ -489,7 +514,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('default', [
         'jshint',
-        'test',
+        'test:build',
         'build'
     ]);
 
