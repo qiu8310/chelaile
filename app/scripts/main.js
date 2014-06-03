@@ -128,7 +128,7 @@ require([
                 } else {
                     Dialog.alert('先登录英语流利说');
                 }
-            } else if (Act.have_content_module) {
+            } else if (Act.have_content_module || Event.joined) {
                 Dialog.alert('您已成功购买', {btns: {cancel: '取消'}});
             } else if (MSG[Event._status].coin > User.coin) {
                 Dialog.alert('您的钻石余额不足，请先去充值');

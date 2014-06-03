@@ -275,6 +275,7 @@ module.exports = function (grunt) {
                         '<%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
                         '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
+                        '!<%= yeoman.dist %>/images/wechat-logo.png',
                         '!<%= yeoman.dist %>/images/stars/*.*', // stars 不打包，不会变的图片
                         '<%= yeoman.dist %>/styles/fonts/*',
                         '<%= yeoman.dist %>/*.{ico,png}'

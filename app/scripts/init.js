@@ -67,7 +67,8 @@ define([
 
           document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
             var shareUrl = location.href.split('?').shift() + '?share=yes#game',
-              title = '英语流利说：测测你的另一半';
+              title = '英语流利说：测测你的另一半',
+              default_desc = '世界杯来了，快来测测你的另一半是哪个球星';
             // 发送给好友
             WeixinJSBridge.on('menu:share:appmessage', function () {
               WeixinJSBridge.invoke('sendAppMessage', {
@@ -76,7 +77,7 @@ define([
                 //"img_width": "160",
                 //"img_height": "160",
                 "link": shareUrl,
-                "desc":  Storage.get('worldcup-result'),
+                "desc":  Storage.get('worldcup-result') || default_desc,
                 "title": title
               }, function (res) {
                 //_report('send_msg', res.err_msg);
@@ -90,7 +91,7 @@ define([
                 //"img_width": "160",
                 //"img_height": "160",
                 "link": shareUrl,
-                "desc":  Storage.get('worldcup-result'),
+                "desc":  Storage.get('worldcup-result') || default_desc,
                 "title": title
               }, function (res) {
                 //_report('timeline', res.err_msg);
