@@ -2,8 +2,8 @@ define(function() {
   'use strict';
   return {
     game_result: {
-      woman: '哇塞，#{username}理想的另一半是#{starname}啊，你羡慕吗？',
-      man: '哇，#{username}日思夜想的好基友是#{starname}啊，你也来认领一个！'
+      woman: '哇塞，#{username} 理想的另一半是#{starname}啊，你羡慕吗？',
+      man: '哇，#{username} 日思夜想的好基友是#{starname}啊，你也来认领一个！'
     },
 
     stars: {
