@@ -73,7 +73,7 @@ define(
             });
             utils._('.btn-sure', container).addEventListener('click', function(e){
               if (share_callback) share_callback(star.result);
-              dialog.close();
+              //dialog.close();
               e.preventDefault();
             });
 
