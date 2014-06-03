@@ -3,8 +3,8 @@ require.config({
 });
 
 
-function testPropertyAndType(Obj, property, type) {
-  describe('@' + property, function() {
+function testPropertyAndType(Obj, property, type, label) {
+  describe('@' + (label || property), function() {
     it('should contain the property', function() {
       assert.property(Obj, property);
     });
@@ -17,7 +17,8 @@ function testPropertyAndType(Obj, property, type) {
 
 require([
   'testEnv',
-  'testAgent'
+  'testAgent',
+  'testUtils'
   ], function() {
     'use strict';
 

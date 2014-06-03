@@ -8,7 +8,7 @@ define(['libs/env', 'libs/storage', 'libs/ajax'], function(Env, Storage, ajax) {
     base = 'http://staging.llsapp.com/api/:version:/activities/5388424b0af9963bf3000001';
   } else {
     // TODO  添加 activity id
-    base = 'http://api.llsapp.com/api/:version:/activities/';
+    base = 'http://api.llsapp.com/api/:version:/activities/538d74befcfff2990a000001';
   }
 
   return function(path, params) {
