@@ -126,7 +126,7 @@ require([
                 if (Agent.platform.lls) {
                     Dialog.alert('您尚末登录');
                 } else {
-                    Dialog.alert('先登录英语流利说');
+                    Dialog.alert('请先登录英语流利说');
                 }
             } else if (Act.have_content_module || Event.joined) {
                 Dialog.alert('您已成功购买', {btns: {cancel: '取消'}});

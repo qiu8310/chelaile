@@ -377,6 +377,17 @@ module.exports = function (grunt) {
                 }]
             },
 
+            disttest: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: '<%= yeoman.app %>',
+                        src: 'scripts/**',
+                        dest: '<%= yeoman.dist %>'
+                    }
+                ]
+            },
+
             test: {
                 files: [{
                     expand: true,

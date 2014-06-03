@@ -65,15 +65,23 @@ define([
               btn.setAttribute('href', 'http://a.app.qq.com/o/simple.jsp?pkgname=com.liulishuo.engzo&g_f=991653');
           });
 
-          document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+          var setWechated = false;
+          document.addEventListener('WeixinJSBridgeReady', setWechat, false);
+          setTimeout(setWechat, 3000);
+
+          function setWechat() {
+            if (setWechated) return ;
+            setWechated = true;
+
             var shareUrl = location.href.split('?').shift() + '?share=yes#game',
               title = '英语流利说：测测你的另一半',
+              default_logo = "http://api.llsapp.com/ops-activity/images/wechat-logo.png",
               default_desc = '世界杯来了，快来测测你的另一半是哪个球星';
             // 发送给好友
             WeixinJSBridge.on('menu:share:appmessage', function () {
               WeixinJSBridge.invoke('sendAppMessage', {
                 //"appid": "123",
-                "img_url": "http://api.llsapp.com/ops-activity/images/wechat-logo.png",
+                "img_url": Storage.get('worldcup-logo') || default_logo,
                 //"img_width": "160",
                 //"img_height": "160",
                 "link": shareUrl,
@@ -87,7 +95,7 @@ define([
             // 分享到朋友圈
             WeixinJSBridge.on('menu:share:timeline', function () {
               WeixinJSBridge.invoke('shareTimeline', {
-                "img_url": "http://api.llsapp.com/ops-activity/images/wechat-logo.png",
+                "img_url": Storage.get('worldcup-logo') || default_logo,
                 //"img_width": "160",
                 //"img_height": "160",
                 "link": shareUrl,
@@ -97,8 +105,8 @@ define([
                 //_report('timeline', res.err_msg);
               });
             });
-          }, false);
-      }
+          }
+        }
 
       if (Agent.isIOS) {
           utils._('.download-ios').classList.remove('hidden');

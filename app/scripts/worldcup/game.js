@@ -50,6 +50,7 @@ define(
         // 结果信息
         star.result = utils.render(Data.game_result[gender], {username: username, starname: star.name});
         Storage.set('worldcup-result', star.result);
+        Storage.set('worldcup-logo', 'http://api.llsapp.com/ops-activity/' + star.avatar);
 
         utils.delay(300, function() {
 
