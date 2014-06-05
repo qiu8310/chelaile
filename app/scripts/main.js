@@ -176,12 +176,77 @@ require([
     }
 
     function page_leaderboard() {
+        var isLogin;
+        var tpl = '<li><div class="wrap #{&has_like ? voted : }" data-uid="#{user_id}">' +
+            '<div class="avatar">' +
+              '<img src="#{avatar_url}">' +
+              '<div class="audio-control" data-src="#{audio_url}?avthumb/mp3"></div>' +
+            '</div>' +
+            '<div class="content">' +
+              '<h2>#{username}<strong>#{score}分</strong></h2>' +
+            '</div>' +
+            '<div class="operate"><a data-num="#{likes_count}">#{&has_like ? #{likes_count} : 赞}</a></div>' +
+          '</div></li>';
+
         api('/rank_list', {
             success: function(data) {
-                console.log(data);
+                var list = data.items, strs = [];
+                list.forEach(function(item) {
+                    strs.push(utils.render(tpl, item, false));
+                });
+                isLogin = data.registered;
+                utils._('.leaderboard ul').innerHTML = strs.join('');
+                postLike();
             },
-            error: function() {}
+            error: function() {
+                Dialog.alert('网络繁忙，请稍后再试');
+            }
         });
+
+        var isLiking = false;
+        function like(e) {
+            if (isLiking) return ;
+            e.preventDefault();
+
+            var target = e.target, wrap, a, num, uid;
+            if (!target.classList.contains('operate')) target = target.parentNode;
+
+            wrap = target.parentNode;
+            if (wrap.classList.contains('voted')) return false;
+
+            if (!isLogin) {
+                Dialog.alert('登录才能点赞哦');
+                return false;
+            }
+
+            a = target.firstChild;
+            num = parseInt(a.getAttribute('data-num'), 10) + 1;
+            uid = wrap.getAttribute('data-uid');
+
+            isLiking = true;
+            api('/rank_list/likes', {
+                type: 'POST',
+                data: {user_id: uid},
+                success: function() {
+                    isLiking = false;
+                    wrap.classList.add('voted');
+                    a.innerText = num;
+                },
+                error: function() {
+                    isLiking = false;
+                    Dialog.alert('投票失败，请稍后再试');
+                }
+            });
+        }
+
+        function postLike() {
+            utils.__('.operate').forEach(function(elem) {
+                if (!elem.parentNode.classList.contains('voted')) {
+                    elem.addEventListener('click', like, false);
+                }
+            });
+        }
+
     }
 
 

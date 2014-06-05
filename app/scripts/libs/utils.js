@@ -130,6 +130,11 @@ define(function() {
       escape_html = typeof escape_html === 'undefined' ? true : !!escape_html;
       quick_render = typeof quick_render === 'undefined' ? true : !!quick_render;
 
+      // 替换单个单词 #{word}
+      tpl = tpl.replace(/#\{([\w\-_]+)\}/g, function(word, match) {
+        return (match in obj) ? (escape_html ? self.escapeHTML(obj[match]) : obj[match]) : '';
+      });
+
       if (!quick_render) {
         // 条件替换 #{&boolean ? str_1 : str_2}
         tpl = tpl.replace(/#\{&([\w\-_]+)\s*\?\s*([^:]*?)\s*:\s*([^\}]*?)\s*\}/g, function(_, key, tplTrue, tplFalse) {
@@ -147,11 +152,6 @@ define(function() {
           return rtn;
         });
       }
-
-      // 替换单个单词 #{word}
-      tpl = tpl.replace(/#\{([\w\-_]+)\}/g, function(word, match) {
-        return (match in obj) ? (escape_html ? self.escapeHTML(obj[match]) : obj[match]) : '';
-      });
 
       return tpl;
     },

@@ -1,3 +1,5 @@
+/* global WeixinJSBridge */
+
 define([
     'libs/utils',
     'libs/Agent',
@@ -10,9 +12,7 @@ define([
     Storage,
     Native
   ) {
-
     'use strict';
-
     /**
      *  1. 使用了 appcache 的话，使用它的那个页面不管有没有在 manifest.appcache 中指定，都会 cache 的
      *  2. 只有 manifest.appcache 文件更新了，缓存才能重新更新
@@ -56,6 +56,45 @@ define([
      *  当前页面是分享页面
      *  对它进行一些初始化
      */
+    var setWechated = false;
+    function setWechat() {
+      if (setWechated) return ;
+      setWechated = true;
+
+      var shareUrl = location.href.split('?').shift() + '?share=yes#game',
+        title = '英语流利说：测测你的另一半',
+        default_logo = 'http://api.llsapp.com/ops-activity/images/wechat-logo.png',
+        default_desc = '世界杯来了，快来测测你的另一半是哪个球星';
+      // 发送给好友
+      WeixinJSBridge.on('menu:share:appmessage', function () {
+        WeixinJSBridge.invoke('sendAppMessage', {
+          //"appid": "123",
+          img_url: Storage.get('worldcup-logo') || default_logo,
+          //"img_width": "160",
+          //"img_height": "160",
+          link: shareUrl,
+          desc:  Storage.get('worldcup-result') || default_desc,
+          title: title
+        }, function () {
+          //_report('send_msg', res.err_msg);
+        });
+      });
+
+      // 分享到朋友圈
+      WeixinJSBridge.on('menu:share:timeline', function () {
+        WeixinJSBridge.invoke('shareTimeline', {
+          img_url: Storage.get('worldcup-logo') || default_logo,
+          //"img_width": "160",
+          //"img_height": "160",
+          link: shareUrl,
+          desc:  Storage.get('worldcup-result') || default_desc,
+          title: title
+        }, function () {
+          //_report('timeline', res.err_msg);
+        });
+      });
+    }
+
     function share_init() {
       // 分享过来的页面
 
@@ -64,48 +103,8 @@ define([
           utils.__('.download-btns .btn').forEach(function(btn) {
               btn.setAttribute('href', 'http://a.app.qq.com/o/simple.jsp?pkgname=com.liulishuo.engzo&g_f=991653');
           });
-
-          var setWechated = false;
           document.addEventListener('WeixinJSBridgeReady', setWechat, false);
-          setTimeout(setWechat, 3000);
-
-          function setWechat() {
-            if (setWechated) return ;
-            setWechated = true;
-
-            var shareUrl = location.href.split('?').shift() + '?share=yes#game',
-              title = '英语流利说：测测你的另一半',
-              default_logo = "http://api.llsapp.com/ops-activity/images/wechat-logo.png",
-              default_desc = '世界杯来了，快来测测你的另一半是哪个球星';
-            // 发送给好友
-            WeixinJSBridge.on('menu:share:appmessage', function () {
-              WeixinJSBridge.invoke('sendAppMessage', {
-                //"appid": "123",
-                "img_url": Storage.get('worldcup-logo') || default_logo,
-                //"img_width": "160",
-                //"img_height": "160",
-                "link": shareUrl,
-                "desc":  Storage.get('worldcup-result') || default_desc,
-                "title": title
-              }, function (res) {
-                //_report('send_msg', res.err_msg);
-              });
-            });
-
-            // 分享到朋友圈
-            WeixinJSBridge.on('menu:share:timeline', function () {
-              WeixinJSBridge.invoke('shareTimeline', {
-                "img_url": Storage.get('worldcup-logo') || default_logo,
-                //"img_width": "160",
-                //"img_height": "160",
-                "link": shareUrl,
-                "desc":  Storage.get('worldcup-result') || default_desc,
-                "title": title
-              }, function (res) {
-                //_report('timeline', res.err_msg);
-              });
-            });
-          }
+          setTimeout(setWechat, 0);
         }
 
       if (Agent.isIOS) {

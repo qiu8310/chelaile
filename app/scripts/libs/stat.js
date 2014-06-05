@@ -2,7 +2,6 @@ define(['libs/env'], function(Env) {
 
   'use strict';
   // 要确保加了 GA 统计
-
   var myga = _gaq, G = {}, Stat;
 
   Stat = {
@@ -57,23 +56,52 @@ define(['libs/env'], function(Env) {
      *  查看日志
      *  http://fcbst.sinaapp.com/logs.php
      */
-    log: function(type, category, msg, data) {
+    log: function(type, category, msg, data, forceRemote) {
 
       var url = 'http://fcbst.sinaapp.com/log.php?from=' + encodeURIComponent(category) + '&type=' + encodeURIComponent(type);
       if (typeof msg !== 'undefined') url += '&msg=' + encodeURIComponent(msg);
       if (typeof data !== 'undefined') url += '&data=' + encodeURIComponent(JSON.stringify(data));
 
-      if (Env.isOnline) {
-        (new Image()).src = url;
-      } else {
-        console.error('logError: Category['+category+'] Msg['+msg+'] Data['+data+']');
+      if (Env.isOnline || forceRemote) {
+        (new Image()).src = url + '&_=' + Date.now();
       }
+
+      var logMsg = 'Stat#log:\n Category [%s]\n Msg [%s]\n Data [%o]';
+      console[(console[type] ? type : 'log')](logMsg, category, msg, data);
+    },
+
+    /**
+     *  方便远程调试
+     */
+    remote: function(type, msg, data) {
+
+      data = data || {};
+      data.url = location.href;
+      data.ua = navigator.userAgent;
+
+      Stat.log(type, 'remote message', msg, data, true);
+
     }
+
+
   };
 
-  window.onerror = function (msg, url, line) {
+  window.onerror = function (msg, src, line) {
     if ( !G.onbeforeunload ) {
-      Stat.log('error', 'appevent', msg, {url: url, line: line, ua: navigator.userAgent});
+
+      // Safari 返回的是一个对象
+      if (typeof msg === 'object') {
+        var eve = msg;
+        line = eve.line;
+        msg = eve.message ? (eve.name + ': ' + eve.message) : eve.toString();
+      }
+
+      Stat.log('error', 'appevent', msg, {
+        url: location.href,
+        src: src,
+        line: line,
+        ua: navigator.userAgent
+      });
     }
     return true;
   };

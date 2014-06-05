@@ -1,8 +1,9 @@
 CACHE MANIFEST
-# Time: Tue Jun 03 2014 18:57:19 GMT+0800 (CST)
+# Time: Thu Jun 05 2014 10:12:26 GMT+0800 (CST)
 
 CACHE:
-scripts/455c83bf.main.js
+scripts/64593595.main.js
+scripts/d41d8cd9.wechat.js
 styles/02389410.main.css
 bower_components/requirejs/require.js
 images/305ac53c.bg.png
