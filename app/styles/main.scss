@@ -3,8 +3,10 @@
 @import 'base';
 
 
-$main-color: #009345;
-$yellow-color: #ffeb00;
+$main-color: #cfcfcf;
+$guest-color: #82bc69;
+$master-color: #fff;
+
 
 body {
     background: $main-color;
@@ -17,328 +19,45 @@ body {
   @include dialog();
 }
 
-
 // 引入 btn 样式
 .btn {
   @include btn(40px);
-  background: $main-color;
+  background: #31a000;
   color: white;
 }
 
-.btn-sure, .btn-orange {
-  background: #fe6b00;
-}
-
-.btn-yellow {
-  background: $yellow-color;
-  color: #484848;
-}
-
-.btn-cancel {
-  background-color: #484848;
-  color: #fff;
-}
-
-.btn-beg-bless {
-  background: #ed4800;
-  color: #fff;
-  width: 150px;
-  font-size: 1.6rem;
-}
-
-
-
 body > header {
   @include header();
-}
-
-.lucky-plate {
-  @include lucky-plate();
-  margin-bottom: 30px;
-}
-
-.nav {
-  .bg {
-    width: 100%;
-    height: 192px;
-
-    background: url(../images/bg.png);
-    background-size: 100% 192px;
-
-    .bg-text {
-      width: 100%;
-      height: 100%;
-      background: url(../images/bg-text.png) no-repeat center top;
-      background-size: 180px 180px;
-    }
-  }
-}
-
-@mixin container() {
-  width: 88%;
-  overflow: hidden;
-  @include center-block();
-}
-
-.second-kill {
-  text-align: center;
-  label {
-    display: inline-block;
-    height: 28px;
-    line-height: 28px;
-    font-size: 1.5rem;
-    font-weight: normal;
-    padding-left: 30px;
-    background: url(../images/icon-time.png) no-repeat left center;
-    background-size: 26px 30px;
-  }
-}
-
-.progress {
-  @include container();
-
-  $height: 14px;
-  $border: 4px;
-  $mask-color: #225400;
-
-  .progress-bar {
-    //overflow: hidden;
-    width: 100%;
-    height: $height;
-    border-radius: $height / 2;
-    border: $border solid $mask-color;
-    background: $mask-color url(../images/progress.png) no-repeat;
-    background-size: 100% $height - $border;
-
-    .mask {
-      //border-radius: 10px;
-      float: right;
-      z-index: 2;
-      width: 10%;
-      height: $height - $border * 2 + 2;
-      margin-top: -1px;
-      background: $mask-color;
-    }
-  }
-
   .title {
-    text-align: center;
-    color: $yellow-color;
-    font-size: 1.6rem;
-    line-height: 1.8;
-  }
-
-  .status {
-    font-size: 1.5rem;
-    line-height: 1.6;
-    span:first-child {
-      color: $yellow-color;
-    }
-  }
-}
-
-.act-desc {
-  margin-top: 20px;
-  font-size: 1.3rem;
-  line-height: 1.6;
-  &.act-rule {
-    margin-top: 0px;
-  }
-  @include container();
-  em {
-    color: $yellow-color;
-    font-style: normal;
-    &.big {
-      font-size: large;
-    }
-  }
-
-  dl {
-    margin-top: 10px;
-  }
-  dt, dd {
-    margin-bottom: 15px;
-  }
-  dt {
-    float: left;
-    color: $yellow-color;
-    width: 60px;
-    clear: left;
-  }
-  dd {
-    margin-left: 65px;
-  }
-}
-
-.game {
-  margin-top: 18px;
-  @include container();
-  .game-banner {
-    display: block;
-    margin-top: 20px;
-    width: 100%;
-    height: 76px;
-    background: url(../images/game-banner.png) no-repeat center top;
-    background-size: 277px 76px;
-  }
-
-  .lucky-plate {
-    @include center-block();
-  }
-
-  .form-control {
-    margin: 20px 0 30px;
-    font-size: 1.3rem;
-    text-align: center;
-
-    h3 {
-      font-size: 1.3rem;
-      margin: 10px 0 15px;
-    }
-    .name {
-      outline: none;
-      display: block;
-      padding: 0 5px;
-      @include center-block();
-      width: 277px;
-      height: 38px;
-      border: 2px solid #3a6700;
-    }
-    .checkbox-inline {
-      margin: 15px 0 20px;
-
-      & > div {
-        display: inline-block;
-
-        &:first-child {
-          margin-right: 15px;
-        }
-      }
-
-      input { display: none; }
-      input:checked + label {
-        span {
-          border: none;
-          background: url(../images/checked.png) no-repeat center center;
-          background-size: 25px 25px;
-        }
-      }
-      label {
-        position: relative;
-        cursor: pointer;
-        line-height: 25px;
-        span {
-          float: left;
-          margin-right: 7px;
-          display: inline-block;
-          @include square(25px);
-          border-radius: 50%;
-          border: 2px solid #2a6700;
-          background: white;
-        }
-      }
-    }
-  }
-}
-
-.dialog-share, .dialog-game-end {
-  color: #000;
-  .result {
-    overflow: hidden;
-    padding: 15px;
-    background: #ffd800;
-    min-height: 100px;
-    img {
-      width: 70px;
-      height: 70px;
-      float: left;
-    }
-    p {
-      font-weight: bold;
-      font-size: 1.3rem;
-      margin-left: 90px;
-      margin-top: 5px;
-    }
-  }
-  .intro {
-    padding: 15px;
-    background: #ffeb00;
-
-    h1 {
-      font-size: 1.3rem;
-      line-height: 1.6;
-    }
-    .star-name {
-      color: #3e850d;
-    }
-    .star-nick {
-      color: #000;
-    }
-    p {
-      font-size: 1.2rem;
-      line-height: 1.5;
-    }
-  }
-  .btn {
-    @include center-block();
-    margin-top: 15px;
-    color: #fff;
-  }
-}
-
-.dialog-share {
-  background: #ffeb00;
-  .result {
-    background: #ffeb00;
-    p {
-      font-weight: normal;
-      font-size: 1.3rem;
-    }
-
-    .from {
-      margin-top: 15px;
-    }
-  }
-  .btns .btn {
-    margin-top: 0;
-  }
-  .btn-cancel {
-    background: #fff;
     color: #484848;
   }
 }
 
 
-$footer-height: 60px;
-.buy-buttons {
-  width: 100%;
-  height: $footer-height;
-  background: transparent;
-  text-align: center;
-
-  .btn {
-    font-size: 2.5rem;
-    margin-top: 10px;
-    margin-right: 10px;
-  }
-
-  #btn-group {
-    width: 60%;
-    margin-right: 0px;
-  }
-
-  .btn:last-child {
-    margin-right: 0;
-  }
-}
-
+$footer-height: 50px;
 .footer-placeholder {
   display: block;
   width: 100%;
-  height: $footer-height + 10;
+  height: $footer-height;
+}
+body > footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  height: $footer-height;
+  width: 100%;
+  background: white;
+  text-align: center;
 }
 
 
-.leaderboard {
-  @include leaderboard();
+
+footer {
+  .btn {
+    margin-top: 5px;
+    width: 150px;
+  }
 }
+

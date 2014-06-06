@@ -94,3 +94,28 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
   background: none;
   cursor: none;
 }
+
+
+// debug
+.debug {
+  width: 90%;
+  margin: 0 auto;
+  p::before {
+    @extend .label;
+    display: inline-block;
+    margin-right: 10px;
+    width: 80px;
+    text-align: right;
+  }
+  p {
+    display: block;
+    margin: 10px 0;
+    word-break: break-all;
+    word-wrap: break-word;
+  }
+  .log::before     {  @extend .label-primary; content: '#log';    }
+  .success::before {  @extend .label-success; content: '#success';}
+  .warning::before {  @extend .label-warning; content: '#warning';}
+  .info::before    {  @extend .label-info;    content: '#info';   }
+  .error::before   {  @extend .label-danger;  content: '#error';  }
+}

@@ -5,6 +5,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
   // 如果不用 requirejs，需要监听下面的事件来判断 WeixinJSBridge 是否准备好了
   // document.addEventListener('WeixinJSBridgeReady',function(){});
 
+
   // 由于 requirejs 是异步加载的，所以当此脚本加载完之后，
   // WeixinJSBridgeReady 事件肯定已经触发完了，所以监听它也无用
   var listenEvents = {
@@ -12,6 +13,18 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
       'shareToTimeline': ['menu:share:timeline', 'shareTimeline'],
       'shareToWeibo': ['menu:share:weibo', 'shareWeibo']
     }, _G = {};
+
+  function _cache(key, val) {
+    if (!(key in _G)) _G[key] = {};
+    if (typeof val !== 'undefined') _G[key] = val;
+    return _G[key];
+  }
+  function _cacheNotExist(key, func) {
+    if (!_G[key]) {
+      _G[key] = true;
+      if (typeof func === 'function') func();
+    }
+  }
 
   function _check(cb) {
     if (typeof WeixinJSBridge === 'undefined') {
@@ -41,30 +54,108 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
   }
 
 
-  // 当 event 不存在时，cb 的回调参数中有 {err_msg: 'system:function_not_exist'}
-  function invoke(event, params, cb) {
+  // 当 eve 不存在时，cb 的回调参数中有 {err_msg: 'system:function_not_exist'}
+  function invoke(eve, params, cb) {
     _check(function() {
       if (typeof params === 'function') {
         cb = params;
         params = {};
       }
       // 微信接口调用
-      WeixinJSBridge.invoke(event, params, function(res) {
-        // 调用回调，可能包括：cancel，event不存在，或者有返回内容的接口，如选取图片；所以不需要记录错误日志
+      WeixinJSBridge.invoke(eve, params, function(res) {
+        // 调用回调，可能包括：cancel，eve不存在，或者有返回内容的接口，如选取图片；所以不需要记录错误日志
         if (typeof cb === 'function') {
           cb(res);
         } else if (cb) {
-          Stat.remote('info', 'WeixinJSBridge invoke ' + event + ' callback', {params: params, res: res});
+          Stat.remote('info', 'WeixinJSBridge invoke ' + eve + ' callback', {params: params, res: res});
         }
       });
     });
   }
 
-  function _invokeWrap()
+  /*
+    opts = {
+      mandatory: [],      // 必填的参数
+      def: {},            // 默认的参数
+      expect: [],         // 期望的结果，如果没有包含期望的值，会调用 error, 否则 success，也可以是 function
+      expectAll: boolean  // true => 要满足所有的 expect,  false => 满足一个 expect 即可，默认 true
+      success:  function
+      error:    function
+      complete: function
+    }
+  */
+  function _expect(eve, err_msg) { return (new RegExp('\\s*:\\s*ok\\b', 'i')).test(err_msg); }
+  function _invokeWrap(eve, opts, params, outterOpts) {
+    params = params || {};
+    outterOpts = outterOpts || {};
 
-  function _listen(key, func, cb) {
+    var k;
+    for(k in outterOpts) {
+      opts[k] = outterOpts[k];
+    }
+
+    if (opts.def) {
+      for(k in opts.def) {
+        if (!params[k]) {
+          params[k] = opts.def[k];
+        }
+      }
+    }
+
+    if (opts.mandatory) {
+      var i, l = opts.mandatory.length;
+      for (i = 0; i < l; ++i){
+        if (!(opts.mandatory[i] in params)) {
+          throw new Error('Wechat invoke ' + eve + ' absence argument ' + opts.mandatory[i]);
+        }
+      }
+    }
+
+    invoke(eve, params, function(res) {
+      var rtnArgs = [].slice.call(arguments, 0);
+      var success;
+
+      // not defined
+      if (!opts.expect) {
+        success = _expect(eve, res.err_msg);
+
+      // is function
+      } else if (typeof opts.expect === 'function') {
+        success = opts.expect.apply(null, rtnArgs);
+
+      // is string
+      } else if (typeof opts.expect === 'string') {
+        opts.expect = [opts.expect];
+      }
+
+      // is array
+      var expectData = {}, expectAll;
+      if (opts.expect.length > 0) {
+        expectAll = typeof opts.expectAll === 'undefined' ? true : !!opts.expectAll;
+        success = expectAll;
+        opts.expect.forEach(function(key) {
+          expectData[key] = res[key];
+
+          var inRes = (key in res);
+          if (inRes && !expectAll) success = true;
+          else if (!inRes && expectAll) success = false;
+
+        });
+      }
+
+      if(opts.complete) opts.complete.apply(null, rtnArgs);
+
+      if(success === true && opts.success) {
+        if (opts.expect.length > 0) rtnArgs.unshift(expectData);
+        opts.success.apply(null, rtnArgs);
+      } else if(success === false && opts.error) opts.error.apply(null, rtnArgs);
+    });
+  }
+
+  // 监听 menu 事件
+  function _listenMenu(key, func, cb) {
     if (!(key in listenEvents) || (typeof func !== 'function')) {
-      Stat.remote('error', 'wechat _listen error');
+      Stat.remote('error', 'Wechat _listenMenu error');
       return false;
     }
     var eve = listenEvents[key];
@@ -74,9 +165,9 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
     });
   }
 
-  // progress
+  // 事件初始化
   function _progressInit() {
-    var cache = _G.progress = _G.progress || {};
+    var cache = _cache('progress');
     if (cache.inited) return false;
     cache.inited = true;
 
@@ -93,6 +184,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
 
     var context,
       handler = function(context) {
+
         return function() {
           var args = [].slice.call(arguments, 0);
           (cache.contexts || []).forEach(function(env) {
@@ -100,6 +192,12 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
             if (env.operate && env.operate !== context.operate) return ;
             if (typeof env.func !== 'function') return ;
 
+            if (env.condition) {
+              for (var k in env.condition) {
+                if (!args[0] || !(k in args[0]) || args[0][k] !== env.condition[k])
+                  return ;
+              }
+            }
             env.func.apply(context, args);
           });
         };
@@ -113,6 +211,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
 
       on(e, handler(cache.events[e]));
     }
+
   }
 
   var self = {
@@ -133,7 +232,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
         title:      标题
      */
     shareToFrient: function(paramsFunc, errorFunc) {
-      _listen('shareToFrient', paramsFunc, errorFunc);
+      _listenMenu('shareToFrient', paramsFunc, errorFunc);
     },
 
     /*
@@ -149,7 +248,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
         比发送给好友的接口少一个 desc 和 appid
     */
     shareToTimeline: function(paramsFunc, errorFunc) {
-      _listen('shareToTimeline', paramsFunc, errorFunc);
+      _listenMenu('shareToTimeline', paramsFunc, errorFunc);
     },
 
     /*
@@ -163,7 +262,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
         img_height:
     */
     shareToWeibo: function(paramsFunc, errorFunc) {
-      _listen('shareToWeibo', paramsFunc, errorFunc);
+      _listenMenu('shareToWeibo', paramsFunc, errorFunc);
     },
 
 
@@ -191,55 +290,118 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
     // 微信 5.4 新接口
     // TODO 如何判断支不支持某个接口 ？ // invoke 某个不存在的方法是 callback 会报错
 
+    // WeixinJSBridge.invoke('scanQRCode',{
+    //       "desc" : "这是描述",
+    //       "needResult" : 1,  //1，直接返回扫描结果 0，微信处理结果
+    //     },function(res){
+    //       alert(res.resultStr);
+    //     });
+
     // image
-    pickImages: function() {
-
+    pickImages: function(params, opts) {
+      if (arguments.length === 1) {
+        opts = params;
+        params = {};
+      }
+      _invokeWrap('pickLocalImage', {
+        def: {scene: '1|2'},
+        expect: 'localIds'
+      }, params, opts);
     },
-    uploadImage: function() {
-
+    uploadImage: function(params, opts) {
+      _invokeWrap('uploadLocalImage', {
+        mandatory: ['localId', 'appId'],
+        expect: 'serverId'
+      }, params, opts);
     },
-    downloadImage: function() {
-
+    downloadImage: function(params, opts) {
+      _invokeWrap('downloadImage', {
+        mandatory: ['serverId'],
+        expect: 'localId'
+      }, params, opts);
     },
 
     // voice
-    recordVoice: function() {
-      // invoke('startRecord')
-      // WeixinJSBridge.invoke('startRecord',{
-      //       "appId" : "wx9fce185521717341"
-      //   },function(res){
-      //       curAudioId = res.localId;
-      //  });
+    /*
+      params = {
+        appId: xxx
+      }
+      opts = {
+        success: function({localId: xxxx}, res) {}
+        error: function(res) {}
+        complete: function(res) {}
+      }
+    */
+    recordVoice: function(params, opts) {
+      _invokeWrap('startRecord', {
+        mandatory: ['appId'],
+        expect: ['localId']
+      }, params, opts);
     },
-    playVoice: function() {
+    /*
+      params = {
+        appId: xxx
+        localId: xxx
+      }
+      opts = {
+        complete: function(res) {}
+      }
+    */
+    playVoice: function(params, opts) {
+      _invokeWrap('playVoice', {
+        mandatory: ['appId', 'localId'],
+        expect: 'serverId'
+      }, params, opts);
 
+      // 对于一个 localId，只绑定一次 onend 事件
+      if (typeof opts.onend === 'function') {
+        var id = params.localId;
+        _cacheNotExist('playVoice.onend.' + id, function() {
+          self.on('voice', 'end', opts.onend, {localId: id});
+        });
+      }
     },
-    pauseVoice: function() {
-
+    pauseVoice: function(params, opts) {
+      _invokeWrap('pauseVoice', {
+        mandatory: ['appId', 'localId']
+      }, params, opts);
     },
-    stopVoice: function() {
-
+    stopVoice: function(params, opts) {
+      _invokeWrap('stopVoice', {
+        mandatory: ['appId', 'localId']
+      }, params, opts);
     },
-    uploadVoice: function() {
-
+    uploadVoice: function(params, opts) {
+      _invokeWrap('uploadVoice', {
+        mandatory: ['appId', 'localId'],
+        expect: 'serverId'
+      }, params, opts);
     },
-    downloadVoice: function() {
-
+    downloadVoice: function(params, opts) {
+      _invokeWrap('downloadVoice', {
+        mandatory: ['appId', 'serverId'],
+        expect: 'localId'
+      }, params, opts);
     },
 
 
-    // arguments: resource, operate, callback
+    // arguments: resource, operate, callback, condition
+
+    // condition = {key1: val1, key2: val2 ... }
     on: function() {
-      var cache = _G.progress = _G.progress || {};
+      var cache = _cache('progress');
       if (!cache.inited) _progressInit();
 
       var context = {}, args = [].slice.call(arguments, 0);
       args.forEach(function(arg) {
-        if (typeof arg === 'string') {
+        var type = typeof arg;
+        if (type === 'string') {
           if (cache.resources[arg]) context.resource = arg;
           if (cache.operates[arg]) context.operate = arg;
-        } else if (typeof arg === 'function') {
+        } else if (type === 'function') {
           context.func = arg;
+        } else if (type === 'object') {
+          context.condition = arg;
         }
       });
 
@@ -251,9 +413,11 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
 
     // 取消监听
     off: function() {
-      var cache = _G.progress = _G.progress || {};
+      var cache = _cache('progress');
       if (!cache.inited) _progressInit();
       if (cache.contexts.length === 0) return ;
+
+      // 清除所有监听
       if (arguments.length === 0) {
         cache.contexts = [];
         return ;
@@ -266,19 +430,70 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
           if (cache.operates[arg]) context.operate = arg;
         } else if (typeof arg === 'function') {
           context.func = arg;
+        } else if (typeof arg === 'object') {
+          context.condition = arg;
         }
       });
 
+      var k, keys = 'resource,operate,func,condition'.split(',');
       for (var i = cache.contexts.length-1; i >= 0; --i) {
-        var ctx = cache.contexts[i];
-        if (context.resource && ctx.resource !== context.resource) continue;
-        if (context.operate && ctx.operate !== context.operate) continue;
-        if (context.func && ctx.func !== context.func) continue;
+        var ctx = cache.contexts[i],
+          notMatch = false;
+
+        for (var j = keys.length; j > 0; --j) {
+          k = keys[j-1];
+          if ((k in context) && ctx[k] !== context[k]) { notMatch = true; break; }
+        }
+        if (notMatch) continue;
 
         cache.contexts.splice(i, 1);
       }
     }
   };
+
+
+  var voiceEvents = {};
+  var voiceEventTrigger = function(type, args) {
+    if (voiceEvents[type]) {
+      voiceEvents[type].forEach(function(func) {
+        func.apply(null, args);
+      });
+    }
+  };
+  function Voice(appId, resourceId) {
+    if (!resourceId || !appId) throw new Error('Absence arguments for new Voice()');
+    this.id = resourceId;
+    this.appId = appId;
+  }
+  Voice.prototype = {
+    play: function() {
+      self.playVoice({appId: this.appId, localId: this.id}, {
+        error: function(res) { voiceEventTrigger('error', ['play error', res.err_msg]); }
+      });
+    },
+    stop: function() {
+      self.stopVoice({appId: this.appId, localId: this.id}, {
+        error: function(res) { voiceEventTrigger('error', ['stop error', res.err_msg]); }
+      });
+    },
+    pause: function() {
+      self.pauseVoice({appId: this.appId, localId: this.id}, {
+        error: function(res) { voiceEventTrigger('error', ['pause error', res.err_msg]); }
+      });
+    },
+    on: function(type, func) {
+      if (!voiceEvents[type]) voiceEvents[type] = [];
+      voiceEvents[type].push(func);
+    },
+    off: function(type) {
+      if (voiceEvents[type]) {
+        voiceEvents[type] = null;
+        delete voiceEvents[type];
+      }
+    }
+  };
+
+  self.Voice = Voice;
 
 
 
