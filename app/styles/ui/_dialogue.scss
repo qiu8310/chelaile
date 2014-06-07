@@ -1,0 +1,126 @@
+@mixin dialogue() {
+  width: 95%;
+  margin-top: 20px;
+  $avatar-size: 50px;
+  $pad-size: $avatar-size + 16px;
+  @include center-block();
+
+  .member {
+    margin-top: 15px;
+    min-height: $pad-size;
+  }
+
+  .master {
+    padding-right: $pad-size;
+    .avatar {
+      float: right;
+      margin-right: - $pad-size;
+    }
+
+    article, article::after {
+      background: $master-color;
+    }
+
+    article {
+      color: $dialogue-content-normal;
+      label {
+        display: block;
+        @include square(36px);
+        border-radius: 36px;
+        text-align: center;
+        line-height: 38px;
+        color: white;
+
+        &.good { background: $dialogue-score-good-bg; }
+        &.pass { background: $dialogue-score-pass-bg; }
+        &.bad  { background: $dialogue-score-bad-bg; }
+      }
+
+      .good { color: $dialogue-content-good; font-style: normal; }
+      .bad { color: $dialogue-content-bad; font-style: normal; }
+    }
+
+    article::after {
+      top: 15px;
+      right: -10px;
+      border-left: 10px solid $master-color;
+      border-top: 10px solid $main-color;
+      border-bottom: 10px solid $main-color;
+    }
+
+  }
+
+  .guest {
+    padding-left: $pad-size;
+    .avatar {
+      float: left;
+      margin-left: - $pad-size;
+    }
+
+
+    article, article::after {
+      background: $guest-color;
+    }
+
+    article::after {
+      top: 15px;
+      left: -10px;
+      border-right: 10px solid $guest-color;
+      border-top: 10px solid $main-color;
+      border-bottom: 10px solid $main-color;
+    }
+  }
+
+
+  .avatar {
+    position: relative;
+    margin-top: 3px;
+    img, .audio-control {
+      @include square($avatar-size);
+      border-radius: 50%;
+      display: block;
+      border: none;
+      outline: none;
+    }
+    .audio-control {
+      border-radius: 50px;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  article {
+    position: relative;
+    display: block;
+    width: 100%;
+    min-height: $avatar-size;
+    border-radius: 16px;
+    padding: 12px;
+
+    h1 {
+      font-size: 1.4rem;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .result {
+      margin: 10px 0 5px;
+    }
+
+    .content-zh {
+      font-size: 1.2rem;
+      line-height: 1.4;
+      color: rgba(255, 255, 255, .65);
+      margin: 10px 0 3px;
+    }
+  }
+
+  article::after {
+    content: " ";
+    display: block;
+    @include square(0px);
+    position: absolute;
+  }
+
+}

@@ -82,10 +82,53 @@ define(['libs/env'], function(Env) {
       Stat.log(type, 'remote message', msg, data, true);
 
     }
-
-
   };
 
+  // 本地调试
+  Stat.local = {};
+
+  function _log(elem, msg, append) {
+    var key = elem.innerText ? 'innerText' : 'textContent';
+    if (append || append === undefined) elem[key] = elem[key] + '\r\n' + msg;
+    else elem[key] = msg;
+  }
+
+  var wrap = function(key) {
+    var debug = document.querySelector('.debug');
+    if (!debug) {
+      debug = document.createElement('div');
+      debug.className = 'debug';
+      document.body.appendChild(debug);
+    }
+    var elem = document.createElement('div');
+    elem.className = key;
+    debug.appendChild(elem);
+
+    return function() {
+      var args = [].slice.call(arguments, 0);
+      var msg = [], append = true;
+
+      if (typeof args[args.length - 1] === 'boolean') {
+        append = args.pop();
+      }
+
+      args.forEach(function(arg) {
+        if (typeof arg === 'object') {
+          try { arg = JSON.stringify(arg);
+          } catch(e) { arg = arg.toString(); }
+        }
+        msg.push(arg);
+      });
+
+      _log(elem, msg.join(', '), append);
+    };
+  };
+  ['success', 'warning', 'log', 'info', 'error'].forEach(function(key) {
+    Stat.local[key] = wrap(key);
+  });
+
+
+  // 反馈错误到服务器
   window.onerror = function (msg, src, line) {
     if ( !G.onbeforeunload ) {
 

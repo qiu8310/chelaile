@@ -26,6 +26,12 @@ body {
   color: white;
 }
 
+// loading 组件
+article.loading {
+  @include loading(8px);
+}
+
+
 body > header {
   @include header();
   .title {
@@ -53,6 +59,13 @@ body > footer {
 }
 
 
+.dialogue {
+  @include dialogue();
+  .wx-audio-control {
+    @extend .audio-control;
+  }
+}
+
 
 footer {
   .btn {
@@ -60,4 +73,6 @@ footer {
     width: 150px;
   }
 }
+
+
 

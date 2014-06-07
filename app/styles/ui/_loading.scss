@@ -1,0 +1,27 @@
+@keyframes loading-bounce {
+  0%    {}
+  50%   { background-color: #efefef; }
+  100%  {}
+}
+
+@mixin loading($loading-size) {
+  width: 130px !important;
+  float: right;
+  $loading-size: 8px;
+  i {
+    display: inline-block;
+    @include square($loading-size);
+    border-radius: $loading-size;
+    margin-top: (26px - $loading-size)/2;
+    margin-left: 5px;
+    background: #ccc;
+    animation-name : loading-bounce;
+    animation-duration: 1.65s;
+    animation-iteration-count : infinite;
+    animation-direction: normal;
+  }
+
+  i:nth-child(1) {-webkit-animation-delay: 0.33s;}
+  i:nth-child(2) {-webkit-animation-delay: 0.77s;}
+  i:nth-child(3) {-webkit-animation-delay: 0.99s;}
+}

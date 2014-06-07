@@ -84,11 +84,11 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 .audio-control {
   cursor: pointer;
   background: rgba(0,0,0,.4) url(../images/ui/audio-play.png) no-repeat center center;
-  background-size: 100%;
+  background-size: 50%;
 }
 .audio-control.stop {
   background: url(../images/ui/audio-stop.png) no-repeat center center;
-  background-size: 100%;
+  background-size: 50%;
 }
 .audio-control.disabled {
   background: none;
@@ -99,15 +99,16 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 // debug
 .debug {
   width: 90%;
-  margin: 0 auto;
-  p::before {
+  @include center-block();
+  padding-bottom: 60px;
+  div::before {
     @extend .label;
     display: inline-block;
     margin-right: 10px;
-    width: 80px;
-    text-align: right;
+    width: 68px;
+    text-align: center;
   }
-  p {
+  div {
     display: block;
     margin: 10px 0;
     word-break: break-all;

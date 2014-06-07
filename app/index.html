@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>闯关</title>
+        <title>英语流利说</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <meta name="format-detection" content="telephone=no;address=no;email=no;" />
@@ -11,32 +11,47 @@
         <link rel="stylesheet" href="styles/main.css">
     </head>
     <body>
-        <header>
+        <!-- <header>
             <h1 class="title">闯关</h1>
         </header>
-
+        -->
         <div class="dialogue">
-            <div class="guest">
-                <div class="avatar"></div>
-                <article></article>
+            <!-- <div class="master member">
+                <div class="avatar">
+                    <img src="images/avatar_master.png">
+                    <div class="wx-audio-control" data-src="asset_test/test.mp3"></div>
+                </div>
+                <article class="loading"><i></i><i></i><i></i></article>
             </div>
-            <div class="master">
-                <div class="avatar"></div>
-                <article></article>
+            <div class="master member">
+                <div class="avatar">
+                    <img src="images/avatar_master.png">
+                    <div class="wx-audio-control" data-src="asset_test/test.mp3"></div>
+                </div>
+                <article>
+                    <label class="pass">78</label>
+                    <p class="result">
+                        She used to be my <i class="good">English</i> <i class="bad">teacher</i>, but then she left to <i class="bad">go home</i> to the <i class="good">States</i>.
+                    </p>
+                </article>
+            </div> -->
+            <div class="guest member">
+                <div class="avatar">
+                    <img src="images/avatar_guest.png">
+                    <div class="audio-control" data-src="asset_test/test.mp3"></div>
+                </div>
+                <article>
+                    <h1>请跟我读下面这段话</h1>
+                    <p class="content-en">She used to be my English teacher, but then she left to go home to the States.</p>
+                    <p class="content-zh">她曾经是我的英语老师，但后来回美国了</p>
+                </article>
             </div>
         </div>
 
 
-        <div class="debug">
-            <p class="success"></p>
-            <p class="warning"></p>
-            <p class="log"></p>
-            <p class="info"></p>
-            <p class="error"></p>
-        </div>
         <div class="footer-placeholder"></div>
         <footer>
-            <button class="btn">录音</button>
+            <button class="btn" id="record">点击此处开始</button>
         </footer>
         <script type="text/javascript">
           var _gaq = _gaq || [];

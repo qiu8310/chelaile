@@ -1,20 +1,26 @@
 
-require(['libs/stat', 'libs/wechat'], function(Stat, Wechat) {
+require([
+  'libs/stat',
+  'libs/wechat-voice',
+  'libs/utils',
+  'libs/dialog',
+  'libs/agent',
+  'libs/audio-player'],
+  function(
+    Stat,
+    Voice,
+    Utils,
+    Dialog,
+    Agent,
+    Audio) {
   'use strict';
 
-  // var APPID = 'wx9462c1810893f942'; // fcbst 测试用的一个 APPID
   var APPID = 'wx9fce185521717341'; // 微信提供的一个测试 ID
 
-  var _ = function (id) { return document.getElementById(id); };
-  var
-    elemImg = _('img'),
-    elemPick = _('pick'),
-    elemLog = _('log'),
-    elemStatus = _('status'),
-    elemRecord = _('record'),
-    elemUpload = _('upload'),
-    elemControl = _('control'),
-    elemDownload = _('download');
+  if (!Agent.platform.wechat) {
+    Dialog.alert('请在微信中浏览');
+    return ;
+  }
 
   function click(elem, cb) {
     elem.addEventListener('click', function(e) {
@@ -22,90 +28,161 @@ require(['libs/stat', 'libs/wechat'], function(Stat, Wechat) {
       cb();
     });
   }
-  function _log(elem, msg, append) {
-    if (typeof msg === 'object') msg = JSON.stringify(msg);
-    if (append) elem.innerText = elem.innerText + '\r\n' + msg;
-    else elem.innerText = msg;
-  }
-  function log(msg, append) { _log(elemLog, msg, append); }
-  function status(msg, append) { _log(elemStatus, msg, append); }
-  function extra(msg, append) {_log(_('extra'), msg, append); }
+  var Debug = Stat.local;
+  window.onerror = function() { Debug.error(arguments, true); };
 
-  var serverId, voice;
-  click(_('clear'), function() {
-    elemStatus.innerText = '';
-    elemLog.innerText = '';
-    _('wechat').innerText = '';
-    _('extra').innerText = '';
-  });
 
-  _('file').addEventListener('change', function() {
-    log(arguments);
-  }, false);
 
-  click(elemPick, function() {
-    Wechat.pickImages({
-      success: function(data) {
-        elemImg.src = data.localIds[0];
-        extra(data);
-      },
-      error: function() {
-        log(arguments);
+  var canRecord = true; // 是否可以录音，上一次的结果没返回之前一直都不能录
+
+  var Control = (function() {
+    var wraper = Utils._('.dialogue');
+
+    var Map = {};
+
+    function getLast() {
+      var last = wraper.lastChild;
+      if (last.nodeType === 3) { wraper.removeChild(last); last = wraper.lastChild; }
+      return last;
+    }
+
+
+    // 音频控制
+    var controlClass = 'wx-audio-control';
+    var lastControl;
+
+    // 停止上次播放的音乐
+    function stopLastControl(curControl) {
+      if (!lastControl || curControl === lastControl) return ;
+      if (lastControl.isPlaying) {
+        // Voice
+        if (lastControl.isPlaying()) lastControl.stop();
+      } else {
+        // Audio
+        lastControl.stop();
       }
-    });
-  });
+      lastControl = null;
+    }
+
+    Audio.onPlay(function() { stopLastControl(Audio); lastControl = Audio; });
+
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      if (!target.classList.contains(controlClass)) return ;
+
+      var voice,
+        elem = target.parentNode.parentNode,
+        id = elem.id;
+
+      if (!id || !(id in Map)) return ;
+      voice = Map[id].voice;
+
+      if (voice.isPlaying()) {
+        voice.stop();
+      } else {
+        stopLastControl(voice);
+        voice.play();
+        lastControl = voice;
+      }
+
+    }, false);
+
+    // DOM 控制
+    var Control = {
+      stopLastVoice: stopLastControl,
+      addDialogue: function(type, voice) {
+        var elem, tpl = '<div class="avatar">' +
+                    '<img src="images/avatar_' + type + '.png">' +
+                    '<div class="wx-audio-control"></div>' +
+                '</div><article class="loading"><i></i><i></i><i></i></article>';
+        elem = document.createElement('div');
+
+        var id = voice.id;
+        elem.id = id;
+        elem.className = type + ' member';
+
+        elem.innerHTML = tpl;
+        wraper.appendChild(elem);
+
+        // 音频播放结束
+        voice.on('end', function() {
+          Utils._('.' + controlClass, Map[this.id].elem).classList.remove('stop');
+        });
+        voice.on('play', function() {
+          Utils._('.' + controlClass, Map[this.id].elem).classList.add('stop');
+        });
+
+        voice.on('error', function(e, data) {
+          Dialog.alert(data.type + data.msg);
+          Debug.error(arguments);
+
+          if (data.type === 'uploadError') {
+            Control.removeLastDialogue();
+          }
+        });
+
+        voice.upload(function(serverId) {
+          Debug.success('上传音频成功 serverId: ' + serverId);
+
+          // TODO 将 serverId 发给自己的后台，返回 {score: 77, text: [html] } 的 JSON
+          // 如果发送后台失败还要 removeLastDialogue
+          Control.updateLastDialogue();
+        });
+
+        // 保存数据
+        Map[id] = {elem: elem, voice: voice};
+      },
+      removeLastDialogue: function() {
+        var last = getLast();
+        var id = last.id;
+        if (Map[id]) {
+          Map[id].voice.off();
+          Map[id] = null;
+          delete Map[id];
+        }
+        wraper.removeChild(last);
+        last = null;
+
+        canRecord = true;
+      },
+      updateLastDialogue: function() {
+        var last = getLast(),
+          id = last.id;
+        if (!Map[id]) return ;
+
+        var elem = Map[id].elem;
+        var article = Utils._('article', elem);
+        article.classList.remove('loading');
+        article.innerHTML = 'TODO';
+
+        canRecord = true;
+      },
+    };
+
+    return Control;
+  })();
+
 
 
   // 录音
-  click(elemRecord, function() {
-    Wechat.recordVoice({appId: APPID}, {
-      success: function(data) {
-        voice = new Wechat.Voice(APPID, data.localId);
-      }
-    });
-  });
+  click(Utils._('#record'), function() {
+    // 停止上次播放的声音
+    Control.stopLastVoice();
 
-  // 上传
-  click(elemUpload, function() {
-    if (!voice) {
-      log('Please record voice first!');
-      return false;
+    if (!canRecord) {
+      Dialog.alert('上一次录音结果还在分析中，不能再录音');
+      return ;
     }
 
-    var params = { appId: APPID, localId: voice.id };
-    Wechat.uploadVoice(params, {
-      success: function(data) {
-        serverId = data.serverId;
+    Voice.record({appId: APPID}, {
+      success: function(voice) {
+        canRecord = false;
+        Control.addDialogue('master', voice);
+      },
+      error: function(res) {
+        Dialog.alert('录音失败: ' + res.err_msg);
       }
     });
   });
-
-  // 下载
-  click(elemDownload, function() {
-    // serverId = 'B4mSUv8qciaghQO_q1VYRFIuaIY00YAHo_03aWtFp9vvUJUwFQJrZDlHZXFh3sdR';
-    if (!serverId) {
-      log('Please upload voice first!');
-      return false;
-    }
-
-    var params = { appId: APPID, serverId: serverId };
-    Wechat.downloadVoice(params, {
-      success: function(data) {
-        voice = new Wechat.Voice(APPID, data.localId);
-      }
-    });
-  });
-
-
-  click(elemControl, function() {
-    voice.play();
-  });
-
-  Wechat.on(function(arg) {
-    status({arg: arg, ctx: this}, true);
-  });
-
-
-
 
 });

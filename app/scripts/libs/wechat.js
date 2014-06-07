@@ -1,6 +1,7 @@
 /* global WeixinJSBridge */
 
-define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
+define(['libs/stat', 'libs/agent', 'libs/event'],
+  function(Stat, Agent, Event) {
   'use strict';
   // 如果不用 requirejs，需要监听下面的事件来判断 WeixinJSBridge 是否准备好了
   // document.addEventListener('WeixinJSBridgeReady',function(){});
@@ -12,19 +13,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
       'shareToFrient': ['menu:share:appmessage', 'sendAppMessage'],
       'shareToTimeline': ['menu:share:timeline', 'shareTimeline'],
       'shareToWeibo': ['menu:share:weibo', 'shareWeibo']
-    }, _G = {};
-
-  function _cache(key, val) {
-    if (!(key in _G)) _G[key] = {};
-    if (typeof val !== 'undefined') _G[key] = val;
-    return _G[key];
-  }
-  function _cacheNotExist(key, func) {
-    if (!_G[key]) {
-      _G[key] = true;
-      if (typeof func === 'function') func();
-    }
-  }
+    };
 
   function _check(cb) {
     if (typeof WeixinJSBridge === 'undefined') {
@@ -84,7 +73,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
       complete: function
     }
   */
-  function _expect(eve, err_msg) { return (new RegExp('\\s*:\\s*ok\\b', 'i')).test(err_msg); }
+  function _expect(eve, err_msg) { return (/\s*:\s*ok\b/i).test(err_msg); }
   function _invokeWrap(eve, opts, params, outterOpts) {
     params = params || {};
     outterOpts = outterOpts || {};
@@ -130,7 +119,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
 
       // is array
       var expectData = {}, expectAll;
-      if (opts.expect.length > 0) {
+      if (opts.expect && opts.expect.length > 0) {
         expectAll = typeof opts.expectAll === 'undefined' ? true : !!opts.expectAll;
         success = expectAll;
         opts.expect.forEach(function(key) {
@@ -146,7 +135,7 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
       if(opts.complete) opts.complete.apply(null, rtnArgs);
 
       if(success === true && opts.success) {
-        if (opts.expect.length > 0) rtnArgs.unshift(expectData);
+        if (opts.expect && opts.expect.length > 0) rtnArgs.unshift(expectData);
         opts.success.apply(null, rtnArgs);
       } else if(success === false && opts.error) opts.error.apply(null, rtnArgs);
     });
@@ -163,55 +152,6 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
       // 消息不能直接 invoke，必须放到on_xxx之下，否则会报 "access_control:not_allow" 错误
       invoke(eve[1], (func.call(null, eve[0], eve[1])), cb);
     });
-  }
-
-  // 事件初始化
-  function _progressInit() {
-    var cache = _cache('progress');
-    if (cache.inited) return false;
-    cache.inited = true;
-
-    cache.events = {
-      'onLocalImageUploadProgress': {resource: 'image', operate: 'upload'   },
-      'onImageDownloadProgress':    {resource: 'image', operate: 'download' },
-      'onVoiceUploadProgress':      {resource: 'voice', operate: 'upload'   },
-      'onVoiceDownloadProgress':    {resource: 'voice', operate: 'download' },
-      'onVoicePlayEnd':             {resource: 'voice', operate: 'end'      },
-      'onVoicePlayBegin':           {resource: 'voice', operate: 'begin'    }
-    };
-    cache.resources = {};
-    cache.operates = {};
-
-    var context,
-      handler = function(context) {
-
-        return function() {
-          var args = [].slice.call(arguments, 0);
-          (cache.contexts || []).forEach(function(env) {
-            if (env.resource && env.resource !== context.resource) return ;
-            if (env.operate && env.operate !== context.operate) return ;
-            if (typeof env.func !== 'function') return ;
-
-            if (env.condition) {
-              for (var k in env.condition) {
-                if (!args[0] || !(k in args[0]) || args[0][k] !== env.condition[k])
-                  return ;
-              }
-            }
-            env.func.apply(context, args);
-          });
-        };
-      };
-
-
-    for (var e in cache.events) {
-      context = cache.events[e];
-      if (context.resource) cache.resources[context.resource] = true;
-      if (context.operate) cache.operates[context.operate] = true;
-
-      on(e, handler(cache.events[e]));
-    }
-
   }
 
   var self = {
@@ -349,17 +289,8 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
     */
     playVoice: function(params, opts) {
       _invokeWrap('playVoice', {
-        mandatory: ['appId', 'localId'],
-        expect: 'serverId'
+        mandatory: ['appId', 'localId']
       }, params, opts);
-
-      // 对于一个 localId，只绑定一次 onend 事件
-      if (typeof opts.onend === 'function') {
-        var id = params.localId;
-        _cacheNotExist('playVoice.onend.' + id, function() {
-          self.on('voice', 'end', opts.onend, {localId: id});
-        });
-      }
     },
     pauseVoice: function(params, opts) {
       _invokeWrap('pauseVoice', {
@@ -382,119 +313,40 @@ define(['libs/stat', 'libs/agent'], function(Stat, Agent) {
         mandatory: ['appId', 'serverId'],
         expect: 'localId'
       }, params, opts);
-    },
-
-
-    // arguments: resource, operate, callback, condition
-
-    // condition = {key1: val1, key2: val2 ... }
-    on: function() {
-      var cache = _cache('progress');
-      if (!cache.inited) _progressInit();
-
-      var context = {}, args = [].slice.call(arguments, 0);
-      args.forEach(function(arg) {
-        var type = typeof arg;
-        if (type === 'string') {
-          if (cache.resources[arg]) context.resource = arg;
-          if (cache.operates[arg]) context.operate = arg;
-        } else if (type === 'function') {
-          context.func = arg;
-        } else if (type === 'object') {
-          context.condition = arg;
-        }
-      });
-
-      if (context.func) {
-        cache.contexts = cache.contexts || [];
-        cache.contexts.push(context);
-      }
-    },
-
-    // 取消监听
-    off: function() {
-      var cache = _cache('progress');
-      if (!cache.inited) _progressInit();
-      if (cache.contexts.length === 0) return ;
-
-      // 清除所有监听
-      if (arguments.length === 0) {
-        cache.contexts = [];
-        return ;
-      }
-
-      var context = {};
-      [].slice.call(arguments, 0).forEach(function(arg) {
-        if (typeof arg === 'string') {
-          if (cache.resources[arg]) context.resource = arg;
-          if (cache.operates[arg]) context.operate = arg;
-        } else if (typeof arg === 'function') {
-          context.func = arg;
-        } else if (typeof arg === 'object') {
-          context.condition = arg;
-        }
-      });
-
-      var k, keys = 'resource,operate,func,condition'.split(',');
-      for (var i = cache.contexts.length-1; i >= 0; --i) {
-        var ctx = cache.contexts[i],
-          notMatch = false;
-
-        for (var j = keys.length; j > 0; --j) {
-          k = keys[j-1];
-          if ((k in context) && ctx[k] !== context[k]) { notMatch = true; break; }
-        }
-        if (notMatch) continue;
-
-        cache.contexts.splice(i, 1);
-      }
     }
   };
 
+  Event.wrap(self);
 
-  var voiceEvents = {};
-  var voiceEventTrigger = function(type, args) {
-    if (voiceEvents[type]) {
-      voiceEvents[type].forEach(function(func) {
-        func.apply(null, args);
-      });
-    }
-  };
-  function Voice(appId, resourceId) {
-    if (!resourceId || !appId) throw new Error('Absence arguments for new Voice()');
-    this.id = resourceId;
-    this.appId = appId;
+  var _oldOn = self.on;
+  var onEvents = {
+      imageupload:    {old: 'onLocalImageUploadProgress'},
+      imagedownload:  {old: 'onImageDownloadProgress'},
+      voiceupload:    {old: 'onVoiceUploadProgress'},
+      voicedownload:  {old: 'onVoiceDownloadProgress'},
+      voiceend:       {old: 'onVoicePlayEnd'},
+      voicebegin:     {old: 'onVoicePlayBegin'}
+    };
+  function _handlerEvent(key) {
+    return function() {
+      Stat.local.info('Event: ' + key, arguments[0]);
+      self.trigger(key, [].slice.call(arguments, 0));
+    };
   }
-  Voice.prototype = {
-    play: function() {
-      self.playVoice({appId: this.appId, localId: this.id}, {
-        error: function(res) { voiceEventTrigger('error', ['play error', res.err_msg]); }
-      });
-    },
-    stop: function() {
-      self.stopVoice({appId: this.appId, localId: this.id}, {
-        error: function(res) { voiceEventTrigger('error', ['stop error', res.err_msg]); }
-      });
-    },
-    pause: function() {
-      self.pauseVoice({appId: this.appId, localId: this.id}, {
-        error: function(res) { voiceEventTrigger('error', ['pause error', res.err_msg]); }
-      });
-    },
-    on: function(type, func) {
-      if (!voiceEvents[type]) voiceEvents[type] = [];
-      voiceEvents[type].push(func);
-    },
-    off: function(type) {
-      if (voiceEvents[type]) {
-        voiceEvents[type] = null;
-        delete voiceEvents[type];
+  self.on = function(types) {
+    types.split(/\s+/).forEach(function(type) {
+      var key = type.split('.').shift();
+      if ((key in onEvents) && !onEvents[key].inited) {
+        onEvents[key].inited = true;
+        on(onEvents[key].old, _handlerEvent(key));
       }
-    }
+    });
+    _oldOn.apply(self, [].slice.call(arguments, 0));
   };
 
-  self.Voice = Voice;
-
+  if (Agent.platform.wechat) {
+    self.supported = true;
+  }
 
 
   return self;
