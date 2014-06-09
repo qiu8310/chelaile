@@ -3,7 +3,7 @@ define([], function() {
 
   /*
     1.
-      Event.on(type, handler);
+      Event.on(type, [data,] handler);
       Event.trigger(type, args);
 
     2.
@@ -19,6 +19,10 @@ define([], function() {
 
     注意：
       对于 wrap 的对象，要删除时最好都 obj.off() 一下
+
+    新思路：
+      可以将对应的 events 保存到 target 中，这样就不用保存 wrapObjs 了
+      由于这个 Event 用的应该也不会太广泛，所以现在这样也不错
   */
 
   var events = {};
@@ -36,17 +40,16 @@ define([], function() {
     return obj;
   }
 
-  function addEvent(type, handler, target) {
+  function addEvent(type, handler, target, data) {
     var obj = getEvents(type);
-
     if (!(CTXS in obj)) obj[CTXS] = [];
-    obj[CTXS].push([handler, target]);
+    obj[CTXS].push([handler, target, type, data]);
   }
 
 
   function delEvent(obj, handler, target) {
     for (var key in obj) {
-      if (obj[CTXS]) {
+      if (CTXS === key) {
         for (var j = obj[CTXS].length - 1; j >= 0; j--) {
           if (handler && obj[CTXS][j][0] && obj[CTXS][j][0] !== handler) continue;
           if (target && obj[CTXS][j][1] && obj[CTXS][j][1] !== target) continue;
@@ -61,28 +64,36 @@ define([], function() {
     }
   }
 
-  function trigEvent(obj, args, ctx) {
+  function trigEvent(obj, args, ctx, target) {
     for (var key in obj) {
       if (key === CTXS) {
         if (obj[key].length > 0) {
           for (var it, l = obj[key].length, i = 0; i < l; ++i ) {
             it = obj[key][i];
-            it[0].apply(ctx || it[1], args);
+            args[0].onType = it[2];
+            args[0].data = it[3];
+            if (target === it[1]) it[0].apply(ctx || it[1], args);
           }
         } else {
           delete obj[key];
         }
       } else {
-        trigEvent(obj[key], args, ctx);
+        trigEvent(obj[key], args, ctx, target);
       }
     }
   }
 
+  var Event;
+
   function _target(obj) {
-    return wrapObjs.indexOf(obj) >= 0 ? obj : window;
+    return wrapObjs.indexOf(obj) >= 0 ||
+        // for Function Class
+        wrapObjs.indexOf(obj.constructor && obj.constructor.prototype) >= 0 ?
+            obj :
+            Event;
   }
 
-  var Event = {
+  Event = {
     trigger: function(types, args, ctx) {
       var target = _target(this);
 
@@ -91,21 +102,28 @@ define([], function() {
         args = args || [];
         args.unshift({
           type: type.split('.').shift(),
-          originalType: type,
+          triggerType: type,
           target: target
         });
         // 遍历 obj 下的所有 CTXS
-        trigEvent(obj, args, ctx);
+        trigEvent(obj, args, ctx, target);
 
       });
+
+      return target;
     },
 
-    on: function(types, handler) {
+    on: function(types, data, handler) {
       var target = _target(this);
-
+      if (typeof data === 'function') {
+        handler = data;
+        data = null;
+      }
       types.split(/\s+/).forEach(function(type) {
-        addEvent.call(events, type, handler, target);
+        addEvent.call(events, type, handler, target, data);
       });
+
+      return target;
     },
 
     off: function(types, handler) {
@@ -127,6 +145,8 @@ define([], function() {
         var obj = getEvents(type);
         delEvent.call(events, obj, handler, target);
       });
+
+      return target;
     },
 
     wrap: function(obj) {

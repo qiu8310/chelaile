@@ -66,6 +66,16 @@ body > footer {
   }
 }
 
+.dialogue,
+.btns {
+  @include center-block();
+  width: 95%;
+}
+.btns {
+  text-align: center;
+  margin-top: 20px;
+}
+
 
 footer {
   .btn {

@@ -1,9 +1,7 @@
 @mixin dialogue() {
-  width: 95%;
   margin-top: 20px;
   $avatar-size: 50px;
   $pad-size: $avatar-size + 16px;
-  @include center-block();
 
   .member {
     margin-top: 15px;
@@ -35,9 +33,9 @@
         &.pass { background: $dialogue-score-pass-bg; }
         &.bad  { background: $dialogue-score-bad-bg; }
       }
-
-      .good { color: $dialogue-content-good; font-style: normal; }
-      .bad { color: $dialogue-content-bad; font-style: normal; }
+      i { font-style: normal; }
+      .good { color: $dialogue-content-good; }
+      .bad { color: $dialogue-content-bad; }
     }
 
     article::after {
@@ -106,6 +104,10 @@
 
     .result {
       margin: 10px 0 5px;
+    }
+
+    .content-en {
+      font-size: 1.4rem;
     }
 
     .content-zh {

@@ -101,6 +101,10 @@ define([], function() {
     return {
       play: play,
       stop: stop,
+      setVolume: function(val) {
+        var player = getPlayer();
+        if (player.volume) player.volume = val;
+      },
       onPlay: function(func) {
         _play_callback = func;
         return this;

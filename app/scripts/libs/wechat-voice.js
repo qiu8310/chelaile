@@ -9,14 +9,6 @@ define(['libs/event', 'libs/wechat'],
     var obj = {};
     Event.wrap(obj);
 
-    function h(a, b){console.log(b)}
-    Event.on('a.b.c', h);
-    obj.on('a.b.c', h);
-    obj.on('a.b', h);
-    obj.on('a', h);
-    //Event.off();
-    obj.trigger('a.b', ['a.b']);
-
 
     /*
       attribute:

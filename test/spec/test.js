@@ -16,6 +16,7 @@ function testPropertyAndType(Obj, property, type, label) {
 
 
 require([
+  'testEvent',
   'testEnv',
   'testAgent',
   'testUtils'

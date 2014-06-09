@@ -1,3 +1,14 @@
+require.config({
+    paths: {
+        zepto: '../bower_components/zepto/zepto',
+        jquery: '../bower_components/jquery/jquery',
+        hammer: '../bower_components/hammerjs/hammer'
+    },
+    shim: {
+      jquery: { exports: 'jQuery' },
+      zepto: { exports: 'Zepto' }
+    }
+});
 
 require([
   'libs/stat',
@@ -5,6 +16,7 @@ require([
   'libs/utils',
   'libs/dialog',
   'libs/agent',
+  'libs/ajax',
   'libs/audio-player'],
   function(
     Stat,
@@ -12,10 +24,12 @@ require([
     Utils,
     Dialog,
     Agent,
+    ajax,
     Audio) {
   'use strict';
-
-  var APPID = 'wx9fce185521717341'; // 微信提供的一个测试 ID
+  window.ajax = ajax;
+  Audio.setVolume(1.0);
+  var APPID = 'wxfc46fc8cda06764a'; // 微信提供的一个测试 ID
 
   if (!Agent.platform.wechat) {
     Dialog.alert('请在微信中浏览');
@@ -32,13 +46,14 @@ require([
   window.onerror = function() { Debug.error(arguments, true); };
 
 
+  var elemRecord = Utils._('#record');
 
-  var canRecord = true; // 是否可以录音，上一次的结果没返回之前一直都不能录
 
   var Control = (function() {
     var wraper = Utils._('.dialogue');
 
     var Map = {};
+    var dialogueCount = 0;
 
     function getLast() {
       var last = wraper.lastChild;
@@ -92,10 +107,11 @@ require([
       stopLastVoice: stopLastControl,
       addDialogue: function(type, voice) {
         var elem, tpl = '<div class="avatar">' +
-                    '<img src="images/avatar_' + type + '.png">' +
+                    '<img src="images/no-hash/avatar_' + type + '.png">' +
                     '<div class="wx-audio-control"></div>' +
                 '</div><article class="loading"><i></i><i></i><i></i></article>';
         elem = document.createElement('div');
+        dialogueCount += 0.5;
 
         var id = voice.id;
         elem.id = id;
@@ -143,7 +159,7 @@ require([
         wraper.removeChild(last);
         last = null;
 
-        canRecord = true;
+        dialogueCount -= 0.5;
       },
       updateLastDialogue: function() {
         var last = getLast(),
@@ -152,31 +168,57 @@ require([
 
         var elem = Map[id].elem;
         var article = Utils._('article', elem);
-        article.classList.remove('loading');
-        article.innerHTML = 'TODO';
 
-        canRecord = true;
+        ajax({
+          url: 'http://staging-wx.llsapp.com/score?wechat_id=1&media_id=' + Map[id].voice.serverId,
+          type: 'POST',
+          dataType: 'json',
+          cache: false,
+          success: function(data) {
+            article.classList.remove('loading');
+            article.innerHTML = '<label class="pass">' + data.score + '</label>' +
+                    '<p class="result">' + data.score_detail + '</p>';
+            dialogueCount += 0.5;
+            elemRecord.innerHTML = '点击再试一次';
+            Debug.success(data);
+          },
+          error: function() {
+            Dialog.alert('分析数据失败');
+            Debug.error(arguments[1]);
+            Control.removeLastDialogue();
+          }
+        });
+
+
       },
+      getDialogueCount: function() {
+        return dialogueCount;
+      }
     };
 
     return Control;
   })();
 
 
+  // 1 秒后自动播放音频
+  var autoPlayTimer = setTimeout(function() {
+    //var elem = Utils._('.audio-control');
+    //if(elem.click) elem.click();
+  }, 1000);
 
   // 录音
-  click(Utils._('#record'), function() {
+  click(elemRecord, function() {
     // 停止上次播放的声音
     Control.stopLastVoice();
+    clearTimeout(autoPlayTimer);
 
-    if (!canRecord) {
-      Dialog.alert('上一次录音结果还在分析中，不能再录音');
+    if (/\.5$/.test(Control.getDialogueCount().toString())) {
+      Dialog.alert('上一次录音结果还在分析中，请稍后');
       return ;
     }
 
     Voice.record({appId: APPID}, {
       success: function(voice) {
-        canRecord = false;
         Control.addDialogue('master', voice);
       },
       error: function(res) {

@@ -42,7 +42,10 @@ module.exports = function (grunt) {
             },
             jshint: {
                 files: ['<%= jshint.files %>'],
-                tasks: ['jshint']
+                tasks: ['jshint'],
+                options: {
+                    livereload: LIVERELOAD_PORT
+                }
             },
             livereload: {
                 options: {
@@ -277,6 +280,7 @@ module.exports = function (grunt) {
                         '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
                         '!<%= yeoman.dist %>/images/wechat-logo.png',
                         '!<%= yeoman.dist %>/images/stars/*.*', // stars 不打包，不会变的图片
+                        '!<%= yeoman.dist %>/images/no-hash/*.*', // no-hash 中的图片不打包，不会变的图片
                         '<%= yeoman.dist %>/styles/fonts/*',
                         '<%= yeoman.dist %>/*.{ico,png}'
                     ]
@@ -374,6 +378,11 @@ module.exports = function (grunt) {
                     src: [
                         'generated/*'
                     ]
+                }, {
+                    expand: true,
+                    src: ['asset_test/{,*/}*.*'],
+                    cwd: '<%= yeoman.app %>',
+                    dest: '<%= yeoman.dist %>'
                 }]
             },
 
@@ -502,7 +511,7 @@ module.exports = function (grunt) {
         if (target === 'build') {   // 命令行上查看结果
             tasks.push('mocha');
         } else {    // 浏览器上查看结果
-            tasks.push('open:server');
+            //tasks.push('open:server');
             tasks.push('watch');
         }
         grunt.task.run(tasks);

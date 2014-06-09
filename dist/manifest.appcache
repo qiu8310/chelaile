@@ -1,23 +1,17 @@
 CACHE MANIFEST
-# Time: Thu Jun 05 2014 17:56:25 GMT+0800 (CST)
+# Time: Mon Jun 09 2014 17:10:26 GMT+0800 (CST)
 
 CACHE:
-scripts/de92f9d1.weixin.js
-styles/02389410.main.css
+scripts/c94e8f8d.weixin.js
+styles/18923f69.main.css
 bower_components/requirejs/require.js
-images/305ac53c.bg.png
-images/390fe4b5.progress.png
-images/60a00ded.bg-text.png
-images/75858214.icon-time.png
-images/c1fbd521.leader-bg.png
-images/c2b238f6.checked.png
-images/e8049246.game-banner.png
+images/no-hash/avatar_guest.png
+images/no-hash/avatar_master.png
 images/ui/329a04bf.audio-play.png
 images/ui/684aef0b.icon-back.png
 images/ui/954971e4.lls-ad.png
 images/ui/96c3d7c5.audio-stop.png
 images/ui/b5a66153.icon-vote.png
-images/wechat-logo.png
 9176acc1.favicon.ico
 
 NETWORK:

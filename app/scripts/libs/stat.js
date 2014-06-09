@@ -88,9 +88,11 @@ define(['libs/env'], function(Env) {
   Stat.local = {};
 
   function _log(elem, msg, append) {
-    var key = elem.innerText ? 'innerText' : 'textContent';
-    if (append || append === undefined) elem[key] = elem[key] + '\r\n' + msg;
-    else elem[key] = msg;
+    if (/\bdebug=true\b/i.test(location.search)) {
+      var key = elem.innerText ? 'innerText' : 'textContent';
+      if (append || append === undefined) elem[key] = elem[key] + '\r\n' + msg;
+      else elem[key] = msg;
+    }
   }
 
   var wrap = function(key) {
