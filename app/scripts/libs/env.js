@@ -1,4 +1,4 @@
-define(function() {
+define(['libs/url-parser'], function(parse) {
   /**
    *  当前的环境:
    *    isStaging   测试环境
@@ -9,7 +9,12 @@ define(function() {
 
   var
     env = {},
-    host = location.host;
+    url = parse(location.href),
+    host = url.host;
+
+
+  env.url = url;
+
 
   // staging 环境
   env.isStaging = host === 'staging.llsapp.com';

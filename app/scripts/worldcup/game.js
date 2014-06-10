@@ -27,7 +27,7 @@ define(
       }
       keys = utils.shuffle(keys).slice(0, CARD_LENGTH);
 
-      utils.each(keys, function(key) {
+      keys.forEach(function(key) {
         html.push('<li><span>' + stars[key].name + '</span></li>');
       });
       utils._('.cards ul', container).innerHTML = html.join('');
@@ -45,7 +45,7 @@ define(
 
         // 表单信息
         var gender = utils._('#woman').checked ? 'woman' : 'man',
-          username = utils.trim(nameInput.value);
+          username = nameInput.value.trim();
 
         // 结果信息
         star.result = utils.render(Data.game_result[gender], {username: username, starname: star.name});
@@ -91,7 +91,7 @@ define(
     }
 
     function canGame() {
-      return (utils.trim(nameInput.value)).length >= 1;
+      return (nameInput.value.trim()).length >= 1;
     }
 
     if (controller) {

@@ -17,7 +17,8 @@ require([
   'libs/dialog',
   'libs/agent',
   'libs/ajax',
-  'libs/audio-player'],
+  'libs/audio-player',
+  'libs/user-media'],
   function(
     Stat,
     Voice,
@@ -43,8 +44,6 @@ require([
     });
   }
   var Debug = Stat.local;
-  window.onerror = function() { Debug.error(arguments, true); };
-
 
   var elemRecord = Utils._('#record');
 
@@ -181,7 +180,7 @@ require([
                     '<p class="result">' + data.score_detail + '</p>';
             dialogueCount += 0.5;
             elemRecord.innerHTML = '点击再试一次';
-            Debug.success(data);
+            Debug.success('分析数据成功 Score: ' + data.score);
           },
           error: function() {
             Dialog.alert('分析数据失败');

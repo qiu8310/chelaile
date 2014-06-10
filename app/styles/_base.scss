@@ -97,7 +97,7 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 
 
 // debug
-.debug {
+.__debug {
   width: 90%;
   @include center-block();
   padding-bottom: 60px;
@@ -116,7 +116,7 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
   }
   .log::before     {  @extend .label-primary; content: '#log';    }
   .success::before {  @extend .label-success; content: '#success';}
-  .warning::before {  @extend .label-warning; content: '#warning';}
+  .warn::before    {  @extend .label-warning; content: '#warn';}
   .info::before    {  @extend .label-info;    content: '#info';   }
   .error::before   {  @extend .label-danger;  content: '#error';  }
 }

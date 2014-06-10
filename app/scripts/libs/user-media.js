@@ -1,4 +1,4 @@
-define([], function() {
+define(['libs/stat'], function(Stat) {
   'use strict';
 
   navigator.getUserMedia =  navigator.getUserMedia ||
@@ -15,6 +15,8 @@ define([], function() {
     supported: !!navigator.getUserMedia,
     get: navigator.getUserMedia
   };
+
+
 
 
   return UserMedia;

@@ -7,6 +7,11 @@ define(function() {
 
   //var reg_word = /^[\w]+$/;
 
+  /*
+    很多函数我都没写了，像 forEach、indexOf、trim、isArray...
+    当作它们默认支持吧
+    详情 es5 的浏览器支持情况: http://kangax.github.io/compat-table/es5/
+  */
   var self = {
     _: function(selector, ctx) {
       return (ctx || document).querySelector(selector);
@@ -14,23 +19,6 @@ define(function() {
 
     __: function(selector, ctx) {
       return [].slice.call((ctx || document).querySelectorAll(selector));
-    },
-
-    each: function(arr, cb) {
-      for (var i = 0; i < arr.length; ++i) {
-        cb(arr[i], i);
-      }
-    },
-
-    indexOf: function(arr, item) {
-      if (arr.indexOf) {
-        return arr.indexOf(item);
-      } else {
-        for (var i = 0; i < arr.length; i++) {
-          if (arr[i] === item) return i;
-        }
-        return -1;
-      }
     },
 
     /**
@@ -95,16 +83,12 @@ define(function() {
       return Object.prototype.toString.call(o);
     },
 
-    trim: function(str) {
-      return str.replace(/^\s+|\s+$/g, '');
-    },
-
     /**
      *  监听 input 值变化，变化就执行 cb 函数
      */
     onInputChange: function(inputElem, cb) {
       function change() {
-        if (cb) cb(self.trim(inputElem.value));
+        if (cb) cb(inputElem.value.trim());
       }
       inputElem.addEventListener('change', change, false);
       inputElem.addEventListener('keyup', change, false);
@@ -112,6 +96,7 @@ define(function() {
 
     /**
      *  escape html
+     *  另一种方案是正则替换，但这种更快点
      */
     escapeHTML: function(str) {
       var elem = document.createElement('div');
@@ -144,8 +129,8 @@ define(function() {
         // 循环替换 #{&repeat key tpl}， obj[key] 需要是个数组
         tpl = tpl.replace(/#\{&repeat\s+([\w\-_]+)\s+([^\}]*?)\}/g, function(_, key, repeat_tpl) {
            var rtn = '';
-          if ((key in obj) && self.toString(obj[key]) === '[object Array]') {
-            self.each(obj[key], function(it) {
+          if ((key in obj) && Array.isArray(obj[key])) {
+            obj[key].forEach(function(it) {
               rtn += self.render(repeat_tpl, it, true, escape_html);
             });
           }
@@ -200,7 +185,7 @@ define(function() {
      *  取模
      */
     circle: function(index, length) {
-        return (length + (index % length)) % length;
+      return (length + (index % length)) % length;
     }
 
   };

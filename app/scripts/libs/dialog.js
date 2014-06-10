@@ -11,8 +11,6 @@ define(function() {
    */
   'use strict';
 
-  function each (arr, cb) {var i,l; for (i=0,l=arr.length; i<l; ++i) cb(arr[i], i); }
-
   var MASK_CLASS_NAME = '__dialog-mask',
     LOCK_CLASS_NAME = '__dialog-lock';
 
@@ -63,7 +61,7 @@ define(function() {
     mask.style.display = 'none';
 
     container.style.height = height;
-    each(['left', 'top', 'right', 'bottom'], function(key) { container.style[key] = '0'; });
+    ['left', 'top', 'right', 'bottom'].forEach(function(key) { container.style[key] = '0'; });
 
     this.container = container;
     this.mask = mask;

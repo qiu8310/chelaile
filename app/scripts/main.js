@@ -105,7 +105,7 @@ require([
                 Act = data && data.activity;
                 User = data && data.user;
                 Event = Act.events && Act.events[0] || {};
-                var status = Event && utils.indexOf(statuses, Event.type) > -1 ? Event.type : defaultStatus;
+                var status = Event && statuses.indexOf(Event.type) > -1 ? Event.type : defaultStatus;
                 status = statusMap[status];
                 Event._status = status;
                 if (status === 'group') {

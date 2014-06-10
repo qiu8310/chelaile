@@ -156,6 +156,15 @@ define([], function() {
       });
       wrapObjs.push(obj);
       return obj;
+    },
+
+    unwrap: function(obj) {
+      var index = wrapObjs.indexOf(obj);
+      if (index < 0) return ;
+      delete obj.trigger;
+      delete obj.on;
+      delete obj.off;
+      wrapObjs.splice(index, 1);
     }
   };
 

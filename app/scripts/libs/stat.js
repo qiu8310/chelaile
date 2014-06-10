@@ -38,6 +38,8 @@ define(['libs/env'], function(Env) {
         myga.push(['_trackEvent', category, action, opt_label, opt_value]);
       }
 
+      Stat.local.info('GA#_trackEvent ' + category + ' ' + action);
+
       if (typeof cb === 'function') {
         // time is money
         if (myga && myga.push) {
@@ -79,56 +81,88 @@ define(['libs/env'], function(Env) {
       data.url = location.href;
       data.ua = navigator.userAgent;
 
-      Stat.log(type, 'remote message', msg, data, true);
-
+      Stat.log(type, 'remote-message', msg, data, true);
     }
   };
 
   // 本地调试
-  Stat.local = {};
+  // TODO 做个保存日志功能，将日志放到 Localstorage 中，这样页面刷新了还可以看到上次的日志
+  // TODO 字符串格式化
+  /*
+    debug
+      all      1     所有信息
+      success  1     成功信息
+      info     2     提示
+      log      3     日志
+      warn     4     警告
+      error    5     错误
 
-  function _log(elem, msg, append) {
-    if (/\bdebug=true\b/i.test(location.search)) {
+      如果 debug 指定为 数字，则表示 >= 指定的数字的级别信息都会显示出来
+      数字必须大于0，小于或等于0忽略
+  */
+  Stat.local = {};
+  (function() {
+    var debug = (Env.url.params.debug || '0').toString().toLowerCase(),
+      Map = {
+        'true':   1,
+        'yes':    1,
+        all:      1,
+        success:  2,
+        info:     3,
+        log:      4,
+        warn:     5,
+        error:    6
+      };
+
+      // 计算出整数级别
+      debug = (debug in Map) ? Map[debug] : (parseInt(debug) || 0);
+
+
+    function _log(elem, msg, append) {
       var key = elem.innerText ? 'innerText' : 'textContent';
       if (append || append === undefined) elem[key] = elem[key] + '\r\n' + msg;
       else elem[key] = msg;
     }
-  }
 
-  var wrap = function(key) {
-    var debug = document.querySelector('.debug');
-    if (!debug) {
-      debug = document.createElement('div');
-      debug.className = 'debug';
-      document.body.appendChild(debug);
-    }
-    var elem = document.createElement('div');
-    elem.className = key;
-    debug.appendChild(elem);
+    var wrap = function(key) {
 
-    return function() {
-      var args = [].slice.call(arguments, 0);
-      var msg = [], append = true;
-
-      if (typeof args[args.length - 1] === 'boolean') {
-        append = args.pop();
+      var container = document.querySelector('.__debug');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = '__debug';
+        document.body.appendChild(container);
       }
+      var elem = document.createElement('div');
+      elem.className = key;
+      container.appendChild(elem);
 
-      args.forEach(function(arg) {
-        if (typeof arg === 'object') {
-          try { arg = JSON.stringify(arg);
-          } catch(e) { arg = arg.toString(); }
+      return function() {
+        if (debug < 1 || debug > Map[key]) return false;
+
+        var args = [].slice.call(arguments, 0);
+        var msg = [], append = true;
+
+        if (typeof args[args.length - 1] === 'boolean') {
+          append = args.pop();
         }
-        msg.push(arg);
-      });
 
-      _log(elem, msg.join(', '), append);
+        args.forEach(function(arg) {
+          if (typeof arg === 'object') {
+            try { arg = JSON.stringify(arg);
+            } catch(e) { arg = arg.toString(); }
+          }
+          msg.push(arg);
+        });
+
+        _log(elem, msg.join(', '), append);
+      };
     };
-  };
-  ['success', 'warning', 'log', 'info', 'error'].forEach(function(key) {
-    Stat.local[key] = wrap(key);
-  });
 
+    for (var key in Map) {
+      if (Map[key] < 2) continue;
+      Stat.local[key] = wrap(key);
+    }
+  })();
 
   // 反馈错误到服务器
   window.onerror = function (msg, src, line) {
@@ -141,7 +175,9 @@ define(['libs/env'], function(Env) {
         msg = eve.message ? (eve.name + ': ' + eve.message) : eve.toString();
       }
 
-      Stat.log('error', 'appevent', msg, {
+      Stat.local.error(msg, src, line);
+
+      Stat.log('error', 'js-error', msg, {
         url: location.href,
         src: src,
         line: line,

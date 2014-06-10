@@ -33,8 +33,8 @@ define(function() {
         source: url,
         protocol: a.protocol.replace(':',''),
         host: a.hostname,
-        port: a.port,
-        query: a.search,
+        port: a.port ? parseInt(a.port, 10) : 80,
+        query: a.search.replace('?', ''),
         params: (function(){
             var ret = {},
                 seg = a.search.substr(1).split('&'),
@@ -48,7 +48,7 @@ define(function() {
         })(),
         file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
         hash: a.hash.replace('#',''),
-        path: a.pathname.replace(/^([^\/])/,'/$1')
+        path: a.pathname.replace(/^([^\/])/,'/$1') // pathname 最前面补上 / (如果没有的话)
     };
   }
 
