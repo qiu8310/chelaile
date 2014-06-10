@@ -29,7 +29,7 @@ require([
   'use strict';
   window.ajax = ajax;
   Audio.setVolume(1.0);
-  var APPID = 'wxfc46fc8cda06764a'; // 微信提供的一个测试 ID
+  var APPID = 'wxfc46fc8cda06764a';
 
   if (!Agent.platform.wechat) {
     Dialog.alert('请在微信中浏览');
@@ -176,7 +176,8 @@ require([
           cache: false,
           success: function(data) {
             article.classList.remove('loading');
-            article.innerHTML = '<label class="pass">' + data.score + '</label>' +
+            var labelClass = data.score >= 80 ? 'good' : (data.score >= 60 ? 'pass' : 'bad');
+            article.innerHTML = '<label class="' + labelClass + '">' + data.score + '</label>' +
                     '<p class="result">' + data.score_detail + '</p>';
             dialogueCount += 0.5;
             elemRecord.innerHTML = '点击再试一次';

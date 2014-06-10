@@ -1,6 +1,7 @@
 @mixin dialogue() {
   margin-top: 20px;
   $avatar-size: 50px;
+  $content-arrow: 9px;
   $pad-size: $avatar-size + 16px;
 
   .member {
@@ -19,6 +20,7 @@
       background: $master-color;
     }
 
+
     article {
       color: $dialogue-content-normal;
       label {
@@ -29,10 +31,11 @@
         line-height: 38px;
         color: white;
 
-        &.good { background: $dialogue-score-good-bg; }
-        &.pass { background: $dialogue-score-pass-bg; }
-        &.bad  { background: $dialogue-score-bad-bg; }
+        &.good { background: $dialogue-score-good-bg; color: white; }
+        &.pass { background: $dialogue-score-pass-bg; color: white; }
+        &.bad  { background: $dialogue-score-bad-bg; color: white; }
       }
+      font-size: 1.6rem;
       i { font-style: normal; }
       .good { color: $dialogue-content-good; }
       .bad { color: $dialogue-content-bad; }
@@ -40,10 +43,10 @@
 
     article::after {
       top: 15px;
-      right: -10px;
-      border-left: 10px solid $master-color;
-      border-top: 10px solid $main-color;
-      border-bottom: 10px solid $main-color;
+      right: - $content-arrow;
+      border-left: $content-arrow solid $master-color;
+      border-top: $content-arrow solid $main-color;
+      border-bottom: $content-arrow solid $main-color;
     }
 
   }
@@ -62,10 +65,10 @@
 
     article::after {
       top: 15px;
-      left: -10px;
-      border-right: 10px solid $guest-color;
-      border-top: 10px solid $main-color;
-      border-bottom: 10px solid $main-color;
+      left: - $content-arrow;
+      border-right: $content-arrow solid $guest-color;
+      border-top: $content-arrow solid $main-color;
+      border-bottom: $content-arrow solid $main-color;
     }
   }
 
@@ -93,7 +96,7 @@
     display: block;
     width: 100%;
     min-height: $avatar-size;
-    border-radius: 16px;
+    border-radius: 12px;
     padding: 12px;
 
     h1 {
@@ -107,7 +110,7 @@
     }
 
     .content-en {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
     }
 
     .content-zh {

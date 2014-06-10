@@ -83,7 +83,7 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 // 音频播放器基本样式
 .audio-control {
   cursor: pointer;
-  background: url(../images/ui/audio-play.png) no-repeat center center;
+  background: rgba(0,0,0,.4) url(../images/ui/audio-play.png) no-repeat center center;
   background-size: 100%;
 }
 .audio-control.stop {
