@@ -1,9 +1,10 @@
-@import 'partial';
-@import 'ui/header';
-@import 'ui/btn';
-@import 'ui/label';
-@import 'ui/loading';
-@import 'ui/dialogue';
-@import 'ui/dialog';
-@import 'ui/lucky-plate';
-@import 'ui/leaderboard';
+@import 'partial';        // 基础样式
+@import 'ui/header';      // 头部样式 ＝> 那种精典的左中右三栏
+@import 'ui/btn';         // 按钮样式
+@import 'ui/label';       // bootstrap 中的 label，觉得它不错
+@import 'ui/loading';     // 加载相关的组件，后期逐渐添加新的
+@import 'ui/dialogue';    // 英语流利说经典的对话框组件
+@import 'ui/dialog';      // 弹窗组件
+@import 'ui/lucky-plate'; // 转盘样式
+@import 'ui/leaderboard'; // 排行榜样式
+@import 'ui/colors';      // 一些经曲的颜色，优于传统的

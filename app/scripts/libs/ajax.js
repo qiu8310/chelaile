@@ -1,13 +1,19 @@
 define(['libs/utils'], function(utils) {
   'use strict';
+  // XHR version 2
+  // 新增加了几个返回的数据类型:   text arraybuffer blob 或 document，默认 text
+  // 同时增加了几个发送的数据类型: FormData Blog ArrayBuffer
+  // http://www.html5rocks.com/zh/tutorials/file/xhr2/
+
   var empty = function(){},
       //rscript = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
       scriptTypeRE = /^(?:text|application)\/javascript/i,
       xmlTypeRE = /^(?:text|application)\/xml/i,
       jsonType = 'application/json',
       htmlType = 'text/html',
-      blankRE = /^\s*$/;
+      blankRE = /^\s*$/,
 
+      XHR2Types = ['arraybuffer', 'blob', 'document'];
 
   function ajaxBeforeSend(xhr, settings) {
     var context = settings.context;
@@ -65,6 +71,8 @@ define(['libs/utils'], function(utils) {
       xmlTypeRE.test(mime) && 'xml' ) || 'text';
   }
 
+  // TODO: 支持关联数组的形式，如 foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
+  // 目前没实现也可以自己手动实现 flatten
   function serializeData(options) {
     if (options.processData && options.data && (typeof options.data) !== 'string') {
       var k, params = [];
@@ -83,8 +91,12 @@ define(['libs/utils'], function(utils) {
 
 
   function ajax(options) {
-
     var settings = utils.extend({}, config, options || {});
+    // 是否是 XHR 2 的返回类型，及发送类型
+    var isXHR2ReturnType, isXHR2SendType;
+
+    var dataType = settings.dataType;
+
 
     // 默认使用当前 url
     if (!settings.url) settings.url = window.location.toString();
@@ -93,14 +105,25 @@ define(['libs/utils'], function(utils) {
     if (!settings.crossDomain) settings.crossDomain = /^([\w-]+:)?\/\/([^\/]+)/.test(settings.url) &&
       RegExp.$2 !== window.location.host;
 
+    // XHR 2 可以直接发送 FormData、Blog、File、ArrayBuffer 等
+    if (  settings.data &&
+          (typeof settings.data) !== 'string' &&
+          utils.toString(settings.data) !== '[object Object]') {
+      isXHR2SendType = true;
+    } else {
+      serializeData(settings);
+    }
 
-    serializeData(settings);
+    // 支持设置 responseType 肯定要支持 indexOf，所以这里不写兼容版的 indexOf
+    if (XHR2Types.indexOf && XHR2Types.indexOf(dataType) >= 0) {
+      xhr.responseType = dataType;
+      isXHR2ReturnType = true;
+    }
+
     if (settings.cache === false) settings.url = utils.appendQuery(settings.url, '_=' + Date.now());
 
-    var dataType = settings.dataType;
-
     var mime = settings.accepts[dataType],
-        headers = { },
+        headers = {},
         setHeader = function(name, value) { headers[name.toLowerCase()] = [name, value]; },
         protocol = /^([\w-]+:)\/\//.test(settings.url) ? RegExp.$1 : window.location.protocol,
         xhr = settings.xhr(),
@@ -116,7 +139,8 @@ define(['libs/utils'], function(utils) {
       if(xhr.overrideMimeType) xhr.overrideMimeType(mime);
     }
 
-    if (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() !== 'GET'))
+    // XHR 2 不需要设置 Header，如果是上传 File，会自动加上 multipart/form-data
+    if (!isXHR2SendType && (settings.contentType || (settings.contentType !== false && settings.data && settings.type.toUpperCase() !== 'GET')))
       setHeader('Content-Type', settings.contentType || 'application/x-www-form-urlencoded');
 
     var name;
@@ -130,13 +154,20 @@ define(['libs/utils'], function(utils) {
         var result, error = false;
         if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304 || (xhr.status === 0 && protocol === 'file:')) {
           dataType = dataType || mimeToDataType(settings.mimeType || xhr.getResponseHeader('content-type'));
-          result = xhr.responseText;
+
+          // 取 xhr 1/2 的返回值
+          result = isXHR2ReturnType ? xhr.response : xhr.responseText;
 
           try {
             // http://perfectionkills.com/global-eval-what-are-the-options/
-            if (dataType === 'script')    (1,eval)(result);
-            else if (dataType === 'xml')  result = xhr.responseXML;
-            else if (dataType === 'json') result = blankRE.test(result) ? null : JSON.parse(result);
+            switch (dataType) {
+              case 'script':  (1,eval)(result); break;
+              case 'xml':     result = xhr.responseXML; break;
+              case 'json':    result = blankRE.test(result) ? null : JSON.parse(result); break;
+              //case 'arraybuffer':  break;
+              //case 'blob':         break;
+              //case 'document':     break;
+            }
           } catch (e) { error = e; }
 
           if (error) ajaxError(error, 'parsererror', xhr, settings);
@@ -164,7 +195,6 @@ define(['libs/utils'], function(utils) {
         xhr.abort();
         ajaxError(null, 'timeout', xhr, settings);
       }, settings.timeout);
-
     // avoid sending empty string (#319)
     xhr.send(settings.data ? settings.data : null);
     return xhr;

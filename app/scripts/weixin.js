@@ -33,7 +33,7 @@ require([
   var APPID = 'wxfc46fc8cda06764a';
 
   if (!Agent.platform.wechat) {
-    Dialog.alert('请在微信中浏览');
+    // Dialog.alert('请在微信中浏览');
     return ;
   }
 
