@@ -13,18 +13,41 @@ $spin-pan-bg-color: #3D9970 !default;
   100%: { transform: rotate(0deg);   }
 }
 
-// 切换 .spin-pan::after
-@keyframes spin-pan-after {
+@keyframes spin-change-color {
   0%: {
     background-color: $spin-pan-bg-color;
+  }
+  50%: {
+    background-color: $spin-pan-fg-color;
+  }
+}
+
+@keyframes spin-change-color-sin {
+  0%: {
+    background-color: $spin-pan-bg-color;
+  }
+  25%: {
+    background-color: $spin-pan-fg-color;
+  }
+  50%: {
+    background-color: $spin-pan-fg-color;
+  }
+  75%: {
+    background-color: $spin-pan-bg-color;
+  }
+}
+
+
+// 切换左右方向
+@keyframes spin-change-side {
+  0%: {
     transform: rotate(0deg);
   }
-  50%,
-  100%: {
-    background-color: $spin-pan-fg-color;
+  50%: {
     transform: rotate(180deg);
   }
 }
+
 
 // 三个点的 loading
 @mixin loading($loading-size) {
@@ -63,6 +86,7 @@ $spin-pan-bg-color: #3D9970 !default;
   border-radius: 50%;
 
   background-color: $fg-color;
+  animation: spin-change-color $anim-time*2 infinite step-end $anim-time; // 每隔一圈改变一次颜色[反向]
 
   &::before,
   &::after {
@@ -78,15 +102,18 @@ $spin-pan-bg-color: #3D9970 !default;
     border-radius: $half-pan-size 0 0 $half-pan-size;
 
     transform-origin: right center;
-    animation: spin-circle $anim-time infinite linear;
+    animation: spin-circle $anim-time infinite linear,
+               spin-change-color $anim-time*2 infinite step-end; // 每隔一圈改变一次颜色
   }
 
   &::after {
+    //display: none;
     left: $half-pan-size;
     border-radius: 0 $half-pan-size $half-pan-size 0;
 
     transform-origin: left center;
-    animation: spin-pan-after $anim-time infinite steps(1, end);
+    animation: spin-change-color-sin $anim-time*2 infinite step-end,
+              spin-change-side $anim-time infinite step-end;
   }
 }
 
