@@ -4,6 +4,29 @@
   100%  {}
 }
 
+$spin-pan-fg-color: #01FF70 !default;
+$spin-pan-bg-color: #3D9970 !default;
+
+// 逆时针旋转
+@keyframes spin-circle {
+  0%:   { transform: rotate(360deg); }
+  100%: { transform: rotate(0deg);   }
+}
+
+// 切换 .spin-pan::after
+@keyframes spin-pan-after {
+  0%: {
+    background-color: $spin-pan-bg-color;
+    transform: rotate(0deg);
+  }
+  50%,
+  100%: {
+    background-color: $spin-pan-fg-color;
+    transform: rotate(180deg);
+  }
+}
+
+// 三个点的 loading
 @mixin loading($loading-size) {
   width: 130px !important;
   float: right;
@@ -24,4 +47,102 @@
   i:nth-child(1) {-webkit-animation-delay: 0.33s;}
   i:nth-child(2) {-webkit-animation-delay: 0.77s;}
   i:nth-child(3) {-webkit-animation-delay: 0.99s;}
+}
+
+/*
+  旋转饼状图
+  只需要一个 DIV 加上次 mixin 的样式
+*/
+@mixin spin-pan($pan-size, $fg-color, $bg-color, $anim-time: .8s) {
+  $half-pan-size: $pan-size / 2;
+
+  position: relative;
+  display: block;
+  width: $pan-size;
+  height: $pan-size;
+  border-radius: 50%;
+
+  background-color: $fg-color;
+
+  &::before,
+  &::after {
+    position: absolute;
+    display: block;
+    content: " ";
+    width: $half-pan-size;
+    height: $pan-size;
+    background-color: $bg-color;
+  }
+
+  &::before {
+    border-radius: $half-pan-size 0 0 $half-pan-size;
+
+    transform-origin: right center;
+    animation: spin-circle $anim-time infinite linear;
+  }
+
+  &::after {
+    left: $half-pan-size;
+    border-radius: 0 $half-pan-size $half-pan-size 0;
+
+    transform-origin: left center;
+    animation: spin-pan-after $anim-time infinite steps(1, end);
+  }
+}
+
+/*
+  旋转的渐变的线条
+  需要DOM结构[slim]:
+    div.spin-line
+      i
+*/
+@mixin spin-line($line-size, $line-border, $line-start-color, $bg-color: white, $anim-time: .8s) {
+
+  $line-mid-color: lighten($line-start-color, 20%);
+  $line-end-color: lighten($line-start-color, 100%);
+  $half-line-size: $line-size / 2;
+
+  position: relative;
+  width: $line-size;
+  height: $line-size;
+
+
+  &::before,
+  &::after {
+    content: " ";
+    display: block;
+    position: absolute;
+    background: $bg-color;
+    width: $half-line-size;
+    height: $line-size;
+  }
+  // 右半圆，从上到下渐变
+  &::after {
+    background-image: linear-gradient(top, $line-start-color 0%, $line-mid-color 100%);
+    right: 0;
+    border-radius: 0 $half-line-size $half-line-size 0;
+  }
+
+  // 左半圆，从下到上渐变
+  &::before {
+    background-image: linear-gradient(bottom, $line-mid-color 0%, $line-end-color 100%);
+    left: 0;
+    border-radius: $half-line-size 0 0 $half-line-size;
+  }
+
+  // 里面的一层 mask
+  & > i {
+    display: block;
+    width: $line-size - $line-border;
+    height: $line-size - $line-border;
+    border-radius: 50%;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    margin: auto;
+    z-index: 10;
+    background-color: $bg-color;
+  }
+
+  // 旋转
+  animation: spin-circle $anim-time infinite linear;
 }
