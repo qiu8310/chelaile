@@ -1,0 +1,33 @@
+/*
+  公用的 keyframes
+*/
+
+
+// 逆时针旋转
+$v-kfs-anti-circle: false;
+@mixin kfs-anti-circle {
+  @if not $v-kfs-anti-circle {
+
+    @keyframes kfs-anti-circle {
+      0%:   { transform: rotate(360deg); }
+      100%: { transform: rotate(0deg);   }
+    }
+
+    $v-kfs-anti-circle: true;
+  }
+}
+
+
+// 顺时针旋转
+$v-kfs-circle: false;
+@mixin kfs-circle {
+  @if not $v-kfs-circle {
+
+    @keyframes kfs-circle {
+      0%:   { transform: rotate(0deg); }
+      100%: { transform: rotate(360deg); }
+    }
+
+    $v-kfs-circle: true;
+  }
+}

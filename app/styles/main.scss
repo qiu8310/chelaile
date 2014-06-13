@@ -27,9 +27,8 @@ body {
 }
 
 // loading 组件
-article.loading {
-  @include loading(8px);
-}
+@include loading('article.loading');
+
 
 
 body > header {
@@ -83,6 +82,4 @@ footer {
     width: 150px;
   }
 }
-
-
 
