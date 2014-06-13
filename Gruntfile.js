@@ -232,13 +232,14 @@ module.exports = function (grunt) {
             options: {
                 sassDir: '<%= yeoman.app %>/styles',
                 cssDir: '.tmp/styles',
-                generatedImagesDir: '.tmp/images/generated',
+                spriteLoadPath: '<%= yeoman.app %>/sprites',
+                generatedImagesDir: '<%= yeoman.dist %>/images/gen',
                 imagesDir: '<%= yeoman.app %>/images',
                 javascriptsDir: '<%= yeoman.app %>/scripts',
                 /*fontsDir: '<%= yeoman.app %>/styles/fonts',*/
                 importPath: '<%= yeoman.app %>/bower_components',
                 httpImagesPath: '/images',
-                httpGeneratedImagesPath: '/images/generated',
+                httpGeneratedImagesPath: '/images/gen',
                 httpFontsPath: '/styles/fonts',
                 relativeAssets: false
             },
@@ -283,6 +284,7 @@ module.exports = function (grunt) {
                         '!<%= yeoman.dist %>/images/wechat-logo.png',
                         '!<%= yeoman.dist %>/images/stars/*.*', // stars 不打包，不会变的图片
                         '!<%= yeoman.dist %>/images/no-hash/*.*', // no-hash 中的图片不打包，不会变的图片
+                        '!<%= yeoman.dist %>/images/sprites/*.*', // 自动生成的 sprites 已经加 hash 了
                         '<%= yeoman.dist %>/styles/fonts/*',
                         '<%= yeoman.dist %>/*.{ico,png}'
                     ]
@@ -378,7 +380,7 @@ module.exports = function (grunt) {
                     cwd: '.tmp/images',
                     dest: '<%= yeoman.dist %>/images',
                     src: [
-                        'generated/*'
+                        'gen/*'
                     ]
                 }, {
                     expand: true,
