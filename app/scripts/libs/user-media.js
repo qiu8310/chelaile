@@ -1,4 +1,4 @@
-define(['libs/stat', 'libs/ajax'], function(Stat, ajax) {
+define(['libs/stat', 'libs/ajax'], function(Stat) {
   'use strict';
 
   var Debug = Stat.local;
@@ -13,7 +13,19 @@ define(['libs/stat', 'libs/ajax'], function(Stat, ajax) {
       BlobBuilder:  {}
     }, vendors = ['webkit', 'moz', 'ms'];
 
-    var key, item, vendorKey;
+
+    function extend(key, item) {
+      return function(vendor) {
+        var vendorKey = vendor + key.charAt(0).toUpperCase() + key.substr(1);
+        if (vendorKey in item.context) {
+          Debug.info('support ' + vendorKey);
+          item.context[key] = item.context[vendorKey];
+          return true;
+        }
+      };
+    }
+
+    var key, item;
     for (key in features) {
       item = features[key];
       item.context = item.context || window;  // 默认写入 window 对象中
@@ -22,14 +34,7 @@ define(['libs/stat', 'libs/ajax'], function(Stat, ajax) {
         Debug.info('support ' + key);
         continue;
       }
-      vendors.some(function(vendor) {
-        vendorKey = vendor + key.charAt(0).toUpperCase() + key.substr(1);
-        if (vendorKey in item.context) {
-          Debug.info('support ' + vendorKey);
-          item.context[key] = item.context[vendorKey];
-          return true;
-        }
-      });
+      vendors.some(extend(key, item));
     }
   })();
 
@@ -41,7 +46,7 @@ define(['libs/stat', 'libs/ajax'], function(Stat, ajax) {
   };
 
 
-  var fileUploadUrl = 'http://fcbst.sinaapp.com/util/cb.php';
+  //var fileUploadUrl = 'http://fcbst.sinaapp.com/util/cb.php';
 
 
   return UserMedia;

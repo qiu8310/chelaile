@@ -40,13 +40,13 @@ module.exports = function (grunt) {
                 files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
                 tasks: ['compass:server', 'autoprefixer']
             },
-            jshint: {
-                files: ['<%= jshint.files %>'],
-                tasks: ['jshint'],
-                options: {
-                    livereload: LIVERELOAD_PORT
-                }
-            },
+            // jshint: {
+            //     files: ['<%= jshint.files %>'],
+            //     tasks: ['jshint'],
+            //     options: {
+            //         livereload: LIVERELOAD_PORT
+            //     }
+            // },
             livereload: {
                 options: {
                     livereload: LIVERELOAD_PORT
@@ -63,7 +63,7 @@ module.exports = function (grunt) {
         autoshot: {
             dist: {
                 options: {
-                    path: '/screenshots/',
+                    path: '<%= yeoman.app %>/../screenshots/',
                     remote : {
                         files: [
                             { src: 'http://localhost:<%= connect.options.port %>', dest: 'app.jpg'}
@@ -76,9 +76,10 @@ module.exports = function (grunt) {
         responsive_images: {
             dev: {
                 options: {
+                    engine: 'im', // brew install ImageMagick
                     sizes: [
                         {
-                            width: 320,
+                            width: 320
                         },
                         {
                             width: 640
@@ -162,7 +163,8 @@ module.exports = function (grunt) {
                     ]
                 }]
             },
-            server: '.tmp'
+            server: '.tmp',
+            screenshots: 'screenshots'
         },
         browser_sync: {
             dev: {
@@ -531,6 +533,7 @@ module.exports = function (grunt) {
         'rev',
         'usemin',
         'manifest'
+        //'autoshot'
     ]);
 
     grunt.registerTask('default', [
@@ -541,6 +544,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('screenshots', [
         'clean:server',
+        'clean:screenshots',
         'concurrent:server',
         'connect:livereload',
         'autoshot'
