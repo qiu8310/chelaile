@@ -233,7 +233,7 @@ module.exports = function (grunt) {
                 sassDir: '<%= yeoman.app %>/styles',
                 cssDir: '.tmp/styles',
                 spriteLoadPath: '<%= yeoman.app %>/sprites',
-                generatedImagesDir: '<%= yeoman.dist %>/images/gen',
+                generatedImagesDir: '.tmp/images/gen',
                 imagesDir: '<%= yeoman.app %>/images',
                 javascriptsDir: '<%= yeoman.app %>/scripts',
                 /*fontsDir: '<%= yeoman.app %>/styles/fonts',*/
@@ -382,7 +382,7 @@ module.exports = function (grunt) {
                     cwd: '.tmp/images',
                     dest: '<%= yeoman.dist %>/images',
                     src: [
-                        'gen/*'
+                        'gen/*', 'sprites/*'
                     ]
                 }, {
                     expand: true,
