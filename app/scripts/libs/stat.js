@@ -130,7 +130,7 @@ define(['libs/env'], function(Env) {
       if (!container) {
         container = document.createElement('div');
         container.className = '__debug';
-        document.body.appendChild(container);
+        (document.getElementById('root') || document.body).appendChild(container);
       }
       var elem = document.createElement('div');
       elem.className = key;

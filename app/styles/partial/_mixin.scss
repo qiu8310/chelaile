@@ -66,8 +66,15 @@
   width: $width;
   height: $height;
 }
+
 @mixin square($size) {
   @include size($size, $size);
+}
+
+// image-height/width came from compass function
+@mixin image-dimensions($file) {
+  height: image-height($file);
+  width: image-width($file);
 }
 
 // Placeholder text
@@ -223,6 +230,67 @@
   }
 }
 
+/*
+ sprite 操作
+
+  http://www.w3cplus.com/preprocessor/intermediate/spriting-with-sass-and-compass.html
+  http://compass-style.org/help/tutorials/spriting/
+
+  retina 支持：
+  https://github.com/chriseppstein/compass/issues/1060
+  https://github.com/chriseppstein/compass/pull/1392
+
+  layout = smart 会保存 sprite 中的图片的 position 都在偶数上，另外用户也要保存它的图片的宽高也是偶数
+*/
+// $tool-sprite-dimensions: false;  // 是否在源文件中包含长宽
+// $tool-spacing: 2px;
+// $tool-layout: vertical;     // vertical, horizontal, diagonal, smart
+// @import "../sprites/tool/*.png";
+// @include all-tool-sprites;
+
+// 这个适合 sprite 中图片资源比较多的情况下，手动导入需要的 sprite
+// @import "compass/utilities/sprites/base";
+// $tool: sprite-map("../sprites/tool/*.png", $spacing: 2px, $layout: smart);
+// .icon-pause {
+//   background-position: sprite-position($tool, pause);
+//   background-image: sprite-url($tool);
+//   @include sprite-dimensions($tool, pause);
+// }
+$sprite-retina-map : false;
+@mixin sprite-retina($icon, $selector: false, $dimension: true) {
+  $tag: false;
+  @if not $sprite-retina-map {
+    $tag: true;
+    $sprite-retina-map : sprite-map("../sprites/*.png", $layout: smart, $spacing: 2px);
+  }
+
+
+  $icon-name: "../sprites/#{$icon}.png";
+  $sprite-name: "../../.tmp/images/gen/" + sprite-path($sprite-retina-map);
+
+  @if $tag {
+    %sprite-retina {
+      background: sprite-url($sprite-retina-map) no-repeat;
+      background-size: round(image-width($sprite-name) / 2) round(image-height($sprite-name) / 2);
+    }
+  }
+
+  $pos: sprite-position($sprite-retina-map, $icon);
+  $posx: round(nth($pos, 1)/2);
+  $posy: round(nth($pos, 2)/2);
+
+  @if not $selector { $selector: ".sprite-#{$icon}" }
+  #{$selector} {
+    @extend %sprite-retina;
+    @if $dimension {
+      width: round(image-width($icon-name)/2);
+      height: round(image-height($icon-name)/2);
+    }
+    background-position: $posx $posy;
+  }
+}
+
+
 
 // Responsive image
 //
@@ -243,5 +311,36 @@
   }
   a#{$parent}:hover {
     color: darken($color, 10%);
+  }
+}
+
+
+// Based on a [blog post by Ryan Fait](http://ryanfait.com/resources/footer-stick-to-bottom-of-page/).
+//
+// Must be mixed into the top level of your stylesheet.
+//
+// Footer element must be outside of root wrapper element.
+//
+// Footer must be a fixed height.
+// 适合在 PC 端用，移动端不太适合，移动端的 footer 下还会有 body 的内容
+@mixin sticky-footer($footer-height, $root-selector: unquote("#root"), $root-footer-selector: unquote(".footer-placeholder"), $footer-selector: unquote("body > footer")) {
+  html, body {
+    height: 100%;
+  }
+  #{$root-selector} {
+    clear: both;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin-bottom: -$footer-height;
+    overflow: hidden;
+    #{$root-footer-selector} {
+      height: $footer-height;
+    }
+  }
+  #{$footer-selector} {
+    clear: both;
+    position: relative;
+    height: $footer-height;
   }
 }
