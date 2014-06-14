@@ -27,6 +27,32 @@
   }
 }
 
+// 定位
+@mixin position($top: false, $right: false, $bottom: false, $left: false) {
+  @if $top != false {
+    top: #{$top};
+  }
+  @if $right != false {
+    right: #{$right};
+  }
+  @if $bottom != false {
+    bottom: #{$bottom};
+  }
+  @if $left != false {
+    left: #{$left};
+  }
+}
+
+// 垂直水平居中
+@mixin center-absolute() {
+  display: block;
+  position: absolute;
+  margin: auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
 
 // Center-align a block level element
 @mixin center-block() {
@@ -183,7 +209,7 @@
 // Short retina mixin for setting background-image and -size
 
 @mixin img-retina($file-1x, $file-2x, $width-1x, $height-1x) {
-  background-image: url(if($bootstrap-sass-asset-helper, twbs-image-path("#{$file-1x}"), "#{$file-1x}"));
+  background-image: url(#{$file-1x});
 
   @media
   only screen and (-webkit-min-device-pixel-ratio: 2),
@@ -192,7 +218,7 @@
   only screen and (        min-device-pixel-ratio: 2),
   only screen and (                min-resolution: 192dpi),
   only screen and (                min-resolution: 2dppx) {
-    background-image: url(if($bootstrap-sass-asset-helper, twbs-image-path("#{$file-2x}"), "#{$file-2x}"));
+    background-image: url(#{$file-2x});
     background-size: $width-1x $height-1x;
   }
 }

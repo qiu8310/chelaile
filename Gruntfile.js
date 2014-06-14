@@ -275,14 +275,16 @@ module.exports = function (grunt) {
             }
         },
         rev: {
+            options: {
+                algorithm: 'md5',
+                length: 6
+            },
             dist: {
                 files: {
                     src: [
                         '<%= yeoman.dist %>/scripts/{,*/}*.js',
                         '<%= yeoman.dist %>/styles/{,*/}*.css',
                         '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
-                        '!<%= yeoman.dist %>/images/wechat-logo.png',
-                        '!<%= yeoman.dist %>/images/stars/*.*', // stars 不打包，不会变的图片
                         '!<%= yeoman.dist %>/images/no-hash/*.*', // no-hash 中的图片不打包，不会变的图片
                         '!<%= yeoman.dist %>/images/sprites/*.*', // 自动生成的 sprites 已经加 hash 了
                         '<%= yeoman.dist %>/styles/fonts/*',

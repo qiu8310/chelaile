@@ -18,7 +18,10 @@
 
 
 // 这个适合 sprite 中图片资源比较多的情况下，手动导入需要的 sprite
+// @import "compass/utilities/sprites/base";
 // $tool: sprite-map("../sprites/tool/*.png", $spacing: 4px, $layout: vertical);
 // .icon-pause {
 //   background-position: sprite-position($tool, pause);
+//   background-image: sprite-url($tool);
+//   @include sprite-dimensions($tool, pause);
 // }
