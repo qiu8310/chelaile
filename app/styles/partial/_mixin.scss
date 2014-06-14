@@ -271,8 +271,8 @@ $sprite-retina-map : false;
   @if $tag {
     %sprite-retina {
       background-image: sprite-url($sprite-retina-map);
-      background-repeat: no-repeat;
       background-size: round(image-width($sprite-name) / 2) round(image-height($sprite-name) / 2);
+      background-repeat: no-repeat;
     }
   }
 
