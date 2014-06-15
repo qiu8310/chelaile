@@ -39,55 +39,55 @@ define(
     // 抽奖结束
     function end(i) {
 
-        var key = keys[i],
-          star = stars[key];
-        star.avatar = 'images/stars/' + key + '.png';
+      var key = keys[i],
+        star = stars[key];
+      star.avatar = 'images/stars/' + key + '.png';
 
-        // 表单信息
-        var gender = utils._('#woman').checked ? 'woman' : 'man',
-          username = nameInput.value.trim();
+      // 表单信息
+      var gender = utils._('#woman').checked ? 'woman' : 'man',
+        username = nameInput.value.trim();
 
-        // 结果信息
-        star.result = utils.render(Data.game_result[gender], {username: username, starname: star.name});
-        Storage.set('worldcup-result', star.result);
-        Storage.set('worldcup-logo', 'http://api.llsapp.com/ops-activity/' + star.avatar);
+      // 结果信息
+      star.result = utils.render(Data.game_result[gender], {username: username, starname: star.name});
+      Storage.set('worldcup-result', star.result);
+      Storage.set('worldcup-logo', 'http://api.llsapp.com/ops-activity/' + star.avatar);
 
-        utils.delay(300, function() {
+      utils.delay(300, function() {
 
-          controller.classList.remove('disabled');
+        controller.classList.remove('disabled');
 
-          // dialog
-          var dialog = Dialog.tpl(utils.render(tpl_result, star), 'dialog-game-end');
+        // dialog
+        var dialog = Dialog.tpl(utils.render(tpl_result, star), 'dialog-game-end');
 
-          // 按钮点击
-          utils._('.btn-beg-bless', dialog.getContainer()).addEventListener('click', function(e) {
-            dialog.close();
+        // 按钮点击
+        utils._('.btn-beg-bless', dialog.getContainer()).addEventListener('click', function(e) {
+          dialog.close();
 
-            if (!Agent.platform.lls) {
-              Dialog.alert('想要更多惊喜吗？登录英语流利说吧');
-              e.preventDefault();
-              return false;
-            }
-            //initGame();
-
-            // 分享窗口
-            dialog = Dialog.tpl(utils.render(tpl_share, star), 'dialog-share');
-
-            // 分享 或 取消
-            var container = dialog.getContainer();
-            utils._('.btn-cancel', container).addEventListener('click', function(e){
-              dialog.close();
-              e.preventDefault();
-            });
-            utils._('.btn-sure', container).addEventListener('click', function(e){
-              if (share_callback) share_callback(star.result);
-              //dialog.close();
-              e.preventDefault();
-            });
-
+          if (!Agent.platform.lls) {
+            Dialog.alert('想要更多惊喜吗？登录英语流利说吧');
             e.preventDefault();
-          }, false);
-        });
+            return false;
+          }
+          //initGame();
+
+          // 分享窗口
+          dialog = Dialog.tpl(utils.render(tpl_share, star), 'dialog-share');
+
+          // 分享 或 取消
+          var container = dialog.getContainer();
+          utils._('.btn-cancel', container).addEventListener('click', function(e){
+            dialog.close();
+            e.preventDefault();
+          });
+          utils._('.btn-sure', container).addEventListener('click', function(e){
+            if (share_callback) share_callback(star.result);
+            //dialog.close();
+            e.preventDefault();
+          });
+
+          e.preventDefault();
+        }, false);
+      });
     }
 
     function canGame() {

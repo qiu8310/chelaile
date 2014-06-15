@@ -52,7 +52,7 @@ module.exports = function (grunt) {
                     livereload: LIVERELOAD_PORT
                 },
                 files: [
-                    '<%= yeoman.app %>/*.html',
+                    '<%= yeoman.app %>/{,*/}*.html',
                     '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
                     '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js',
                     'test/spec/{,*/}*.js',
@@ -297,13 +297,13 @@ module.exports = function (grunt) {
             options: {
                 dest: '<%= yeoman.dist %>'
             },
-            html: '<%= yeoman.app %>/{,*/}*.html'
+            html: '<%= yeoman.app %>/*.html'
         },
         usemin: {
             options: {
                 dirs: ['<%= yeoman.dist %>']
             },
-            html: ['<%= yeoman.dist %>/{,*/}*.html'],
+            html: ['<%= yeoman.dist %>/*.html'],
             css: ['<%= yeoman.dist %>/styles/{,*/}*.css']
         },
         imagemin: {
@@ -311,7 +311,7 @@ module.exports = function (grunt) {
                 files: [{
                     expand: true,
                     cwd: '<%= yeoman.app %>/images',
-                    src: '{,*/}*.{png,jpg,jpeg}',
+                    src: ['{,*/}*.{png,jpg,jpeg}', '!archive/*.*'],
                     dest: '<%= yeoman.dist %>/images'
                 }]
             }
@@ -333,7 +333,7 @@ module.exports = function (grunt) {
             dist: {
                 files: {
                     '<%= yeoman.dist %>/styles/main.css': [
-                        '.tmp/styles/{,*/}*.css'
+                        '.tmp/styles/*.css'
                         // '!.tmp/styles/base.css' // 不打包 base.css，让所有文件都可以共用它
                         //'<%= yeoman.app %>/styles/{,*/}*.css' // 这里都是 scss，没有css；另外如果有的话会很乱吧
                     ]
@@ -438,6 +438,7 @@ module.exports = function (grunt) {
                     'bower_components/*/*.*',
                     'images/{,*/}*.png',
                     '!images/stars/*.png',
+                    '!images/archive/*.png',
                     '*.{png,ico}'
                 ],
                 dest: 'dist/manifest.appcache'

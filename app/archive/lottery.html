@@ -1,0 +1,27 @@
+<!doctype html>
+<html manifest="manifest.appcache">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Lottery</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="format-detection" content="telephone=no;address=no;email=no;" />
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" href="../styles/archive/lottery.css">
+    </head>
+    <body>
+        <header>
+            <h1 class="title">Lottery</h1>
+        </header>
+
+        <div class="game">
+          <canvas id="lottery" style="width:100%;"></canvas>
+        </div>
+
+
+        <!-- build:js ../scripts/lottery/lottery.js -->
+        <script type="text/javascript" data-main="../scripts/lottery/lottery" src="../bower_components/requirejs/require.js"></script>
+        <!--  endbuild -->
+</body>
+</html>

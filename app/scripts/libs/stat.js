@@ -1,3 +1,9 @@
+/* jshint -W020 */
+/* global _gaq */
+if (typeof _gaq === 'undefined') {
+  _gaq = [];
+}
+
 define(['libs/env'], function(Env) {
 
   'use strict';

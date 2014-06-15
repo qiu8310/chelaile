@@ -1,0 +1,181 @@
+@import 'partial';
+@import 'ui';
+@import 'base';
+
+
+$main-color: #009345;
+
+body {
+  background: $main-color;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+// 引入 dialog 样式
+.dialog {
+  @include dialog();
+}
+
+// 引入 btn 样式
+.btn {
+  @include btn(40px);
+  background: $main-color;
+  color: white;
+}
+
+.btn-yellow, .btn-sure, .btn-orange {
+  background: #fe6b00;
+}
+
+.btn-cancel {
+  background-color: #484848;
+  color: #fff;
+}
+
+.btn-beg-bless {
+  background: #ed4800;
+  color: #fff;
+  width: 150px;
+  font-size: 1.6rem;
+}
+
+
+
+body > header {
+  @include header();
+  .title {
+    color: #484848;
+  }
+}
+
+
+.game {
+  margin-top: 18px;
+
+  .lucky-plate {
+    @include lucky-plate();
+    margin-bottom: 30px;
+    @include center-block();
+  }
+
+  .form-control {
+    margin: 20px 0 30px;
+    font-size: 1.3rem;
+    text-align: center;
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 10px 0 15px;
+    }
+    .name {
+      outline: none;
+      display: block;
+      padding: 0 5px;
+      @include center-block();
+      width: 277px;
+      height: 38px;
+      border: 2px solid #3a6700;
+    }
+    .checkbox-inline {
+      margin: 15px 0 20px;
+
+      & > div {
+        display: inline-block;
+
+        &:first-child {
+          margin-right: 15px;
+        }
+      }
+
+      input { display: none; }
+      input:checked + label {
+        span {
+          border: none;
+          background: url(../images/archive/checked.png) no-repeat center center;
+          background-size: 25px 25px;
+        }
+      }
+      label {
+        position: relative;
+        cursor: pointer;
+        line-height: 25px;
+        span {
+          float: left;
+          margin-right: 7px;
+          display: inline-block;
+          @include square(25px);
+          border-radius: 50%;
+          border: 2px solid #2a6700;
+          background: white;
+        }
+      }
+    }
+  }
+}
+
+.dialog-share, .dialog-game-end {
+  color: #000;
+  .result {
+    overflow: hidden;
+    padding: 15px;
+    background: #ffd800;
+    min-height: 100px;
+    img {
+      width: 70px;
+      height: 70px;
+      float: left;
+    }
+    p {
+      font-weight: bold;
+      font-size: 1.3rem;
+      margin-left: 90px;
+      margin-top: 5px;
+    }
+  }
+  .intro {
+    padding: 15px;
+    background: #ffeb00;
+
+    h1 {
+      font-size: 1.3rem;
+      line-height: 1.6;
+    }
+    .star-name {
+      color: #3e850d;
+    }
+    .star-nick {
+      color: #000;
+    }
+    p {
+      font-size: 1.2rem;
+      line-height: 1.5;
+    }
+  }
+  .btn {
+    @include center-block();
+    margin-top: 15px;
+    color: #fff;
+  }
+}
+
+.dialog-share {
+  background: #ffeb00;
+  .result {
+    background: #ffeb00;
+    p {
+      font-weight: normal;
+      font-size: 1.3rem;
+    }
+
+    .from {
+      margin-top: 15px;
+    }
+  }
+  .btns .btn {
+    margin-top: 0;
+  }
+  .btn-cancel {
+    background: #fff;
+    color: #484848;
+  }
+}

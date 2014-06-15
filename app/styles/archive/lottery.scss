@@ -1,0 +1,40 @@
+@import 'partial';
+@import 'ui';
+@import 'base';
+
+
+$main-color: #009345;
+
+
+body {
+  background: $main-color;
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+body > header {
+  @include header();
+  .title {
+    color: #484848;
+  }
+}
+
+
+// 引入 dialog 样式
+.dialog {
+  @include dialog();
+}
+
+// 引入 btn 样式
+.btn {
+  @include btn(40px);
+  background: #31a000;
+  color: white;
+}
+
+
+.game {
+  display: block;
+  margin-top: 30px;
+  @include center-block;
+}
