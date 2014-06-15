@@ -239,6 +239,8 @@
   retina 支持：
   https://github.com/chriseppstein/compass/issues/1060
   https://github.com/chriseppstein/compass/pull/1392
+  http://themestent.github.io/retina-icon-sprites/
+  http://www.w3cplus.com/preprocessor/retina-icon-sprites.html
 
   layout = smart 会保存 sprite 中的图片的 position 都在偶数上，另外用户也要保存它的图片的宽高也是偶数
 */
@@ -271,7 +273,8 @@ $sprite-retina-map : false;
   @if $tag {
     %sprite-retina {
       background-image: sprite-url($sprite-retina-map);
-      background-size: round(image-width($sprite-name) / 2) round(image-height($sprite-name) / 2);
+      // background-size: round(image-width($sprite-name) / 2) round(image-height($sprite-name) / 2);
+      background-size: round(image-width($sprite-name) / 2) auto;
       background-repeat: no-repeat;
     }
   }
