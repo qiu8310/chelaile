@@ -3,6 +3,17 @@ define(function() {
    *  函数工具集
    */
 
+  /*
+    其它自带的有用的函数
+      1. 插入 html 内容到指定位置
+        element.insertAdjacentHTML(position, text);
+        position可以为：beforebegin/afterbegin/beforeend/afterend
+
+      2. el.previousElementSibling / el.nextElementSibling： 非空的前 / 后兄弟节点
+
+      3. el.getBoundingClientRect 获取 el 相对于视口的 top、left
+  */
+
   'use strict';
 
   //var reg_word = /^[\w]+$/;
@@ -22,15 +33,22 @@ define(function() {
     },
 
     /**
-     *  一个简单的对象继承函数
+     *  对象继承函数 (deep)
      */
     extend: function(obj, other) {
-      if (arguments.length < 2) return arguments[0];
+      obj = obj || {};
       for (var k, i = 1; i < arguments.length; ++i) {
         other = arguments[i];
+        if (!other) continue;
+
         for (k in other) {
-          // 不是深复制！
-          obj[k] = other[k];
+          if (other.hasOwnProperty(k)) {
+            if (typeof other[k] === 'object') {
+              self.extend(obj[k], other[k]);
+            } else {
+              obj[k] = other[k];
+            }
+          }
         }
       }
       return obj;
@@ -79,8 +97,18 @@ define(function() {
       return shuffled;
     },
 
+    /**
+     *  原生的 toString
+     */
     toString: function(o) {
       return Object.prototype.toString.call(o);
+    },
+
+    /**
+     *  获取 JS 对象的类型
+     */
+    type: function(obj) {
+      return self.toString(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
     },
 
     /**
@@ -95,6 +123,39 @@ define(function() {
     },
 
     /**
+     *  获取或设置 elem 内的文本
+     */
+    elemText: function(elem, text) {
+      var k = elem.innerText ? 'innerText' : 'textContent';
+      return (typeof text === 'undefined') ? elem[k] : elem[k] = text;
+    },
+
+    /**
+     *  判断 elem 是否包含子元素 child
+     */
+    contains: function(elem, child) {
+      return elem !== child && elem.contains(child);
+    },
+
+    /**
+     *  清空 elem 下的 DOM
+     */
+    empty: function(elem) {
+      while(elem.firstChild) elem.removeChild(elem.firstChild);
+    },
+
+    /**
+     *  elem 相对 body 的偏移
+     */
+    offet: function(el) {
+      var rect = el.getBoundingClientRect();
+      return {
+        top: rect.top + document.body.scrollTop,
+        left: rect.left + document.body.scrollLeft
+      };
+    },
+
+    /**
      *  escape html
      *  另一种方案是正则替换，但这种更快点
      */
@@ -103,6 +164,15 @@ define(function() {
       var text = document.createTextNode(str);
       elem.appendChild(text);
       return elem.innerHTML;
+    },
+
+    /**
+     *  将 字符串 编译成 DOMs
+     */
+    parseHTML: function(str, single) {
+      var el = document.createElement('div');
+      el.innerHTML = str;
+      return single === false ? el.children : el.firstChild;
     },
 
     /**
