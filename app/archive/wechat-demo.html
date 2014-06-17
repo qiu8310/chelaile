@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <meta name="mobile-web-app-capable" content="yes">
   <link rel="shortcut icon" href="favicon.ico">
-  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="../styles/archive/wechat-demo.css">
 </head>
 <body>
   <div id="root">
@@ -23,14 +23,14 @@
       <!--
       <div class="master member">
           <div class="avatar">
-              <img src="images/no-hash/avatar_master.png">
+              <img src="images/no-hash/avatar-master.png">
               <div class="wx-audio-control" data-src="asset_test/test.mp3"></div>
           </div>
           <article class="loading"><i></i><i></i><i></i></article>
       </div>
       <div class="master member">
           <div class="avatar">
-              <img src="images/no-hash/avatar_master.png">
+              <img src="images/no-hash/avatar-master.png">
               <div class="wx-audio-control" data-src="asset_test/test.mp3"></div>
           </div>
           <article>
@@ -43,7 +43,7 @@
       -->
       <div class="guest member">
         <div class="avatar">
-            <img src="images/no-hash/avatar_guest.png">
+            <img src="../images/no-hash/avatar-guest.png">
             <div class="audio-control" data-src="asset_test/dialogue.mp3"></div>
         </div>
         <article>
@@ -61,19 +61,9 @@
     <div class="footer-placeholder"></div>
   </div>
   <!-- <footer></footer> -->
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-38218737-1']);
-    _gaq.push(['_trackPageview']);
-    (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
 
-  <!-- build:js scripts/weixin.js -->
-  <script type="text/javascript" data-main="scripts/weixin" src="bower_components/requirejs/require.js"></script>
+  <!-- build:js scripts/wechat-demo/wechat-demo.js -->
+  <script type="text/javascript" data-main="../scripts/wechat-demo/wechat-demo" src="../bower_components/requirejs/require.js"></script>
   <!--  endbuild -->
 </body>
 </html>

@@ -1,5 +1,5 @@
 define(
-  ['libs/utils', 'libs/lucky-plate', 'worldcup/data', 'libs/dialog', 'libs/agent', 'libs/storage'],
+  ['libs/utils', 'libs/lucky-plate', 'spin-table/data', 'libs/dialog', 'libs/agent', 'libs/storage'],
   function(utils, LuckyPlate, Data, Dialog, Agent, Storage) {
   'use strict';
 

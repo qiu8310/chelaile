@@ -1,12 +1,11 @@
 CACHE MANIFEST
-# Time: Tue Jun 17 2014 16:49:25 GMT+0800 (CST)
+# Time: Tue Jun 17 2014 17:24:00 GMT+0800 (CST)
 
 CACHE:
-scripts/27d180.weixin.js
-styles/305ddf.main.css
+scripts/a7a241.main.js
 bower_components/requirejs/require.js
-images/no-hash/avatar_guest.png
-images/no-hash/avatar_master.png
+images/no-hash/avatar-guest.png
+images/no-hash/avatar-master.png
 images/ui/329a04.audio-play.png
 images/ui/684aef.icon-back.png
 images/ui/954971.lls-ad.png

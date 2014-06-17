@@ -1,4 +1,5 @@
 require.config({
+    baseUrl: '../scripts/',
     paths: {
         zepto: '../bower_components/zepto/zepto',
         jquery: '../bower_components/jquery/jquery',
@@ -106,7 +107,7 @@ require([
       stopLastVoice: stopLastControl,
       addDialogue: function(type, voice) {
         var elem, tpl = '<div class="avatar">' +
-                    '<img src="images/no-hash/avatar_' + type + '.png">' +
+                    '<img src="../images/no-hash/avatar-' + type + '.png">' +
                     '<div class="wx-audio-control"></div>' +
                 '</div><article class="loading"><i></i><i></i><i></i></article>';
         elem = document.createElement('div');

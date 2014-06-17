@@ -5,7 +5,7 @@ require.config({
 require([
     'libs/stat',    // stat 放最前面，里面有个 onerror 的统计脚本
     'init',
-    'worldcup/game'
+    'spin-table/game'
 ], function (
     Stat,
     init,
