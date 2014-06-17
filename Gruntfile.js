@@ -363,6 +363,36 @@ module.exports = function (grunt) {
                 }]
             }
         },
+        webp: {
+          files: {
+            expand: true,
+            cwd: '<%= yeoman.app %>/images',
+            src: '{,*/}*.png',
+            dest: '<%= yeoman.dist %>/images'
+          },
+          options: {
+            preset: 'icon', // default, photo, picture, drawing, icon, text
+            verbose: true,
+            quality: 80,
+            alphaQuality: 80,
+            compressionMethod: 6,
+            segments: 4,
+            psnr: 42,
+            sns: 50,
+            filterStrength: 40,
+            filterSharpness: 3,
+            simpleFilter: true,
+            partitionLimit: 50,
+            analysisPass: 6,
+            multiThreading: true,
+            lowMemory: false,
+            alphaMethod: 0,
+            alphaFilter: 'best',
+            alphaCleanup: true,
+            noAlpha: false,
+            lossless: false
+          }
+        },
         // Put files not handled in other tasks here
         copy: {
             dist: {
