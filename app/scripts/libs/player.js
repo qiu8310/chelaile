@@ -22,7 +22,7 @@ define(function() {
     },
     isPlaying: function() {
       return isplay;
-    }
+    },
     play: function() {
       isplay = true;
       this.player.play();
