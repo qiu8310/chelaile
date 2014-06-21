@@ -31,6 +31,13 @@ define(function() {
       isplay = false;
       this.player.pause();
     },
+    toggle: function() {
+      if (isplay) {
+        this.pause();
+      } else {
+        this.play();
+      }
+    },
     time: function(val) {
       return val ? (this.player.currentTime = val) : this.player.currentTime;
     },
