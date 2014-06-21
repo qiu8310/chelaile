@@ -1,7 +1,7 @@
 define(function() {
 
   function Player(src, cfg) {
-    var player, name = 'audio-player';
+    var player, isplay = false, name = 'audio-player';
     player = document.createElement('Audio');
     player.className = name;
     player.style.display = 'none';
@@ -20,10 +20,15 @@ define(function() {
     volume: function(val) {
       return val ? (this.player.volume = val) : this.player.volume;
     },
+    isPlaying: function() {
+      return isplay;
+    }
     play: function() {
+      isplay = true;
       this.player.play();
     },
     pause: function() {
+      isplay = false;
       this.player.pause();
     },
     time: function(val) {
