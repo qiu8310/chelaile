@@ -14,17 +14,21 @@ require([
     'libs/stat',    // stat 放最前面，里面有个 onerror 的统计脚本
     'init',
     'libs/utils',
-    'libs/router'
+    'libs/router',
+    'libs/dialog'
 ], function (
     Stat,
     init,
     utils,
-    Router
+    Router,
+    Dialog
 ) {
     'use strict';
 
     function page_index() {}
     function page_leaderboard() {}
+
+    Dialog.alert('Dialog');
 
     // 路由
     Router

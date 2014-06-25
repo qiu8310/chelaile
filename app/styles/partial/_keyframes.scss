@@ -9,8 +9,8 @@ $v-kfs-anti-circle: false;
   @if not $v-kfs-anti-circle {
 
     @keyframes kfs-anti-circle {
-      0%:   { transform: rotate(360deg); }
-      100%: { transform: rotate(0deg);   }
+      0%   { transform: rotate(360deg); }
+      100% { transform: rotate(0deg);   }
     }
 
     $v-kfs-anti-circle: true;
@@ -24,8 +24,8 @@ $v-kfs-circle: false;
   @if not $v-kfs-circle {
 
     @keyframes kfs-circle {
-      0%:   { transform: rotate(0deg); }
-      100%: { transform: rotate(360deg); }
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     $v-kfs-circle: true;

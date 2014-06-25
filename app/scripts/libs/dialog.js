@@ -2,6 +2,8 @@ define(function() {
   /**
    *  一个简单的 dialog 程序
    *    // opts:  closeOnMask => 在 mask 上点击是否关闭
+   *              autoDestroy => 关闭 dialog 时是否自动销毁
+   *
    *    var d = new Dialog(selector or element, opts)
    *    d.close(), d.open()
    *
@@ -14,19 +16,22 @@ define(function() {
   var MASK_CLASS_NAME = '__dialog-mask',
     LOCK_CLASS_NAME = '__dialog-lock';
 
-  var htmlElem = document.documentElement,
+  var undef,
+    htmlElem = document.documentElement,
     dialogCount = 0,
     bodyElem = document.body;
 
   function Dialog(selector, opts) {
     opts = opts || {};
-    opts.closeOnMask = typeof opts.closeOnMask === 'undefined' ? true : !!opts.closeOnMask;
+    opts.closeOnMask = opts.closeOnMask === undef ? true : !!opts.closeOnMask;
 
     var container, self = this;
     container = selector.nodeType ? selector : document.querySelector(selector);
 
     // 指定的 dialog 不存在
-    if (!container) throw new Error('Dialog(' + selector + ') not exist');
+    if (!container) {
+      throw new Error('Dialog(' + selector + ') not exist');
+    }
 
     // 创建 mask
     var mask = container.parentNode;
@@ -41,7 +46,7 @@ define(function() {
     if (opts.closeOnMask) {
       mask.addEventListener('click', function(e) {
         if (e.target.classList.contains(MASK_CLASS_NAME)) {
-          self.close();
+          self.close(opts.autoDestroy);
         }
       }, false);
     }
@@ -50,27 +55,38 @@ define(function() {
       setTimeout(function(){ self.close(); }, opts.timeout);
     }
 
+    this.container = container;
+    this.mask = mask;
+    this.isOpened = false;
+
     // 计算出 dialog 高度
     container.style.display = 'block';
     mask.style.display = 'block';
-    var compuStyle = window.getComputedStyle(container);
-    var height = compuStyle.height;
+    this.refresh();
 
     // 隐藏 container 和 mask
     container.style.display = 'none';
     mask.style.display = 'none';
 
-    container.style.height = height;
-    ['left', 'top', 'right', 'bottom'].forEach(function(key) { container.style[key] = '0'; });
+    //container.style.height = height;
+    //['left', 'top', 'right', 'bottom'].forEach(function(key) { container.style[key] = '0'; });
 
-    this.container = container;
-    this.mask = mask;
-    this.isOpened = false;
+
   }
 
   Dialog.prototype = {
     getContainer: function() {
       return this.container;
+    },
+    refresh: function() {
+      var compuStyle = window.getComputedStyle(this.container);
+      var top = parseInt(compuStyle.height, 10) / 2,
+        left = parseInt(compuStyle.width, 10) / 2;
+
+      // 由之前的 position 形式改成 margin 形式，主要是方便 refresh
+      this.container.style.cssText = 'top: 50%; left: 50%;' +
+        'margin-left: -' + left + 'px; ' +
+        'margin-top: -' + top + 'px;';
     },
     open: function() {
       if (!this.isOpened) {
@@ -78,6 +94,8 @@ define(function() {
         this.mask.style.display = 'block';
         dialogCount++;
         htmlElem.classList.add(LOCK_CLASS_NAME);
+
+        this.refresh();
       }
       this.isOpened = true;
       return this;
@@ -90,7 +108,7 @@ define(function() {
         if (dialogCount === 0) {
           htmlElem.classList.remove(LOCK_CLASS_NAME);
         }
-        if (this.mask && (typeof destory === 'undefined' || destory)) {
+        if (this.mask && (destory === undef || destory)) {
           this.mask.parentNode.removeChild(this.mask);
           this.container = null;
           this.mask = null;
@@ -187,7 +205,7 @@ define(function() {
   Dialog.alert = alertDialog;
   Dialog.tpl = function(tpl, className) {
     var div = document.createElement('div');
-    div.className = 'dialog ' + (className ? className : '');
+    div.className = 'dialog ' + (className || '');
     div.innerHTML = tpl;
     var dialog = new Dialog(div);
     return dialog.open();

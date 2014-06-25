@@ -8,6 +8,8 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section { 
 * { box-sizing: border-box; }
 *:before, *:after { box-sizing: border-box; }
 
+img {border: none; outline: 0; }
+
 html {
   font-size: 62.5%;
   font-family: "MICROSOFT YaHei","Helvetica Neue", Helvetica, Arial, Tahoma, sans-serif;
@@ -103,7 +105,7 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 // lls ad
 .lls-ad {
   display: block;
-  @include size(100%, 49px);
+  @include size(100%, 49px);
   margin: 10px 0 25px;
   background: url(../images/ui/lls-ad.png) no-repeat center center;
   background-size: 179px 49px;

@@ -2,9 +2,53 @@
 // Mixins
 // --------------------------------------------------
 
+@mixin desktop {
+  @media only screen and (min-width: $desktop-min-width) {
+    @content;
+  }
+}
 
-// Utilities
-// -------------------------
+@mixin touch {
+  @media only screen and (max-width: $desktop-min-width - 1) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media only screen and (min-width: $tablet-min-width) and (max-width: $desktop-min-width - 1) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: $tablet-min-width - 1) {
+    @content;
+  }
+}
+
+// 保证 background 图片的宽高比不变
+// 需要将这个 div 的 width 设置成 100%
+@mixin fix-bg-size ($width, $height, $src) {
+  width: 100%;
+  height: 0;
+  padding-top: unquote((($height / $width) * 100) + '%');
+  background: url($src) no-repeat;
+  background-size: 100%;
+}
+
+// 伪类占滿父类
+// 父类需要设置 position
+@mixin pseudo-absolute {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+
 
 // Clearfix
 // Source: http://nicolasgallagher.com/micro-clearfix-hack/
@@ -141,8 +185,8 @@
 @mixin opacity($opacity) {
   opacity: $opacity;
   // IE8 filter
-  $opacity-ie: ($opacity * 100);
-  filter: #{alpha(opacity=$opacity-ie)};
+  //$opacity-ie: ($opacity * 100);
+  //filter: #{alpha(opacity=$opacity-ie)};
 }
 
 
@@ -349,7 +393,10 @@ $sprite-retina-map : false;
   }
 }
 
-
+//
+// width 是三角形底边长度  height 是三角形高度
+// direction 是三角形顶角所指的方向
+//
 @mixin triangle($direction, $width, $height, $color) {
   width: 0;
   height: 0;
