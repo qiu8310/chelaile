@@ -84,9 +84,13 @@ define(function() {
         left = parseInt(compuStyle.width, 10) / 2;
 
       // 由之前的 position 形式改成 margin 形式，主要是方便 refresh
-      this.container.style.cssText = 'top: 50%; left: 50%;' +
-        'margin-left: -' + left + 'px; ' +
-        'margin-top: -' + top + 'px;';
+      this.container.style.marginLeft = - left + 'px';
+      this.container.style.marginTop = - top + 'px';
+
+      // 用了 cssText 就不能用 style.xxx 了
+      //this.container.style.cssText = 'top: 50%; left: 50%;' +
+      //  'margin-left: -' + left + 'px; ' +
+      //  'margin-top: -' + top + 'px;';
     },
     open: function() {
       if (!this.isOpened) {

@@ -1,0 +1,11 @@
+@import 'partial';
+@import 'ui';
+@import 'base';
+
+
+.btn {
+  @include btn();
+}
+.dialog {
+  @include dialog();
+}
