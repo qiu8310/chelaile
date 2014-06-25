@@ -68,6 +68,8 @@ define(function() {
     container.style.display = 'none';
     mask.style.display = 'none';
 
+    container.style.left = container.style.top = '50%';
+
     //container.style.height = height;
     //['left', 'top', 'right', 'bottom'].forEach(function(key) { container.style[key] = '0'; });
 
