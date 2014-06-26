@@ -27,7 +27,8 @@ define(function() {
 
   function Dialog(selector, opts) {
     opts = opts || {};
-    opts.showMask = opts.showMask === undef || !!opts.showMask;
+    opts.showMask = opts.showMask === undef || !!opts.showMask; // 默认 true
+    opts.autoDestroy = opts.autoDestroy === undef || !!opts.autoDestroy;
     var container, self = this;
 
     this.listeners = [];
@@ -56,10 +57,10 @@ define(function() {
     if (opts.closeOnMask === undef || opts.closeOnMask) {
       var type = 'click',
         handler = function(e) {
-        if (e.target.classList.contains(MASK_CLASS_NAME)) {
-          self.close();
-        }
-      };
+          if (e.target.classList.contains(MASK_CLASS_NAME)) {
+            self.close();
+          }
+        };
       mask.addEventListener(type, handler, false);
       this.listeners.push([mask, type, handler]);
     }
@@ -93,7 +94,6 @@ define(function() {
 
     //container.style.height = height;
     //['left', 'top', 'right', 'bottom'].forEach(function(key) { container.style[key] = '0'; });
-
 
   }
 
@@ -135,7 +135,7 @@ define(function() {
         if (dialogCount === 0) {
           htmlElem.classList.remove(LOCK_CLASS_NAME);
         }
-        if (this.mask && (destory === undef || this.opts.autoDestroy)) {
+        if (this.mask && (destory === undef ? this.opts.autoDestroy : destory)) {
           this.mask.parentNode.removeChild(this.mask);
           this.listeners.forEach(function(item) {
             item[0].removeEventListener(item[1], item[2], false);
@@ -212,7 +212,7 @@ define(function() {
     for (key in opts.btns) {
       elem = div.querySelector('.btn-' + key);
       elem.addEventListener(type, handler);
-      dialog.listeners.push(elem, type, handler);
+      dialog.listeners.push([elem, type, handler]);
     }
 
     dialog.open();
