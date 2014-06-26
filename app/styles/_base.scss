@@ -49,9 +49,15 @@ html {
     html {
         font-size: 30px;
     }
+*/
+
+// mobile 上模拟 hover 效果， libs/touchable.js 中使用了此样式
+.touchable {
+  .touched {
+    opacity: .8;
+  }
 }
 
-*/
 
 /*
   触发硬件加速
@@ -73,7 +79,7 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
 
 
 .clearfix {
-    @include clearfix();
+  @include clearfix();
 }
 
 .pull-left {
@@ -93,23 +99,6 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
   //line-height: 8rem;  // 增高用的
 }
 
-.download-btns {
-  a {
-    width: 240px;
-    border-radius: 6px;
-    @include center-block();
-  }
-}
-
-
-// lls ad
-.lls-ad {
-  display: block;
-  @include size(100%, 49px);
-  margin: 10px 0 25px;
-  background: url(../images/ui/lls-ad.png) no-repeat center center;
-  background-size: 179px 49px;
-}
 
 // 音频播放器基本样式
 .audio-control {
