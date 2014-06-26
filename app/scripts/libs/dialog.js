@@ -27,7 +27,7 @@ define(function() {
 
   function Dialog(selector, opts) {
     opts = opts || {};
-
+    opts.showMask = opts.showMask === undef || !!opts.showMask;
     var container, self = this;
     container = selector.nodeType ? selector : document.querySelector(selector);
 
@@ -77,6 +77,7 @@ define(function() {
     mask.style.display = 'none';
 
     container.style.left = container.style.top = '50%';
+    container.style.position = 'absolute';
     if (opts.styles) {
       var prop;
       for (prop in opts.styles) {
