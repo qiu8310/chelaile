@@ -53,7 +53,7 @@ html {
 
 // mobile 上模拟 hover 效果， libs/touchable.js 中使用了此样式
 .touchable {
-  .touched {
+  &.touched {
     opacity: .8;
   }
 }

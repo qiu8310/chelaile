@@ -1,4 +1,4 @@
-define('libs/utils', function(utils) {
+define(['libs/utils'], function(utils) {
 
   function touchstart (e) {
     touchend();
