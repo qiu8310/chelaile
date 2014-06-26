@@ -1,8 +1,12 @@
 define(function() {
   /**
    *  一个简单的 dialog 程序
-   *    // opts:  closeOnMask => 在 mask 上点击是否关闭
-   *              autoDestroy => 关闭 dialog 时是否自动销毁
+   *    // opts:  closeOnMask => 在 mask 上点击是否关闭       [true]
+   *              autoDestroy => 关闭 dialog 时是否自动销毁   [true]
+   *              showMask    => 是否显示 Mask              [true]
+   *              timeout     => 自动关闭 Dialog            [0]
+   *              styles      => 指定初始化样式              [null]
+   *
    *
    *    var d = new Dialog(selector or element, opts)
    *    d.close(), d.open()
@@ -23,7 +27,6 @@ define(function() {
 
   function Dialog(selector, opts) {
     opts = opts || {};
-    opts.closeOnMask = opts.closeOnMask === undef ? true : !!opts.closeOnMask;
 
     var container, self = this;
     container = selector.nodeType ? selector : document.querySelector(selector);
@@ -43,7 +46,12 @@ define(function() {
       bodyElem.appendChild(mask);
     }
 
-    if (opts.closeOnMask) {
+    if (!opts.showMask) {
+      opts.closeOnMask = false;
+      mask.style.backgroundColor = 'transparent';
+    }
+
+    if (opts.closeOnMask === undef || opts.closeOnMask) {
       mask.addEventListener('click', function(e) {
         if (e.target.classList.contains(MASK_CLASS_NAME)) {
           self.close(opts.autoDestroy);
@@ -52,7 +60,7 @@ define(function() {
     }
 
     if (opts.timeout) {
-      setTimeout(function(){ self.close(); }, opts.timeout);
+      setTimeout(function(){ self.close(opts.autoDestroy); }, opts.timeout);
     }
 
     this.container = container;
@@ -69,6 +77,12 @@ define(function() {
     mask.style.display = 'none';
 
     container.style.left = container.style.top = '50%';
+    if (opts.styles) {
+      var prop;
+      for (prop in opts.styles) {
+        container.style[prop] = opts.styles[prop];
+      }
+    }
 
     //container.style.height = height;
     //['left', 'top', 'right', 'bottom'].forEach(function(key) { container.style[key] = '0'; });
