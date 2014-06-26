@@ -29,6 +29,8 @@ define(function() {
     opts = opts || {};
     opts.showMask = opts.showMask === undef || !!opts.showMask;
     var container, self = this;
+
+    this.listeners = [];
     container = selector.nodeType ? selector : document.querySelector(selector);
 
     // 指定的 dialog 不存在
@@ -52,20 +54,24 @@ define(function() {
     }
 
     if (opts.closeOnMask === undef || opts.closeOnMask) {
-      mask.addEventListener('click', function(e) {
+      var type = 'click',
+        handler = function(e) {
         if (e.target.classList.contains(MASK_CLASS_NAME)) {
-          self.close(opts.autoDestroy);
+          self.close();
         }
-      }, false);
+      };
+      mask.addEventListener(type, handler, false);
+      this.listeners.push([mask, type, handler]);
     }
 
     if (opts.timeout) {
-      setTimeout(function(){ self.close(opts.autoDestroy); }, opts.timeout);
+      setTimeout(function(){ self.close(); }, opts.timeout);
     }
 
     this.container = container;
     this.mask = mask;
     this.isOpened = false;
+    this.opts = opts;
 
     // 计算出 dialog 高度
     container.style.display = 'block';
@@ -129,10 +135,16 @@ define(function() {
         if (dialogCount === 0) {
           htmlElem.classList.remove(LOCK_CLASS_NAME);
         }
-        if (this.mask && (destory === undef || destory)) {
+        if (this.mask && (destory === undef || this.opts.autoDestroy)) {
           this.mask.parentNode.removeChild(this.mask);
+          this.listeners.forEach(function(item) {
+            item[0].removeEventListener(item[1], item[2], false);
+            item[2] = null;
+          });
           this.container = null;
           this.mask = null;
+          this.opts = null;
+          this.listeners = null;
         }
       }
       this.isOpened = false;
@@ -195,8 +207,12 @@ define(function() {
 
       e.preventDefault();
     };
+
+    var elem, type = 'click';
     for (key in opts.btns) {
-      div.querySelector('.btn-' + key).addEventListener('click', handler);
+      elem = div.querySelector('.btn-' + key);
+      elem.addEventListener(type, handler);
+      dialog.listeners.push(elem, type, handler);
     }
 
     dialog.open();
