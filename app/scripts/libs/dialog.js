@@ -65,10 +65,6 @@ define(function() {
       this.listeners.push([mask, type, handler]);
     }
 
-    if (opts.timeout) {
-      setTimeout(function(){ self.close(); }, opts.timeout);
-    }
-
     this.container = container;
     this.mask = mask;
     this.isOpened = false;
@@ -98,9 +94,6 @@ define(function() {
   }
 
   Dialog.prototype = {
-    getContainer: function() {
-      return this.container;
-    },
     refresh: function() {
       var compuStyle = window.getComputedStyle(this.container);
       var top = parseInt(compuStyle.height, 10) / 2,
@@ -123,6 +116,11 @@ define(function() {
         htmlElem.classList.add(LOCK_CLASS_NAME);
 
         this.refresh();
+
+        if (this.opts.timeout) {
+          var self = this;
+          setTimeout(function(){ self.close(); }, self.opts.timeout);
+        }
       }
       this.isOpened = true;
       return this;
@@ -240,12 +238,11 @@ define(function() {
 
   Dialog.confirm = confirmDialog;
   Dialog.alert = alertDialog;
-  Dialog.tpl = function(tpl, className) {
+  Dialog.tpl = function(tpl, className, opts) {
     var div = document.createElement('div');
     div.className = 'dialog ' + (className || '');
     div.innerHTML = tpl;
-    var dialog = new Dialog(div);
-    return dialog.open();
+    return new Dialog(div, opts);
   };
 
   return Dialog;

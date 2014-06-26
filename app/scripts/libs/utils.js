@@ -37,7 +37,8 @@ define(function() {
      */
     extend: function(obj, other) {
       obj = obj || {};
-      for (var k, i = 1; i < arguments.length; ++i) {
+      var k, i;
+      for (i = 1; i < arguments.length; ++i) {
         other = arguments[i];
         if (!other) continue;
 
@@ -86,9 +87,9 @@ define(function() {
      * 打乱数组顺序
      */
     shuffle: function (arr) {
-      var rand, value;
+      var i, rand, value;
       var shuffled = [];
-      for (var i = 0; i < arr.length; i++) {
+      for (i = 0; i < arr.length; i++) {
         value = arr[i];
         rand = self.random(i);
         shuffled[i] = shuffled[rand];
@@ -147,7 +148,7 @@ define(function() {
     /**
      *  elem 相对 body 的偏移
      */
-    offet: function(el) {
+    offset: function(el) {
       var rect = el.getBoundingClientRect();
       return {
         top: rect.top + document.body.scrollTop,
