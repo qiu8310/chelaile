@@ -5,14 +5,15 @@ article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,sec
 }
 article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section { display: block; }
 
+// for mobile develop
 * { box-sizing: border-box; }
 *:before, *:after { box-sizing: border-box; }
 
-img {border: none; outline: 0; }
-
+$default-font: "MICROSOFT YaHei","Helvetica Neue", Helvetica, Arial, Tahoma, sans-serif;
+$code-font: Courier, "Courier New", monospace;
 html {
   font-size: 62.5%;
-  font-family: "MICROSOFT YaHei","Helvetica Neue", Helvetica, Arial, Tahoma, sans-serif;
+  font-family: $default-font;
 
   -webkit-touch-callout: none;  // 禁止浏览器弹出保存图片类似的界面
 
@@ -29,27 +30,40 @@ html {
       tap-highlight-color: rgba(255,255,255,0);
 }
 
-
-/*
-
-// 响就式设置 root 的 size，然后在页面其它地方用 rem 做单位可以
-// 自动根据设备放大字体，或其它任何以 rem 做单位的元素
-
-@media only screen and (max-width:480px){
-    html {
-        font-size: 12px
-    }
+// 表单元素不会继承父元素的字体
+button, input, select, textarea {
+  font-family: $default-font;
 }
-@media only screen and (min-width:481px) and (max-width:640px){
-    html {
-        font-size: 21px;
-    }
+
+// 代码片段
+pre, code{
+  font-family: $code-font;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
-@media only screen and (min-width:641px){
-    html {
-        font-size: 30px;
-    }
-*/
+
+html, body, ul, li, ol, p { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+h1, h2, h3, h4, h5, h6 { font-size: 1.5rem; font-weight: normal; margin: 0; padding: 0; line-height: 1; }
+fieldset, img { border: none; }
+ins, a{ text-decoration:none; }
+
+/* 强制文本换行 */
+.textwrap, .textwrap td, .textwrap th {
+  word-wrap:break-word;
+  word-break:break-all;
+}
+
+table.textwrap {
+  table-layout:fixed;
+}
+
+// 去掉 moz 按钮边上的光环
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  padding:0;
+  border:0;
+}
 
 // mobile 上模拟 hover 效果， libs/touchable.js 中使用了此样式
 .touchable {
@@ -66,12 +80,6 @@ html {
 .hwaccel { transform: translateZ(0); }
 
 .hidden { display: none !important; }
-
-html, body, ul, li, ol, p { margin: 0; padding: 0; }
-ul { list-style: none; }
-h1, h2, h3, h4, h5, h6 { font-size: 1.5rem; font-weight: normal; margin: 0; padding: 0; line-height: 1; }
-a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
-
 
 .text-hide {
   @include text-hide();
@@ -140,3 +148,26 @@ a, a:hover, a:link, a:visited, a:active { text-decoration: none; }
   .info::before    {  @extend .label-info;    content: '#info';   }
   .error::before   {  @extend .label-danger;  content: '#error';  }
 }
+
+
+
+
+/*
+// 响就式设置 root 的 size，然后在页面其它地方用 rem 做单位可以
+// 自动根据设备放大字体，或其它任何以 rem 做单位的元素
+
+@media only screen and (max-width:480px){
+    html {
+        font-size: 12px
+    }
+}
+@media only screen and (min-width:481px) and (max-width:640px){
+    html {
+        font-size: 21px;
+    }
+}
+@media only screen and (min-width:641px){
+    html {
+        font-size: 30px;
+    }
+*/
