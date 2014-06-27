@@ -238,11 +238,10 @@ define(function() {
 
   Dialog.confirm = confirmDialog;
   Dialog.alert = alertDialog;
-  Dialog.tpl = function(tpl, className, opts) {
+  Dialog.tpl = function(tpl, opts) {
     var div = document.createElement('div');
-    div.className = 'dialog ' + (className || '');
-    div.innerHTML = tpl;
-    return new Dialog(div, opts);
+    div.innerHTML = tpl.trim();
+    return new Dialog(div.firstChild, opts);
   };
 
   return Dialog;

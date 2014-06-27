@@ -39,6 +39,7 @@ define(['libs/utils'], function(utils) {
 
   var config = {
     type: 'GET',
+    //dataType: 'json',
     beforeSend: empty,
     success: empty,
     error: empty,
@@ -71,15 +72,16 @@ define(['libs/utils'], function(utils) {
       xmlTypeRE.test(mime) && 'xml' ) || 'text';
   }
 
-  // TODO: 支持关联数组的形式，如 foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
+  // FIXED: 支持关联数组的形式，如 foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
   // 目前没实现也可以自己手动实现 flatten
   function serializeData(options) {
     if (options.processData && options.data && (typeof options.data) !== 'string') {
-      var k, params = [];
-      for (k in options.data) {
-        params.push(k + '=' + encodeURIComponent(options.data[k]));
-      }
-      options.data = params.join('&').replace(/%20/g, '+');
+      //var k, params = [];
+      //for (k in options.data) {
+      //  params.push(k + '=' + encodeURIComponent(options.data[k]));
+      //}
+      //options.data = params.join('&').replace(/%20/g, '+');
+      options.data = utils.serializeURL(options.data).replace(/%20/g, '+')
     }
 
     if (options.data && (!options.type || options.type.toUpperCase() === 'GET')) {
@@ -121,7 +123,6 @@ define(['libs/utils'], function(utils) {
     }
 
     if (settings.cache === false) settings.url = utils.appendQuery(settings.url, '_=' + Date.now());
-
     var mime = settings.accepts[dataType],
         headers = {},
         setHeader = function(name, value) { headers[name.toLowerCase()] = [name, value]; },

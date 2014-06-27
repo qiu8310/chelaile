@@ -18,6 +18,11 @@ define(function() {
 
   //var reg_word = /^[\w]+$/;
 
+  var undef,
+    reg_trip_bracket = /\[|\]/g,    //  去除中括号 [foo] => foo
+    reg_wrap_bracket = /^\w+\|[^=\[]*/,  // name|foo=bar => name[foo]=bar
+    reg_url_keys = /(\w+)|(\[\w*\])/g; // 匹配 bar[foo][xx][] 这种形式 => [ 'bar', '[foo]', '[xxx]', '[]' ]
+
   /*
     很多函数我都没写了，像 forEach、indexOf、trim、isArray...
     当作它们默认支持吧
@@ -33,19 +38,24 @@ define(function() {
     },
 
     /**
-     *  对象继承函数 (deep)
+     *  对象继承函数 (默认 deep)
      */
-    extend: function(obj, other) {
+    extend: function(obj, other, deep) {
       obj = obj || {};
-      var k, i;
-      for (i = 1; i < arguments.length; ++i) {
-        other = arguments[i];
+      var k, i, args = [].slice.call(arguments);
+
+      deep = true;
+      if (self.type(args[args.length-1]) === 'boolean') deep = args.pop();
+
+      for (i = 1; i < args.length; ++i) {
+        other = args[i];
         if (!other) continue;
 
         for (k in other) {
           if (other.hasOwnProperty(k)) {
-            if (typeof other[k] === 'object') {
-              self.extend(obj[k], other[k]);
+            // 数组不深度复制，避免它被转化成了 Object
+            if (deep && self.type(other[k]) === 'object') {
+              obj[k] = self.extend(obj[k], other[k], deep);
             } else {
               obj[k] = other[k];
             }
@@ -76,7 +86,7 @@ define(function() {
      *  生成随机数
      */
     random: function (min, max) {
-      if (typeof max === 'undefined') {
+      if (max === undef) {
         max = min;
         min = 0;
       }
@@ -124,11 +134,126 @@ define(function() {
     },
 
     /**
+     * {} => foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
+     * @param obj
+     */
+    serializeURL: function(obj, _notJoin) {
+      var i, name, val, rtn = [];
+
+      var replace = function(w) { return w.replace('|', '[') + ']'; };
+
+      for (name in obj) {
+        if (obj.hasOwnProperty(name)) {
+          val = obj[name];
+
+          switch (self.type(val)) {
+            case 'object':
+              var parts = self.serializeURL(val, true);
+              for (i = 0; i < parts.length; i++) {
+                rtn.push([name, parts[i]].join('|').replace(reg_wrap_bracket, replace));
+              }
+              break;
+            case 'array':
+              for (i = 0; i < val.length; i++) {
+                rtn.push(name + '[]=' + encodeURIComponent(val[i].toString()));
+              }
+              break;
+            default:
+              rtn.push(name + '=' + encodeURIComponent(val.toString()));
+          }
+        }
+      }
+      return _notJoin ? rtn : rtn.join('&');
+    },
+
+    /**
+     * foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
+     *  =>
+     * {
+     *   foo: {
+     *     aa: 'aa',
+     *     bb: 'bb'
+     *   },
+     *   bar: ['cc', 'dd']
+     * }
+     * @param str
+     */
+    unserializeURL: function(str) {
+      var data = {};
+      str.split('&').forEach(function(pair) {
+        var name, val, matches, i, mat, nextMat;
+        pair = pair.split('=');
+        if (pair.length !== 2) return ;
+
+        name = pair[0];
+        val = decodeURIComponent(pair[1]);
+
+        matches = name.match(reg_url_keys);
+
+        var obj = data; // 引用
+        for (i = 0; i < matches.length; i++) {
+          mat = matches[i].replace(reg_trip_bracket, '');
+          nextMat = matches[i+1];
+          if (!nextMat) {
+            obj[mat] = val; // 末端
+            break;
+          } else if (nextMat === '[]') {
+            if (obj[mat] === undef) obj[mat] = [];
+            obj[mat].push(val); // 末端
+            break;
+          } else if (nextMat.charAt(0) === '[') {
+            if (obj[mat] === undef) obj[mat] = {};
+            obj = obj[mat];
+          }
+        }
+      });
+
+      return data;
+    },
+
+
+    /**
+     * 获取 elemForm 中的所有表单的值
+     *
+     * 注意：浏览器在提交 form 时，如果有 radio 或 checkbox 没有选中是，就不会提交上去它们对应的 key
+     *
+     */
+    getFormData: function(elemForm) {
+      var data = [], cacheNames = {}, checkedNames = {};
+      if (!elemForm.nodeName) {
+        elemForm = self._(elemForm);
+      }
+
+      // 自定义的组件通过 <input type="hidden"> 来实现
+      self.__('input[name], select[name], textarea[name], button[name]', elemForm).forEach(function(elem) {
+        var name, val, type;
+        name = elem.name;
+        val = elem.value;
+        type = elem.type;
+
+        val = encodeURIComponent(type === 'password' ? val : val.trim());
+        if (type === 'radio' || type === 'checkbox') {
+          cacheNames[name] = true;
+          if (elem.checked) {
+            data.push(name + '=' + val);
+            checkedNames[name] = true;
+          }
+        } else {
+          data.push(name + '=' + val);
+        }
+
+      });
+
+      return self.unserializeURL(data.join('&'));
+
+    },
+
+    /**
      *  获取或设置 elem 内的文本
      */
     elemText: function(elem, text) {
       var k = elem.innerText ? 'innerText' : 'textContent';
-      return (typeof text === 'undefined') ? elem[k] : elem[k] = text;
+      return text === undef ? elem[k] : elem[k] = text;
     },
 
     /**
@@ -183,8 +308,8 @@ define(function() {
      *  escape_html   => escape obj 中的 value，默认为 true
      */
     render: function(tpl, obj, quick_render, escape_html) {
-      escape_html = typeof escape_html === 'undefined' ? true : !!escape_html;
-      quick_render = typeof quick_render === 'undefined' ? true : !!quick_render;
+      escape_html =  escape_html === undef ? true : !!escape_html;
+      quick_render = quick_render === undef ? true : !!quick_render;
 
       // 替换单个单词 #{word}
       tpl = tpl.replace(/#\{([\w\-_]+)\}/g, function(word, match) {
@@ -236,7 +361,7 @@ define(function() {
       var style,
         t;
 
-      style = typeof val === 'undefined' ?
+      style = val === undef ?
           window.getComputedStyle(elem, null) :
           elem.style;
 
@@ -247,7 +372,7 @@ define(function() {
         });
       }
 
-      return typeof val === 'undefined' ?
+      return val === undef ?
           style[key] :
           (style[key] = val);
     },

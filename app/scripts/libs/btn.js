@@ -1,4 +1,5 @@
 define(['libs/utils'], function(utils) {
+  'use strict';
 
   function touchstart (e) {
     touchend();
@@ -65,7 +66,7 @@ define(['libs/utils'], function(utils) {
         if (className) {
           classList.remove(className);
         }
-      }
+      };
 
       func.call(ele, e, done);
 
@@ -76,6 +77,6 @@ define(['libs/utils'], function(utils) {
   return {
     touchable: touchable,
     asyncClick: asyncClick
-  }
+  };
 
 });
