@@ -58,7 +58,7 @@ define(['libs/utils'], function(utils) {
       }
 
 
-      var done = function() {
+      var done = function(noInterrupt) {
         classList.remove('disabled');
         if (text) {
           utils.elemText(ele, ele.dataset.defaultText);
@@ -66,9 +66,17 @@ define(['libs/utils'], function(utils) {
         if (className) {
           classList.remove(className);
         }
-      };
 
-      func.call(ele, e, done);
+        if (!noInterrupt) {
+          throw new Error('btn_async_done');
+        }
+      };
+      try {
+        func.call(ele, e, done);
+      } catch (e) {
+        if (e.message !== 'btn_async_done') throw e;
+      }
+
 
     }, false);
   }
