@@ -58,7 +58,7 @@ define(['libs/utils'], function(utils) {
       }
 
 
-      var done = function(noInterrupt) {
+      var done = function(interrupt) {
         classList.remove('disabled');
         if (text) {
           utils.elemText(ele, ele.dataset.defaultText);
@@ -67,7 +67,7 @@ define(['libs/utils'], function(utils) {
           classList.remove(className);
         }
 
-        if (!noInterrupt) {
+        if (interrupt) {
           throw new Error('btn_async_done');
         }
       };

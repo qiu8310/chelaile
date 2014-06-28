@@ -156,12 +156,10 @@ define(function() {
   // Dialog.alert(msg, callback, opts)
   // Dialog.tpl(tpl)
 
-  var tpl = '<div class="content"><p class="msg">{msg}</p></div><div class="btns">{btns}</div>';
+  var tpl = '<div class="content"><h2 class="title">{title}</h2><p class="msg">{msg}</p></div><div class="btns">{btns}</div>';
 
 
   function setup(msg, cb, opts, div, btns) {
-    var html = tpl.replace('{msg}', msg);
-
     // 调换 cb 和 opts 顺序
     if (typeof cb !== 'function') {
       var t = cb;
@@ -170,6 +168,8 @@ define(function() {
     }
     opts = opts || {};
     opts.btns = opts.btns || btns;
+
+    var html = tpl.replace('{msg}', msg).replace('{title}', opts.title || '');
 
     // 获取 btns 样式
     var key, btnsHtml = '';
