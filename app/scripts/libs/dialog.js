@@ -174,7 +174,7 @@ define(function() {
     // 获取 btns 样式
     var key, btnsHtml = '';
     for (key in opts.btns) {
-      btnsHtml += '<a href="" data-key="'+key+'" class="btn btn-'+key+'">'+opts.btns[key]+'</a>';
+      btnsHtml += '<a href="" data-key="'+key+'" class="btn touchable btn-'+key+'">'+opts.btns[key]+'</a>';
     }
     html = html.replace('{btns}', btnsHtml);
     div.innerHTML = html;
