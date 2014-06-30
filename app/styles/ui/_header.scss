@@ -41,7 +41,7 @@
     z-index: 2;
     display: block;
     @include size(100%, $height);
-    line-height: 45px;
+    line-height: $height;
     font-size: 1.8rem;
     color: $title-color;
     text-align: center;
