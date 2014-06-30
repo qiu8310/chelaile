@@ -24,11 +24,12 @@
   }
 
   .icon-back {
+    $icon-back-img: "../images/ui/icon-back-green.png";
     display: block;
     @include square(100%);
     cursor: pointer;
-    background: url(../images/ui/icon-back.png) no-repeat center center;
-    background-size: 17px 16px;
+    background: url(unquote($icon-back-img)) no-repeat center center;
+    background-size: round(image-width($icon-back-img) / 2) round(image-height($icon-back-img) / 2);
   }
 
   .header-right {

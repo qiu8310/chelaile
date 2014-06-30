@@ -1,15 +1,21 @@
 define(['libs/utils'], function(utils) {
   'use strict';
 
-  function touchstart (e) {
+  function touchstart(e) {
     touchend();
-    if (e.target.classList.contains('touchable')) {
-      e.target.classList.add('touched');
+    var target = e.target, i = 0, up = 3;
+    while (target && target.nodeName.toUpperCase() !== 'HTML' && !target.classList.contains('touchable') && i < up) {
+      target = target.parentNode;
+      i++;
+    }
+
+    if (target && target.classList.contains('touchable')) {
+      target.classList.add('touched');
     }
   }
 
 
-  function touchend () {
+  function touchend() {
     utils.__('.touched').forEach(function(ele) {
       ele.classList.remove('touched');
     });
@@ -36,9 +42,7 @@ define(['libs/utils'], function(utils) {
     opts = opts || {};
 
     ele.addEventListener('click', function(e) {
-      var ele = e.target,
-        classList = ele.classList,
-        data = ele.dataset;
+      var ele = e.target, classList = ele.classList, data = ele.dataset;
       e.preventDefault();
 
       if (classList.contains('disabled')) {
@@ -48,8 +52,7 @@ define(['libs/utils'], function(utils) {
       classList.add('disabled');
       ele.dataset.defaultText = utils.elemText(ele);
 
-      var text = opts.text || data.text,
-        className = opts.class || data.class;
+      var text = opts.text || data.text, className = opts.class || data.class;
       if (text) {
         utils.elemText(ele, text);
       }
@@ -74,7 +77,9 @@ define(['libs/utils'], function(utils) {
       try {
         func.call(ele, e, done);
       } catch (e) {
-        if (e.message !== 'btn_async_done') throw e;
+        if (e.message !== 'btn_async_done') {
+          throw e;
+        }
       }
 
 
@@ -83,7 +88,7 @@ define(['libs/utils'], function(utils) {
 
 
   return {
-    touchable: touchable,
+    touchable : touchable,
     asyncClick: asyncClick
   };
 

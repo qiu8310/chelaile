@@ -36,6 +36,18 @@
   background-size: 100%;
 }
 
+// 背景图片
+@mixin bg($file, $horizontal, $vertical, $bg-color: false) {
+  @if $bg-color {
+    background: $bg-color url($file) no-repeat $horizontal $vertical;
+  } @else {
+    background: url($file) no-repeat $horizontal $vertical;
+  }
+
+  background-size: round(image-width($file) / 2) round(image-height($file) / 2);
+}
+
+
 // 伪类占滿父类
 // 父类需要设置 position
 @mixin pseudo-absolute {
@@ -120,6 +132,7 @@
   height: image-height($file);
   width: image-width($file);
 }
+
 
 // Placeholder text
 @mixin placeholder($color: $input-color-placeholder) {
