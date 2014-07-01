@@ -53,6 +53,7 @@
 @mixin pseudo-absolute {
   content: " ";
   display: block;
+  margin: auto;
   position: absolute;
   top: 0;
   left: 0;
@@ -118,13 +119,19 @@
 }
 
 // Sizing shortcuts
-@mixin size($width, $height) {
+@mixin size($width, $height, $radius: false) {
   width: $width;
   height: $height;
+  @if $radius == true {
+    border-radius: 50%;
+  } @else if $radius {
+    border-radius: $radius;
+  }
 }
 
-@mixin square($size) {
-  @include size($size, $size);
+@mixin square($size, $radius: false) {
+  @include size($size, $size, $radius);
+
 }
 
 // image-height/width came from compass function
