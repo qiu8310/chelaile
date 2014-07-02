@@ -25,9 +25,9 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig({
-    yeoman           : yeomanConfig,
+    yeoman: yeomanConfig,
     // TODO: Make this conditional
-    watch            : {
+    watch : {
       coffee    : {
         files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
         tasks: ['coffee:dist']
@@ -35,6 +35,10 @@ module.exports = function(grunt) {
       coffeeTest: {
         files: ['test/spec/{,*/}*.coffee'],
         tasks: ['coffee:test']
+      },
+      slim: {
+        files: ['<%= yeoman.app %>/*.slim'],
+        tasks: ['slim']
       },
       compass   : {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
@@ -54,10 +58,24 @@ module.exports = function(grunt) {
         files  : [
           '<%= yeoman.app %>/{,*/}*.html', '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
           '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js', 'test/spec/{,*/}*.js',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
+          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}', '.tmp/*.html'
         ]
       }
     },
+
+    slim: {
+      dist: {
+        files: [{
+          expand: true,
+          src   : ['{*,*/*}.slim'],
+          cwd   : '<%= yeoman.app %>',
+          dest  : '.tmp',
+          ext   : '.html'
+        }]
+      }
+    },
+
+
     autoshot         : {
       dist: {
         options: {
@@ -422,7 +440,14 @@ module.exports = function(grunt) {
             src   : ['asset_test/{,*/}*.*'],
             cwd   : '<%= yeoman.app %>',
             dest  : '<%= yeoman.dist %>'
+          },
+          {
+            expand: true,
+            src   : ['*.html'],
+            cwd   : '.tmp',
+            dest  : '<%= yeoman.dist %>'
           }
+
         ]
       },
 
@@ -526,7 +551,7 @@ module.exports = function(grunt) {
     }
 
     grunt.task.run([
-      'clean:server', 'concurrent:server', 'autoprefixer', 'connect:livereload', 'open:server', 'watch'
+      'clean:server', 'concurrent:server', 'autoprefixer', 'slim', 'connect:livereload', 'open:server', 'watch'
     ]);
   });
 
@@ -544,7 +569,7 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('build', [
-    'clean:dist', 'useminPrepare', 'concurrent:dist', 'autoprefixer', 'requirejs', 'cssmin', //'responsive_images:dev',
+    'clean:dist', 'useminPrepare', 'concurrent:dist', 'autoprefixer', 'requirejs', 'slim', 'cssmin', //'responsive_images:dev',
     'concat', 'uglify', 'copy:dist', 'rev', 'usemin', 'manifest'
     //'autoshot'
   ]);
