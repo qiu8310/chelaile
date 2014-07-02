@@ -31,13 +31,14 @@
     "load-grunt-tasks": "~0.2.0",
     "connect-livereload": "~0.1.4",
     "time-grunt": "~0.2.0",
-    "grunt-webp": "~0.0.1",
+    "grunt-webp": "~0.0.4",
     "grunt-autoshot": "~0.2.0",
     "grunt-manifest": "~0.4.0",
-    "grunt-webp": "~0.0.4",
-    "grunt-responsive-images": "~0.0.3"
+    "grunt-responsive-images": "~0.0.3",
+    "grunt-slim": "^0.1.0"
   },
   "engines": {
     "node": ">=0.8.0"
   }
 }
+
