@@ -36,7 +36,7 @@ module.exports = function(grunt) {
         files: ['test/spec/{,*/}*.coffee'],
         tasks: ['coffee:test']
       },
-      slim: {
+      slim      : {
         files: ['<%= yeoman.app %>/*.slim'],
         tasks: ['slim']
       },
@@ -65,13 +65,15 @@ module.exports = function(grunt) {
 
     slim: {
       dist: {
-        files: [{
-          expand: true,
-          src   : ['{*,*/*}.slim'],
-          cwd   : '<%= yeoman.app %>',
-          dest  : '.tmp',
-          ext   : '.html'
-        }]
+        files: [
+          {
+            expand: true,
+            src   : ['{*,*/*}.slim'],
+            cwd   : '<%= yeoman.app %>',
+            dest  : '.tmp',
+            ext   : '.html'
+          }
+        ]
       }
     },
 
@@ -249,6 +251,9 @@ module.exports = function(grunt) {
     compass          : {
       options: {
         sassDir                : '<%= yeoman.app %>/styles',
+        require                : [
+          'ceaser-easing' // http://easings.net/zh-cn 缓动库
+        ],
         cssDir                 : '.tmp/styles',
         spriteLoadPath         : '<%= yeoman.app %>/sprites',
         generatedImagesDir     : '.tmp/images/gen',

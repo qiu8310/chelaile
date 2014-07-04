@@ -1,6 +1,7 @@
 source 'http://ruby.taobao.org'
 
-ruby '2.0.0-p481'
+ruby '2.0.0'
 
 gem 'slim'
-gem 'compass'1
+gem 'compass'
+gem 'ceaser-easing'

@@ -1,33 +1,47 @@
 @import 'partial';
+@import "ceaser-easing"; // http://easings.net/zh-cn
 
-article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video {
-  margin: 0;padding: 0;border: 0;font-size: inherit;font: inherit;vertical-align: baseline;
+article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: inherit;
+  font: inherit;
+  vertical-align: baseline;
 }
-article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section { display: block; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
 
 // for mobile develop
-* { box-sizing: border-box; }
-*:before, *:after { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-$default-font: "MICROSOFT YaHei","Helvetica Neue", Helvetica, Arial, Tahoma, sans-serif;
+*:before, *:after {
+  box-sizing: border-box;
+}
+
+$default-font: "MICROSOFT YaHei", "Helvetica Neue", Helvetica, Arial, Tahoma, sans-serif;
 $code-font: Courier, "Courier New", monospace;
 html {
   font-size: 62.5%;
   font-family: $default-font;
 
-  -webkit-touch-callout: none;  // 禁止浏览器弹出保存图片类似的界面
+  -webkit-touch-callout: none; // 禁止浏览器弹出保存图片类似的界面
 
-  -webkit-user-select: none;    // 禁止用户选择文字，不禁止的话，用户在手机上点击的话
-     -moz-user-select: none;    // 很容易选择上上面的文字
-      -ms-user-select: none;
-          user-select: none;
+  -webkit-user-select: none; // 禁止用户选择文字，不禁止的话，用户在手机上点击的话
+  -moz-user-select: none; // 很容易选择上上面的文字
+  -ms-user-select: none;
+  user-select: none;
 
   -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
+  text-size-adjust: 100%;
 
-  -webkit-tap-highlight-color: rgba(255,255,255,0);
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   -webkit-tap-highlight-color: transparent;
-      tap-highlight-color: rgba(255,255,255,0);
+  tap-highlight-color: rgba(255, 255, 255, 0);
 }
 
 // 表单元素不会继承父元素的字体
@@ -36,33 +50,52 @@ button, input, select, textarea {
 }
 
 // 代码片段
-pre, code{
+pre, code {
   font-family: $code-font;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
 
-html, body, ul, li, ol, p { margin: 0; padding: 0; }
-ul, ol { list-style: none; }
-h1, h2, h3, h4, h5, h6 { font-size: 1.5rem; font-weight: normal; margin: 0; padding: 0; line-height: 1; }
-fieldset, img { border: none; }
-ins, a{ text-decoration:none; }
+html, body, ul, li, ol, p {
+  margin: 0;
+  padding: 0;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+fieldset, img {
+  border: none;
+}
+
+ins, a {
+  text-decoration: none;
+}
 
 /* 强制文本换行 */
 .textwrap, .textwrap td, .textwrap th {
-  word-wrap:break-word;
-  word-break:break-all;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 table.textwrap {
-  table-layout:fixed;
+  table-layout: fixed;
 }
 
 // 去掉 moz 按钮边上的光环
 button::-moz-focus-inner,
 input::-moz-focus-inner {
-  padding:0;
-  border:0;
+  padding: 0;
+  border: 0;
 }
 
 // mobile 上模拟 hover 效果， libs/touchable.js 中使用了此样式
@@ -72,19 +105,21 @@ input::-moz-focus-inner {
   }
 }
 
-
 /*
   触发硬件加速
   With hardware acceleration supported and enabled, animated translation, rotation, scaling and opacity will definitely be smoother with GPU compositing.
 */
-.hwaccel { transform: translateZ(0); }
+.hwaccel {
+  transform: translateZ(0);
+}
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}
 
 .text-hide {
   @include text-hide();
 }
-
 
 .clearfix {
   @include clearfix();
@@ -107,22 +142,22 @@ input::-moz-focus-inner {
   //line-height: 8rem;  // 增高用的
 }
 
-
 // 音频播放器基本样式
 .audio-control {
   cursor: pointer;
-  background: rgba(0,0,0,.4) url(../images/ui/audio-play.png) no-repeat center center;
+  background: rgba(0, 0, 0, .4) url(../images/ui/audio-play.png) no-repeat center center;
   background-size: 100%;
 }
+
 .audio-control.stop {
-  background: rgba(0,0,0,.4) url(../images/ui/audio-stop.png) no-repeat center center;
+  background: rgba(0, 0, 0, .4) url(../images/ui/audio-stop.png) no-repeat center center;
   background-size: 100%;
 }
+
 .audio-control.disabled {
   background: none;
   cursor: none;
 }
-
 
 // debug
 .__debug {
@@ -142,32 +177,70 @@ input::-moz-focus-inner {
     word-break: break-all;
     word-wrap: break-word;
   }
-  .log::before     {  @extend .label-primary; content: '#log';    }
-  .success::before {  @extend .label-success; content: '#success';}
-  .warn::before    {  @extend .label-warning; content: '#warn';}
-  .info::before    {  @extend .label-info;    content: '#info';   }
-  .error::before   {  @extend .label-danger;  content: '#error';  }
+  .log::before {
+    @extend .label-primary;
+    content: '#log';
+  }
+  .success::before {
+    @extend .label-success;
+    content: '#success';
+  }
+  .warn::before {
+    @extend .label-warning;
+    content: '#warn';
+  }
+  .info::before {
+    @extend .label-info;
+    content: '#info';
+  }
+  .error::before {
+    @extend .label-danger;
+    content: '#error';
+  }
 }
-
-
-
 
 /*
-// 响就式设置 root 的 size，然后在页面其它地方用 rem 做单位可以
-// 自动根据设备放大字体，或其它任何以 rem 做单位的元素
+  // 响就式设置 root 的 size，然后在页面其它地方用 rem 做单位可以
+  // 自动根据设备放大字体，或其它任何以 rem 做单位的元素
 
-@media only screen and (max-width:480px){
+  @media only screen and (max-width:480px){
     html {
-        font-size: 12px
+      font-size: 12px
     }
-}
-@media only screen and (min-width:481px) and (max-width:640px){
+  }
+  @media only screen and (min-width:481px) and (max-width:640px){
     html {
-        font-size: 21px;
+      font-size: 21px;
     }
-}
-@media only screen and (min-width:641px){
+  }
+  @media only screen and (min-width:641px){
     html {
-        font-size: 30px;
+      font-size: 30px;
     }
+  }
+*/
+
+/*
+  // http://easings.net/zh-cn
+  // ceaser-easing Example
+  #transition {
+    transition-property: all;
+    transition-duration: 1.2s;
+    transition-timing-function: ceaser($ease-in);
+  }
+
+  #transition-shorthand {
+    transition: all 1.2s ceaser($ease-in);
+  }
+
+  #animation {
+    animation-name: animateMe;
+    animation-iteration-count: infinite;
+    animation-duration: 10s;
+    animation-timing-function: ceaser($easeInSine);
+  }
+
+  #animation-shorthand {
+    animation: animateMe 10s ceaser($easeInSine) infinite;
+  }
 */
