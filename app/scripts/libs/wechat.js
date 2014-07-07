@@ -150,7 +150,14 @@ define(['libs/stat', 'libs/agent', 'libs/event'],
     var eve = listenEvents[key];
     on(eve[0], function() {
       // 消息不能直接 invoke，必须放到on_xxx之下，否则会报 "access_control:not_allow" 错误
-      invoke(eve[1], (func.call(null, eve[0], eve[1])), cb);
+      var share_data = func.call(null, eve[0], eve[1]);
+
+      // 处理 wechat android bug: 缺少 desc 就无法分享，但 desc 根本没用
+      if (key === 'shareToTimeline') {
+        share_data.desc = share_data.title;
+      }
+
+      invoke(eve[1], share_data, cb);
     });
   }
 
@@ -185,6 +192,9 @@ define(['libs/stat', 'libs/agent', 'libs/event'],
         img_height: 图片高度（不需要指定）
         link:       链接 url
         title:      标题
+
+        wechat android bug: 安卓一定要带上 desc 这个字段，但它没用，你可以将它设置成和 title 一样
+
         比发送给好友的接口少一个 desc 和 appid
     */
     shareToTimeline: function(paramsFunc, errorFunc) {
