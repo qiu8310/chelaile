@@ -134,6 +134,28 @@ define(function() {
     },
 
     /**
+     * 添加事件监听
+     */
+    on: function(elem, types, func) {
+      if (!elem) return false;
+      types = types.trim().split(/\s+/);
+      types.forEach(function(type) {
+        elem.addEventListener(type, func, false);
+      });
+    },
+
+    /**
+     * 去除事件监听
+     */
+    off: function(elem, types, func) {
+      if (!elem) return false;
+      types = types.trim().split(/\s+/);
+      types.forEach(function(type) {
+        elem.removeEventListener(type, func, false);
+      });
+    },
+
+    /**
      * {} => foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
      * @param obj
      */
