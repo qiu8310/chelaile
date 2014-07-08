@@ -333,6 +333,14 @@ define(function() {
       escape_html =  escape_html === undef ? true : !!escape_html;
       quick_render = quick_render === undef ? true : !!quick_render;
 
+      if (Array.isArray(obj)) {
+        var rtn = '';
+        obj.forEach(function(item) {
+          rtn += self.render(tpl, item, quick_render, escape_html);
+        });
+        return rtn;
+      }
+
       // 替换单个单词 #{word}
       tpl = tpl.replace(/#\{([\w\-_]+)\}/g, function(word, match) {
         return (match in obj) ? (escape_html ? self.escapeHTML(obj[match]) : obj[match]) : '';
@@ -342,17 +350,6 @@ define(function() {
         // 条件替换 #{&boolean ? str_1 : str_2}
         tpl = tpl.replace(/#\{&([\w\-_]+)\s*\?\s*([^:]*?)\s*:\s*([^\}]*?)\s*\}/g, function(_, key, tplTrue, tplFalse) {
           return obj[key] ? tplTrue : tplFalse;
-        });
-
-        // 循环替换 #{&repeat key tpl}， obj[key] 需要是个数组
-        tpl = tpl.replace(/#\{&repeat\s+([\w\-_]+)\s+([^\}]*?)\}/g, function(_, key, repeat_tpl) {
-           var rtn = '';
-          if ((key in obj) && Array.isArray(obj[key])) {
-            obj[key].forEach(function(it) {
-              rtn += self.render(repeat_tpl, it, true, escape_html);
-            });
-          }
-          return rtn;
         });
       }
 
