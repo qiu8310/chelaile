@@ -1,4 +1,4 @@
-define(function () {
+define(['libs/utils'], function (utils) {
   'use strict';
   function Player(src, cfg) {
     var player, isplay = false, name = 'audio-player', key;
@@ -65,6 +65,38 @@ define(function () {
       }
     }
   };
+
+
+  function pause_players_except(players, player) {
+    players.forEach(function(p) {
+      if (p !== player) {
+        p.pause();
+      }
+    });
+  }
+
+  Player.setupPlayers = function (selector, audioOpts, isSinglePlayer) {
+    var players = [];
+    utils.__(selector).forEach(function(control) {
+      var player = new Player(control.dataset.src, audioOpts);
+      player.on('playing', function() {
+        control.classList.add('stop');
+        control.classList.remove('play')
+      });
+      player.on('pause ended', function() {
+        control.classList.add('play');
+        control.classList.remove('stop');
+      });
+      utils.on(control, 'click', function() {
+        player.toggle();
+        if (isSinglePlayer && player.isPlaying()) {
+          pause_players_except(players, player);
+        }
+      });
+      players.push(player);
+    });
+    return players;
+  }
 
   return Player;
 });
