@@ -77,7 +77,16 @@ define(['libs/utils'], function(utils) {
     }
 
     if (positionIn(last)) {
-      last.dropzone.dispatchEvent(new CustomEvent('drop', {detail: last}));
+
+      var event = document.createEvent('Event');
+      event.initEvent('drop', false, false);
+      event.detail = last;
+
+      // 一些安卓还不支持此方法
+      // var event = new CustomEvent('drop', {detail: last});
+      
+      last.dropzone.dispatchEvent(event);
+
     } else {
       last.target.setAttribute('style', '');
       last.dropzone.classList.remove('dropover');
