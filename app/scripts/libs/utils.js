@@ -181,7 +181,7 @@ define(function() {
               }
               break;
             default:
-              rtn.push(name + '=' + encodeURIComponent(val.toString()));
+              rtn.push(name + '=' + encodeURIComponent(val));
           }
         }
       }
