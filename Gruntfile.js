@@ -28,14 +28,14 @@ module.exports = function(grunt) {
     yeoman: yeomanConfig,
     // TODO: Make this conditional
     watch : {
-      coffee    : {
-        files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-        tasks: ['coffee:dist']
-      },
-      coffeeTest: {
-        files: ['test/spec/{,*/}*.coffee'],
-        tasks: ['coffee:test']
-      },
+      //coffee    : {
+      //  files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
+      //  tasks: ['coffee:dist']
+      //},
+      //coffeeTest: {
+      //  files: ['test/spec/{,*/}*.coffee'],
+      //  tasks: ['coffee:test']
+      //},
       slim      : {
         files: ['<%= yeoman.app %>/*.slim'],
         tasks: ['slim']
@@ -43,6 +43,10 @@ module.exports = function(grunt) {
       compass   : {
         files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
         tasks: ['compass:server', 'autoprefixer']
+      },
+      browserify: {
+        files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
+        tasks: ['browserify']
       },
       // jshint: {
       //     files: ['<%= jshint.files %>'],
@@ -57,9 +61,27 @@ module.exports = function(grunt) {
         },
         files  : [
           '<%= yeoman.app %>/{,*/}*.html', '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
-          '{.tmp,<%= yeoman.app %>}/scripts/{,*/}*.js', 'test/spec/{,*/}*.js',
+          '.tmp/scripts/*.js', 'test/spec/{,*/}*.js',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}', '.tmp/*.html'
         ]
+      }
+    },
+
+    browserify: {
+      dist: {
+        files: [
+          {
+            expand: true,
+            src   : 'scripts/*.js',
+            dest  : '.tmp',
+            cwd   : '<%= yeoman.app %>'
+          }
+        ],
+        options: {
+          bundleOptions: {
+            debug: true
+          }
+        }
       }
     },
 
@@ -92,6 +114,7 @@ module.exports = function(grunt) {
         }
       }
     },
+
     responsive_images: {
       dev: {
         options: {
@@ -258,7 +281,8 @@ module.exports = function(grunt) {
         spriteLoadPath         : '<%= yeoman.app %>/sprites',
         generatedImagesDir     : '.tmp/images/gen',
         imagesDir              : '<%= yeoman.app %>/images',
-        javascriptsDir         : '<%= yeoman.app %>/scripts',
+        javascriptsDir         : '<%= yeoman.app %>/scripts',  // for requirejs
+        //javascriptsDir         : '.tmp/scripts',  // for browserify
         /*fontsDir: '<%= yeoman.app %>/styles/fonts',*/
         importPath             : '<%= yeoman.app %>/bower_components',
         httpImagesPath         : '../images',
@@ -317,7 +341,7 @@ module.exports = function(grunt) {
       options: {
         dest: '<%= yeoman.dist %>'
       },
-      html   : '<%= yeoman.app %>/*.html'
+      html   : '{<%= yeoman.app %>,.tmp}/*.html'
     },
     usemin           : {
       options: {
@@ -451,6 +475,12 @@ module.exports = function(grunt) {
             src   : ['*.html'],
             cwd   : '.tmp',
             dest  : '<%= yeoman.dist %>'
+          },
+          {
+            expand: true,
+            src   : ['scripts/*.js'],
+            cwd   : '.tmp',
+            dest  : '<%= yeoman.dist %>'
           }
 
         ]
@@ -556,7 +586,7 @@ module.exports = function(grunt) {
     }
 
     grunt.task.run([
-      'clean:server', 'concurrent:server', 'autoprefixer', 'slim', 'connect:livereload', 'open:server', 'watch'
+      'clean:server', 'concurrent:server', 'autoprefixer', 'slim', 'browserify', 'connect:livereload', 'open:server', 'watch'
     ]);
   });
 
@@ -574,8 +604,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('build', [
-    'clean:dist', 'useminPrepare', 'concurrent:dist', 'autoprefixer', 'requirejs', 'slim', 'cssmin', //'responsive_images:dev',
-    'concat', 'uglify', 'copy:dist', 'rev', 'usemin', 'manifest'
+    'clean:dist','slim',  'useminPrepare', 'concurrent:dist', 'autoprefixer', 'browserify', 'cssmin', //'responsive_images:dev',
+    'copy:dist', 'concat', 'uglify', 'rev', 'usemin', 'manifest'
     //'autoshot'
   ]);
 

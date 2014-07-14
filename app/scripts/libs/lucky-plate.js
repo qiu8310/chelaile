@@ -1,6 +1,6 @@
-define(['libs/utils'], function(utils) {
 
   'use strict';
+  var utils = require('./utils');
 
   var indexes = 12; // 共12个方格
   var deg     = 360 / indexes; // 每个方格所占的角度
@@ -36,7 +36,7 @@ define(['libs/utils'], function(utils) {
     inited = true;
   }
 
-  return {
+  module.exports = {
 
     /**
      *  stopIndex:  停下来的那个方格的索引
@@ -81,4 +81,4 @@ define(['libs/utils'], function(utils) {
 
     }
   };
-});
+
