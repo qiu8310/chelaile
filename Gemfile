@@ -1,6 +1,6 @@
 source 'http://ruby.taobao.org'
 
-ruby '2.0.0'
+ruby '2.1.2'
 
 gem 'slim'
 gem 'compass'
