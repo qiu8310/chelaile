@@ -1,5 +1,9 @@
 'use strict';
 
+// 头像
+// http://qzapp.qlogo.cn/qzapp/100383694/7D29C05E0425C97483ED8CD1D681C1A6/100
+// http://llss.qiniudn.com/avatar_default.png
+
 var Dialog = require('./libs/dialog'), Router = require('./libs/router'), init = require('./app/init');
 
 function page_index() {}
