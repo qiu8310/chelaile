@@ -1,0 +1,32 @@
+doctype 5
+html.cn lang='zh' manifest="manifest.appcache"
+  head
+    meta charset="utf-8"
+    
+    /! 顺序不可以变，要不360的不使用极速的内核
+    meta name="renderer" content="webkit"
+    meta name="force-rendering" content="webkit"
+    meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"
+
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    meta name="format-detection" content="telephone=no;"
+    meta name="format-detection" content="address=no;email=no;"
+    title 英语流利说
+    link rel="shortcut icon" href="favicon.ico"
+
+    /[if lt IE 9]
+      script type="text/javascript" src="http://apps.bdimg.com/libs/html5shiv/r29/html5.min.js"
+
+
+    /! build:css styles/main.css
+    link rel="stylesheet" href="styles/main.css"
+    /! endbuild
+
+  body
+
+
+
+
+    /! build:js scripts/main.js
+    script type="text/javascript" src="scripts/main.js"
+    /! endbuild

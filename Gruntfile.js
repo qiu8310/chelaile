@@ -1,4 +1,3 @@
-// Generated on 2014-05-26 using generator-mobile 1.0.0-alpha.1
 'use strict';
 var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({port: LIVERELOAD_PORT});
@@ -25,17 +24,10 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig({
-    yeoman: yeomanConfig,
+    yeoman    : yeomanConfig,
     // TODO: Make this conditional
-    watch : {
-      //coffee    : {
-      //  files: ['<%= yeoman.app %>/scripts/{,*/}*.coffee'],
-      //  tasks: ['coffee:dist']
-      //},
-      //coffeeTest: {
-      //  files: ['test/spec/{,*/}*.coffee'],
-      //  tasks: ['coffee:test']
-      //},
+    watch     : {
+
       slim      : {
         files: ['<%= yeoman.app %>/*.slim'],
         tasks: ['slim']
@@ -60,16 +52,16 @@ module.exports = function(grunt) {
           livereload: LIVERELOAD_PORT
         },
         files  : [
-          '<%= yeoman.app %>/{,*/}*.html', '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css',
-          '.tmp/scripts/*.js', 'test/spec/{,*/}*.js',
-          '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}', '.tmp/*.html'
+          '<%= yeoman.app %>/{,*/}*.html', '{.tmp,<%= yeoman.app %>}/styles/{,*/}*.css', '.tmp/scripts/*.js',
+          'test/spec/{,*/}*.js', '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}', '.tmp/*.html'
         ]
       }
     },
 
+    // JS 预处理
     browserify: {
       dist: {
-        files: [
+        files  : [
           {
             expand: true,
             src   : 'scripts/*.js',
@@ -85,8 +77,12 @@ module.exports = function(grunt) {
       }
     },
 
-    slim: {
-      dist: {
+    // HTML 预处理
+    slim      : {
+      options: {
+        pretty: true
+      },
+      dist   : {
         files: [
           {
             expand: true,
@@ -99,7 +95,260 @@ module.exports = function(grunt) {
       }
     },
 
+    // CSS 预处理
+    compass   : {
+      options: {
+        sassDir                : '<%= yeoman.app %>/styles',
+        require                : [
+          'ceaser-easing' // http://easings.net/zh-cn 缓动库
+        ],
+        cssDir                 : '.tmp/styles',
+        spriteLoadPath         : '<%= yeoman.app %>/sprites',
+        generatedImagesDir     : '.tmp/images/gen',
+        imagesDir              : '<%= yeoman.app %>/images',
+        javascriptsDir         : '<%= yeoman.app %>/scripts',
+        /*fontsDir: '<%= yeoman.app %>/styles/fonts',*/
+        //importPath             : '<%= yeoman.app %>/bower_components',
+        httpImagesPath         : '../images',
+        httpGeneratedImagesPath: '../images/gen',
+        httpFontsPath          : '/styles/fonts',
+        relativeAssets         : false
+      },
+      dist   : {},
+      server : {
+        options: {
+          debugInfo: true
+        }
+      }
+    },
 
+    connect     : {
+      options   : {
+        port    : 9000,
+        // change this to '0.0.0.0' to access the server from outside
+        hostname: '0.0.0.0'
+      },
+      livereload: {
+        options: {
+          middleware: function(connect) {
+            return [
+              lrSnippet, mountFolder(connect, '.tmp'), mountFolder(connect, yeomanConfig.app)
+            ];
+          }
+        }
+      },
+      test      : {
+        options: {
+          middleware: function(connect) {
+            return [
+              lrSnippet, mountFolder(connect, 'test'), mountFolder(connect, '.tmp')
+            ];
+          }
+        }
+      },
+      dist      : {
+        options: {
+          middleware: function(connect) {
+            return [
+              mountFolder(connect, yeomanConfig.dist)
+            ];
+          }
+        }
+      }
+    },
+    browser_sync: {
+      dev: {
+        bsFiles: {
+          src: '<%= yeoman.app %>/styles/style.css'
+        },
+        options: {
+          watchTask: false,
+          debugInfo: true,
+          // Change to 0.0.0.0 to access externally
+          host     : 'http://localhost:<%= connect.options.port %>',
+          server   : {
+            baseDir: '<%= yeoman.app %>'
+          },
+          ghostMode: {
+            clicks: true,
+            scroll: true,
+            links : true,
+            forms : true
+          }
+        }
+      }
+    },
+
+    jshint           : {
+      options: {
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
+      },
+      files  : [
+        '<%= yeoman.app %>/scripts/{,*/}*.js', '!<%= yeoman.app %>/scripts/libs/ajax.js',
+        '!<%= yeoman.app %>/scripts/vendor/*'
+        //'test/spec/{,*/}*.js'
+      ]
+    },
+    mocha            : {
+      all: {
+        options: {
+          run : true,
+          urls: ['http://localhost:<%= connect.options.port %>/index.html']
+        }
+      }
+    },
+
+
+    /* 代码、资源压缩 */
+    useminPrepare    : {
+      options: {
+        dest: '<%= yeoman.dist %>'
+      },
+      html   : '{<%= yeoman.app %>,.tmp}/*.html'
+    },
+    imagemin         : {
+      dist: {
+        files: [
+          {
+            expand: true,
+            cwd   : '<%= yeoman.app %>/images',
+            src   : ['{,*/}*.{png,jpg,jpeg}'],
+            dest  : '<%= yeoman.dist %>/images'
+          }
+        ]
+      }
+    },
+    svgmin           : {
+      dist: {
+        files: [
+          {
+            expand: true,
+            cwd   : '<%= yeoman.app %>/images',
+            src   : '{,*/}*.svg',
+            dest  : '<%= yeoman.dist %>/images'
+          }
+        ]
+      }
+    },
+    cssmin           : {
+      options: {
+        keepSpecialComments: 0 // remove all comment
+      }
+    },
+    htmlmin          : {
+      dist: {
+        options: {
+          removeComments    : true,
+          collapseWhitespace: true
+          /*removeCommentsFromCDATA: true,
+           // https://github.com/yeoman/grunt-usemin/issues/44
+           //collapseWhitespace: true,
+           collapseBooleanAttributes: true,
+           removeAttributeQuotes: true,
+           removeRedundantAttributes: true,
+           useShortDoctype: true,
+           removeEmptyAttributes: true,
+           removeOptionalTags: true*/
+        },
+        files  : [
+          {
+            expand: true,
+            cwd   : '.tmp',
+            src   : '*.html',
+            dest  : '<%= yeoman.dist %>'
+          },
+          {
+            expand: true,
+            cwd   : '<%= yeoman.app %>',
+            src   : '*.html',
+            dest  : '<%= yeoman.dist %>'
+          }
+        ]
+      }
+    },
+
+    // not used since Uglify task does concat,
+    // but still available if needed
+    /*concat: {
+     dist: {}
+     },*/
+
+    /* 表态资源加 md5 戳 */
+    rev              : {
+      options: {
+        algorithm: 'md5',
+        length   : 6
+      },
+      dist   : {
+        files: {
+          src: [
+            '<%= yeoman.dist %>/scripts/{,*/}*.js', '<%= yeoman.dist %>/styles/{,*/}*.css',
+            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}', '!<%= yeoman.dist %>/images/no-hash/*.*', // no-hash 中的图片不打包，不会变的图片
+            '!<%= yeoman.dist %>/images/sprites/*.*', // 自动生成的 sprites 已经加 hash 了
+            '<%= yeoman.dist %>/styles/fonts/*', '<%= yeoman.dist %>/*.{ico,png}'
+          ]
+        }
+      }
+    },
+    usemin           : {
+      options: {
+        dirs: ['<%= yeoman.dist %>']
+      },
+      html   : ['<%= yeoman.dist %>/*.html'],
+      css    : ['<%= yeoman.dist %>/styles/{,*/}*.css']
+    },
+
+
+    // 将一些无需处理的资源复制到需要的目录中去
+    copy             : {
+      dist: {
+        files: [
+          {
+            expand: true,
+            dot   : true,
+            cwd   : '<%= yeoman.app %>',
+            dest  : '<%= yeoman.dist %>',
+            src   : [
+              '*.{ico,png,txt}', '.htaccess', 'images/{,*/}*.{webp,gif}', 'styles/fonts/*'
+            ]
+          },
+          {
+            expand: true,
+            cwd   : '.tmp/images',
+            dest  : '<%= yeoman.dist %>/images',
+            src   : [
+              'gen/*', 'sprites-*'
+            ]
+          },
+          {
+            expand: true,
+            src   : ['asset_test/{,*/}*.*'],
+            cwd   : '<%= yeoman.app %>',
+            dest  : '<%= yeoman.dist %>'
+          }
+        ]
+      }
+    },
+
+    // 清空目录
+    clean            : {
+      dist       : {
+        files: [
+          {
+            dot: true,
+            src: [
+              '.tmp', '<%= yeoman.dist %>/*', '!<%= yeoman.dist %>/.git*'
+            ]
+          }
+        ]
+      },
+      server     : '.tmp',
+      screenshots: 'screenshots'
+    },
+
+
+    // 附加功能
     autoshot         : {
       dist: {
         options: {
@@ -114,7 +363,6 @@ module.exports = function(grunt) {
         }
       }
     },
-
     responsive_images: {
       dev: {
         options: {
@@ -141,40 +389,6 @@ module.exports = function(grunt) {
         ]
       }
     },
-    connect          : {
-      options   : {
-        port    : 9000,
-        // change this to '0.0.0.0' to access the server from outside
-        hostname: '0.0.0.0'
-      },
-      livereload: {
-        options: {
-          middleware: function(connect) {
-            return [
-              lrSnippet, mountFolder(connect, '.tmp'), mountFolder(connect, yeomanConfig.app)
-            ];
-          }
-        }
-      },
-      test      : {
-        options: {
-          middleware: function(connect) {
-            return [
-              lrSnippet, mountFolder(connect, '.tmp'), mountFolder(connect, 'test')
-            ];
-          }
-        }
-      },
-      dist      : {
-        options: {
-          middleware: function(connect) {
-            return [
-              mountFolder(connect, yeomanConfig.dist)
-            ];
-          }
-        }
-      }
-    },
     open             : {
       server : {
         path: 'http://localhost:<%= connect.options.port %>'
@@ -190,227 +404,6 @@ module.exports = function(grunt) {
       },
       iphone5: {
         path: 'http://www.browserstack.com/start#os=ios&os_version=6.0&device=iPhone+5&speed=1&start=true&url=http://rnikitin.github.io/examples/jumbotron/'
-      }
-    },
-    clean            : {
-      dist       : {
-        files: [
-          {
-            dot: true,
-            src: [
-              '.tmp', '<%= yeoman.dist %>/*', '!<%= yeoman.dist %>/.git*'
-            ]
-          }
-        ]
-      },
-      server     : '.tmp',
-      screenshots: 'screenshots'
-    },
-    browser_sync     : {
-      dev: {
-        bsFiles: {
-          src: '<%= yeoman.app %>/styles/style.css'
-        },
-        options: {
-          watchTask: false,
-          debugInfo: true,
-          // Change to 0.0.0.0 to access externally
-          host     : 'http://localhost:<%= connect.options.port %>',
-          server   : {
-            baseDir: '<%= yeoman.app %>'
-          },
-          ghostMode: {
-            clicks: true,
-            scroll: true,
-            links : true,
-            forms : true
-          }
-        }
-      }
-    },
-    jshint           : {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      files  : [
-        '<%= yeoman.app %>/scripts/{,*/}*.js', '!<%= yeoman.app %>/scripts/libs/ajax.js',
-        '!<%= yeoman.app %>/scripts/vendor/*'
-        //'test/spec/{,*/}*.js'
-      ]
-    },
-    mocha            : {
-      all: {
-        options: {
-          run : true,
-          urls: ['http://localhost:<%= connect.options.port %>/index.html']
-        }
-      }
-    },
-    coffee           : {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>/scripts',
-            src   : '{,*/}*.coffee',
-            dest  : '.tmp/scripts',
-            ext   : '.js'
-          }
-        ]
-      },
-      test: {
-        files: [
-          {
-            expand: true,
-            cwd   : 'test/spec',
-            src   : '{,*/}*.coffee',
-            dest  : '.tmp/spec',
-            ext   : '.js'
-          }
-        ]
-      }
-    },
-    compass          : {
-      options: {
-        sassDir                : '<%= yeoman.app %>/styles',
-        require                : [
-          'ceaser-easing' // http://easings.net/zh-cn 缓动库
-        ],
-        cssDir                 : '.tmp/styles',
-        spriteLoadPath         : '<%= yeoman.app %>/sprites',
-        generatedImagesDir     : '.tmp/images/gen',
-        imagesDir              : '<%= yeoman.app %>/images',
-        javascriptsDir         : '<%= yeoman.app %>/scripts',  // for requirejs
-        //javascriptsDir         : '.tmp/scripts',  // for browserify
-        /*fontsDir: '<%= yeoman.app %>/styles/fonts',*/
-        importPath             : '<%= yeoman.app %>/bower_components',
-        httpImagesPath         : '../images',
-        httpGeneratedImagesPath: '../images/gen',
-        httpFontsPath          : '/styles/fonts',
-        relativeAssets         : false
-      },
-      dist   : {},
-      server : {
-        options: {
-          debugInfo: true
-        }
-      }
-    },
-    // not used since Uglify task does concat,
-    // but still available if needed
-    /*concat: {
-     dist: {}
-     },*/
-    requirejs        : {
-      dist: {
-        // Options: https://github.com/jrburke/r.js/blob/master/build/example.build.js
-        options: {
-          // `name` and `out` is set by grunt-usemin
-          baseUrl                : yeomanConfig.app + '/scripts',
-          optimize               : 'none',
-          // TODO: Figure out how to make sourcemaps work with grunt-usemin
-          // https://github.com/yeoman/grunt-usemin/issues/30
-          //generateSourceMaps: true,
-          // required to support SourceMaps
-          // http://requirejs.org/docs/errors.html#sourcemapcomments
-          preserveLicenseComments: false,
-          useStrict              : true,
-          wrap                   : true
-          //uglify2: {} // https://github.com/mishoo/UglifyJS2
-        }
-      }
-    },
-    rev              : {
-      options: {
-        algorithm: 'md5',
-        length   : 6
-      },
-      dist   : {
-        files: {
-          src: [
-            '<%= yeoman.dist %>/scripts/{,*/}*.js', '<%= yeoman.dist %>/styles/{,*/}*.css',
-            '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}', '!<%= yeoman.dist %>/images/no-hash/*.*', // no-hash 中的图片不打包，不会变的图片
-            '!<%= yeoman.dist %>/images/sprites/*.*', // 自动生成的 sprites 已经加 hash 了
-            '<%= yeoman.dist %>/styles/fonts/*', '<%= yeoman.dist %>/*.{ico,png}'
-          ]
-        }
-      }
-    },
-    useminPrepare    : {
-      options: {
-        dest: '<%= yeoman.dist %>'
-      },
-      html   : '{<%= yeoman.app %>,.tmp}/*.html'
-    },
-    usemin           : {
-      options: {
-        dirs: ['<%= yeoman.dist %>']
-      },
-      html   : ['<%= yeoman.dist %>/*.html'],
-      css    : ['<%= yeoman.dist %>/styles/{,*/}*.css']
-    },
-    imagemin         : {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>/images',
-            src   : ['{,*/}*.{png,jpg,jpeg}', '!archive/*.*'],
-            dest  : '<%= yeoman.dist %>/images'
-          }
-        ]
-      }
-    },
-    svgmin           : {
-      dist: {
-        files: [
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>/images',
-            src   : '{,*/}*.svg',
-            dest  : '<%= yeoman.dist %>/images'
-          }
-        ]
-      }
-    },
-    cssmin           : {
-      options: {
-        keepSpecialComments: 0 // remove all comment
-      },
-      dist   : {
-        files: {
-          '<%= yeoman.dist %>/styles/main.css': [
-            '.tmp/styles/*.css'
-            // '!.tmp/styles/base.css' // 不打包 base.css，让所有文件都可以共用它
-            //'<%= yeoman.app %>/styles/{,*/}*.css' // 这里都是 scss，没有css；另外如果有的话会很乱吧
-          ]
-        }
-      }
-    },
-    htmlmin          : {
-      dist: {
-        options: {
-          removeComments    : true,
-          collapseWhitespace: true
-          /*removeCommentsFromCDATA: true,
-           // https://github.com/yeoman/grunt-usemin/issues/44
-           //collapseWhitespace: true,
-           collapseBooleanAttributes: true,
-           removeAttributeQuotes: true,
-           removeRedundantAttributes: true,
-           useShortDoctype: true,
-           removeEmptyAttributes: true,
-           removeOptionalTags: true*/
-        },
-        files  : [
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>',
-            src   : '*.html',
-            dest  : '<%= yeoman.dist %>'
-          }
-        ]
       }
     },
     webp             : {
@@ -444,76 +437,7 @@ module.exports = function(grunt) {
       }
     },
     // Put files not handled in other tasks here
-    copy             : {
-      dist: {
-        files: [
-          {
-            expand: true,
-            dot   : true,
-            cwd   : '<%= yeoman.app %>',
-            dest  : '<%= yeoman.dist %>',
-            src   : [
-              '*.{ico,png,txt}', '.htaccess', 'images/{,*/}*.{webp,gif}', 'styles/fonts/*'
-            ]
-          },
-          {
-            expand: true,
-            cwd   : '.tmp/images',
-            dest  : '<%= yeoman.dist %>/images',
-            src   : [
-              'gen/*', 'sprites/*'
-            ]
-          },
-          {
-            expand: true,
-            src   : ['asset_test/{,*/}*.*'],
-            cwd   : '<%= yeoman.app %>',
-            dest  : '<%= yeoman.dist %>'
-          },
-          {
-            expand: true,
-            src   : ['*.html'],
-            cwd   : '.tmp',
-            dest  : '<%= yeoman.dist %>'
-          },
-          {
-            expand: true,
-            src   : ['scripts/*.js'],
-            cwd   : '.tmp',
-            dest  : '<%= yeoman.dist %>'
-          }
 
-        ]
-      },
-
-      disttest: {
-        files: [
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>',
-            src   : 'scripts/**',
-            dest  : '<%= yeoman.dist %>'
-          }
-        ]
-      },
-
-      test: {
-        files: [
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>/scripts',
-            src   : '**',
-            dest  : '.tmp/spec'
-          },
-          {
-            expand: true,
-            cwd   : '<%= yeoman.app %>',
-            src   : 'bower_components/requirejs/require.js',
-            dest  : '.tmp'
-          }
-        ]
-      }
-    },
 
     manifest: {
       generate: {
@@ -537,7 +461,6 @@ module.exports = function(grunt) {
       }
     },
 
-
     autoprefixer: {
       options: {
         browsers: ['ie >= 10', 'ff >= 30', 'android >= 2.3', 'chrome >= 23', 'ios > 4']
@@ -555,24 +478,18 @@ module.exports = function(grunt) {
     },
 
     concurrent: {
+      // 并行预处理 html、JS、CSS
       server: [
-        'coffee:dist', 'compass:server'
+        'slim', 'browserify', 'compass:server'
       ],
       test  : [
-        'coffee', 'compass'
+        'slim', 'browserify', 'compass'
       ],
       dist  : [
-        'coffee', 'compass:dist', 'imagemin', 'svgmin', 'htmlmin'
+        'slim', 'browserify', 'compass:dist', 'imagemin', 'svgmin'
       ]
-    },
-    bower     : {
-      options: {
-        exclude: ['modernizr']
-      },
-      all    : {
-        rjsConfig: '<%= yeoman.app %>/scripts/main.js'
-      }
     }
+
   });
 
   grunt.registerTask('server', function(target) {
@@ -586,13 +503,13 @@ module.exports = function(grunt) {
     }
 
     grunt.task.run([
-      'clean:server', 'concurrent:server', 'autoprefixer', 'slim', 'browserify', 'connect:livereload', 'open:server', 'watch'
+      'clean:server', 'concurrent:server', 'autoprefixer', 'connect:livereload', 'open:server', 'watch'
     ]);
   });
 
   grunt.registerTask('test', function(target) {
     var tasks = [
-      'clean:server', 'copy:test', 'concurrent:test', 'autoprefixer', 'connect:test'
+      'clean:server', 'concurrent:test', 'autoprefixer', 'connect:test'
     ];
     if (target === 'build') {   // 命令行上查看结果
       tasks.push('mocha');
@@ -604,8 +521,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('build', [
-    'clean:dist','slim',  'useminPrepare', 'concurrent:dist', 'autoprefixer', 'browserify', 'cssmin', //'responsive_images:dev',
-    'copy:dist', 'concat', 'uglify', 'rev', 'usemin', 'manifest'
+    'clean:dist', 'concurrent:dist', 'useminPrepare', 'autoprefixer', //'responsive_images:dev',
+    'htmlmin', 'concat', 'cssmin', 'uglify', 'copy:dist', 'rev', 'usemin', 'manifest'
     //'autoshot'
   ]);
 
