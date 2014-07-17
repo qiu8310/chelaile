@@ -82,12 +82,10 @@ ins, a {
 }
 
 /* 强制文本换行 */
-.textwrap, .textwrap td, .textwrap th {
-  word-wrap: break-word;
-  word-break: break-all;
+.word-wrap, .word-wrap td, .word-wrap th {
+  @include word-wrap;
 }
-
-table.textwrap {
+table.word-wrap {
   table-layout: fixed;
 }
 

@@ -1,3 +1,5 @@
+@import "addons/triangle";
+
 //
 // Mixins
 // --------------------------------------------------
@@ -413,32 +415,12 @@ $sprite-retina-map : false;
   }
 }
 
-//
-// width 是三角形底边长度  height 是三角形高度
-// direction 是三角形顶角所指的方向
-//
-@mixin triangle($direction, $width, $height, $color) {
-  width: 0;
-  height: 0;
-  $half: $width / 2;
-  @if $direction == left {
-    border-right: $height solid $color;
-    border-top: $half solid transparent;
-    border-bottom: $half solid transparent;
 
-  } @else if $direction == right {
-    border-left: $height solid $color;
-    border-top: $half solid transparent;
-    border-bottom: $half solid transparent;
+@mixin word-wrap($wrap: break-word) {
+  word-wrap: $wrap;
 
-  } @else if $direction == top {
-    border-bottom: $height solid $color;
-    border-left: $half solid transparent;
-    border-right: $half solid transparent;
-
-  } @else if $direction == bottom {
-    border-top: $height solid $color;
-    border-left: $half solid transparent;
-    border-right: $half solid transparent;
+  @if $wrap == break-word {
+    overflow-wrap: break-word;
+    word-break: break-all;
   }
 }
