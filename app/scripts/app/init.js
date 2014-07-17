@@ -46,66 +46,78 @@ function cache_update() {
 }
 
 
-/**
- *  当前页面是分享页面
- *  对它进行一些初始化
- */
-var setWechated = false;
-function setWechat() {
-  if (setWechated) {
-    return;
-  }
-  setWechated = true;
 
-  var shareUrl = location.href.split('?').shift() + '?share=yes#game', title = '英语流利说：测测你的另一半', default_logo = 'http://api.llsapp.com/ops-activity/images/wechat-logo.png', default_desc = '世界杯来了，快来测测你的另一半是哪个球星';
+/**
+ *  微信分享相关
+ */
+var wechatShareConfig = {
+  imgURL: '',
+  link: '',
+  desc: '',
+  title: ''
+};
+
+function _wechat() {
   // 发送给好友
   WeixinJSBridge.on('menu:share:appmessage', function() {
     WeixinJSBridge.invoke('sendAppMessage', {
       //"appid": "123",
-      img_url: Storage.get('worldcup-logo') || default_logo,
+      img_url: wechatShareConfig.imgURL,
       //"img_width": "160",
       //"img_height": "160",
-      link   : shareUrl,
-      desc   : Storage.get('worldcup-result') || default_desc,
-      title  : title
-    }, function() {
-      //_report('send_msg', res.err_msg);
-    });
+      link   : wechatShareConfig.link,
+      desc   : wechatShareConfig.desc,
+      title  : wechatShareConfig.title
+    }, function() {});
   });
 
   // 分享到朋友圈
   WeixinJSBridge.on('menu:share:timeline', function() {
     WeixinJSBridge.invoke('shareTimeline', {
-      img_url: Storage.get('worldcup-logo') || default_logo,
+      img_url: wechatShareConfig.imgURL,
       //"img_width": "160",
       //"img_height": "160",
-      link   : shareUrl,
-      desc   : Storage.get('worldcup-result') || default_desc,
-      title  : title
-    }, function() {
-      //_report('timeline', res.err_msg);
-    });
+      link   : wechatShareConfig.link,
+
+      // 分享到朋友圈时可以不用 desc，但在安卓上不用它就分享不出去了，所以这里就设置成和 title 一样
+      desc   : wechatShareConfig.desc,
+      title  : wechatShareConfig.desc
+    }, function() {});
+  });
+
+  // 分享到腾讯微博
+  WeixinJSBridge.on('menu:share:weibo', function () {
+    WeixinJSBridge.invoke('shareWeibo', {
+      img_url: wechatShareConfig.imgURL,
+      content: wechatShareConfig.desc
+    }, function () {});
   });
 }
 
-function share_init() {
-  // 分享过来的页面
+function wechatShare(cfg) {
+  utils.extend(wechatShareConfig, cfg);
+  if (typeof WeixinJSBridge !== 'undefined') {
+    _wechat();
+  } else {
+    document.addEventListener('WeixinJSBridgeReady', _wechat);
+  }
+}
 
+
+// 下载按钮相关
+function share_init() {
   // 分享在 微信 平台，要更换下载地址成腾讯的应用宝的下载地址
   if (Agent.platform.wechat) {
     utils.__('.download-btns .btn').forEach(function(btn) {
       btn.setAttribute('href', 'http://a.app.qq.com/o/simple.jsp?pkgname=com.liulishuo.engzo&g_f=991653');
     });
-    document.addEventListener('WeixinJSBridgeReady', setWechat, false);
-    setTimeout(setWechat, 0);
   }
 
   if (Agent.isIOS) {
-    utils._('.download-ios').classList.remove('hidden');
+    utils._('.download.ios').classList.remove('hidden');
   } else if (Agent.isAndroid) {
-    utils._('.download-android').classList.remove('hidden');
+    utils._('.download.android').classList.remove('hidden');
   }
-  utils._('.share-ad').classList.remove('hidden');
 }
 
 
@@ -130,10 +142,6 @@ module.exports = function(path, urlObj) {
     Storage.set('device_id', device_id);
   }
 
-
-  if (urlObj.params.share === 'yes') {
-    share_init();
-  }
 
   // 初始化页面的一些基本信息
   if (Agent.isIOS) {
