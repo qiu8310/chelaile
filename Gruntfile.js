@@ -112,6 +112,7 @@ module.exports = function(grunt) {
         httpImagesPath         : '../images',
         httpGeneratedImagesPath: '../images/gen',
         httpFontsPath          : '/styles/fonts',
+        load                   : 'sass',
         relativeAssets         : false
       },
       dist   : {},
