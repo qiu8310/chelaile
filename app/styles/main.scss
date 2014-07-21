@@ -1,11 +1,15 @@
-@import 'partial';
-@import 'ui';
-@import 'base';
-
-
-.btn {
-  @include btn();
+body {
+  color: reverse(der);
+  flex: 1;
 }
-.dialog {
-  @include dialog();
-}
+//@import 'partial';
+//@import 'ui';
+//@import 'base';
+//
+//
+//.btn {
+//  @include btn();
+//}
+//.dialog {
+//  @include dialog();
+//}

@@ -90,6 +90,11 @@ function asyncClick(ele, opts, func) {
 
 module.exports = {
   touchable : touchable,
-  asyncClick: asyncClick
+  asyncClick: asyncClick,
+
+  // https://github.com/ftlabs/fastclick
+  // 使用方法 fastClick(document.body)
+  // 如果不想某个元素不想使用 fastClick，可以加上 class: needsclick
+  fastClick: require('fastclick')
 };
 

@@ -100,19 +100,19 @@ module.exports = function(grunt) {
       options: {
         sassDir                : '<%= yeoman.app %>/styles',
         require                : [
+          './app/custom_sass/functions.rb',
           'ceaser-easing' // http://easings.net/zh-cn 缓动库
         ],
         cssDir                 : '.tmp/styles',
-        spriteLoadPath         : '<%= yeoman.app %>/sprites',
         generatedImagesDir     : '.tmp/images/gen',
         imagesDir              : '<%= yeoman.app %>/images',
         javascriptsDir         : '<%= yeoman.app %>/scripts',
         /*fontsDir: '<%= yeoman.app %>/styles/fonts',*/
         //importPath             : '<%= yeoman.app %>/bower_components',
+        spriteLoadPath         : '<%= yeoman.app %>/sprites',
         httpImagesPath         : '../images',
         httpGeneratedImagesPath: '../images/gen',
         httpFontsPath          : '/styles/fonts',
-        load                   : 'sass',
         relativeAssets         : false
       },
       dist   : {},

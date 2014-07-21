@@ -11,6 +11,9 @@
  2. el.previousElementSibling / el.nextElementSibling： 非空的前 / 后兄弟节点
 
  3. el.getBoundingClientRect 获取 el 相对于视口的 top、left
+
+ 4. document.createNodeIterator  遍历指定的 DOM 节点，详情看 MDN
+    类似还有 createTreeWalker
  */
 
 'use strict';
