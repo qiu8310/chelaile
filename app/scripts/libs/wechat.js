@@ -9,8 +9,11 @@ var listenEvents = {
     _check_funcs = [];
 
 
+var Debug = require('./debug');
+
 function _weixinReady() {
   var cb;
+  Debug.log('wechat ready');
   while((cb = _check_funcs.shift())) {
     cb();
   }

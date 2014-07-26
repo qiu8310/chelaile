@@ -11,6 +11,11 @@ var utils = require('./libs/utils'),
 window.utils = utils;
 window.ajax = ajax;
 
+window.onerror = function(msg, src, line) {
+  Debug.error(msg, src, line);
+}
+Debug.log('start');
+Debug.log('start', 'abc');
 function uploadFiles(url, files) {
   var formData = new FormData();
 
@@ -39,9 +44,6 @@ function uploadFiles(url, files) {
     }
   });
 }
-
-Debug.log('debug log');
-Debug.log('debug log');
 
 document.querySelector('input[type="file"]').addEventListener('change', function(e) {
   uploadFiles('http://fcbst.sinaapp.com/util/cb.php', this.files);
