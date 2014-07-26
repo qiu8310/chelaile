@@ -21,8 +21,8 @@
 //var reg_word = /^[\w]+$/;
 
 var undef, reg_trip_bracket = /\[|\]/g,    //  去除中括号 [foo] => foo
-  reg_wrap_bracket = /^\w+\|[^=\[]*/,  // name|foo=bar => name[foo]=bar
-  reg_url_keys = /(\w+)|(\[\w*\])/g; // 匹配 bar[foo][xx][] 这种形式 => [ 'bar', '[foo]', '[xxx]', '[]' ]
+  reg_wrap_bracket = /^[\w\-]+\|[^=\[]*/,  // name|foo=bar => name[foo]=bar
+  reg_url_keys = /([\w\-]+)|(\[[\w\-]*\])/g; // 匹配 bar[foo][xx][] 这种形式 => [ 'bar', '[foo]', '[xxx]', '[]' ]
 
 /*
  很多函数我都没写了，像 forEach、indexOf、trim、isArray...
@@ -364,7 +364,7 @@ var self = {
     }
 
     // 替换单个单词 #{word}
-    tpl = tpl.replace(/#\{([\w\-_]+)\}/g, function(word, match) {
+    tpl = tpl.replace(/#\{([\w\-]+)\}/g, function(word, match) {
       return (match in obj) ? (escape_html ? self.escapeHTML(obj[match]) : obj[match]) : '';
     });
 

@@ -29,12 +29,12 @@ html {
   font-size: 62.5%;
   font-family: $default-font;
 
-  -webkit-touch-callout: none; // 禁止浏览器弹出保存图片类似的界面
-
-  -webkit-user-select: none; // 禁止用户选择文字，不禁止的话，用户在手机上点击的话
-  -moz-user-select: none; // 很容易选择上上面的文字
-  -ms-user-select: none;
-  user-select: none;
+//  -webkit-touch-callout: none; // 禁止浏览器弹出保存图片类似的界面
+//
+//  -webkit-user-select: none; // 禁止用户选择文字，不禁止的话，用户在手机上点击的话
+//  -moz-user-select: none; // 很容易选择上上面的文字
+//  -ms-user-select: none;
+//  user-select: none;
 
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
