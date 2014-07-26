@@ -159,21 +159,26 @@ input::-moz-focus-inner {
 
 // debug
 .__debug {
-  width: 90%;
-  @include center-block();
-  padding-bottom: 60px;
-  div::before {
+  position: fixed;
+  background-color: rgba(0,0,0,.5);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  padding-bottom: 20px;
+  & > div::before {
     @extend .label;
     display: inline-block;
     margin-right: 10px;
     width: 68px;
     text-align: center;
   }
-  div {
+  & > div {
     display: block;
     margin: 10px 0;
     word-break: break-all;
     word-wrap: break-word;
+    margin: 5px 15px;
   }
   .log::before {
     @extend .label-primary;
