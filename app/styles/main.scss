@@ -1,11 +1,7 @@
-body {
-  color: reverse(der);
-  flex: 1;
-}
-//@import 'partial';
-//@import 'ui';
-//@import 'base';
-//
+@import 'partial';
+@import 'ui';
+@import 'base';
+
 //
 //.btn {
 //  @include btn();

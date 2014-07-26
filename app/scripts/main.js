@@ -1,28 +1,48 @@
 'use strict';
 
-// 头像
-// http://qzapp.qlogo.cn/qzapp/100383694/7D29C05E0425C97483ED8CD1D681C1A6/100
-// http://llss.qiniudn.com/avatar_default.png
+var Debug = require('./libs/debug');
 
-var Dialog = require('./libs/dialog'),
-  Router = require('./libs/router'),
-  init = require('./app/init');
+require('fastclick')(document.body);
 
-function page_index() {}
+var utils = require('./libs/utils'),
+    wechat = require('./libs/wechat'),
+    ajax = require('./libs/ajax');
 
-//Dialog.alert('Dialog');
+window.utils = utils;
+window.ajax = ajax;
 
-//require('./libs/btn').fastClick(document.body);
+function uploadFiles(url, files) {
+  var formData = new FormData();
 
-// 路由
-Router// 所有页面都执行，而且是首先执行
-  .all(init)
+  for (var i = 0, file; file = files[i]; ++i) {
+    formData.append('file_' + i, file);
+  }
 
-  // 首页
-  .on('index', page_index)
+  ajax({
+    url: url,
+    type: 'POST',
+    dataType: 'json',
+    data: formData,
+    success: function(data) {
+      var url = utils.appendQuery(data._FILES.file_0.url, '_=' + Date.now());
+      utils._('#image_preview').setAttribute('src', url);
 
-  // 默认也是首页
-  .other(page_index);
+      var data = utils.objectifyForm(document.wechat_professor);
+      wechat.shareToFrient(function() {
+        return {
+          title: data.title,
+          desc: data.desc,
+          img_url: url,
+          link: data.link
+        }
+      });
+    }
+  });
+}
 
+Debug.log('debug log');
+Debug.log('debug log');
 
-
+document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+  uploadFiles('http://fcbst.sinaapp.com/util/cb.php', this.files);
+}, false);

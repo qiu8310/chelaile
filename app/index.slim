@@ -11,18 +11,36 @@ html.cn lang='zh' manifest="manifest.appcache"
     meta name="viewport" content="width=device-width,initial-scale=1"
     meta name="format-detection" content="telephone=no;"
     meta name="format-detection" content="address=no;email=no;"
-    title 英语流利说
+    title 装逼王
     link rel="shortcut icon" href="favicon.ico"
-
-    /[if lt IE 9]
-      script type="text/javascript" src="http://apps.bdimg.com/libs/html5shiv/r29/html5.min.js"
-
 
     /! build:css styles/main.css
     link rel="stylesheet" href="styles/main.css"
     /! endbuild
 
   body
+    form name="wechat_professor" style="width: 240px; margin-left: auto; margin-right: auto; margin-top: 50px;"
+      div.form-group
+        label Title
+        input type="text" name="title" value="title" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
+      div.form-group
+        label Desc
+        textarea name="desc" rows=5 desc
+      div.form-group
+        label Image
+        input type="file"
+        input type="hidden" name="image" value=""
+
+
+      div.form-group
+        label Url
+        input type="url" name="url" value="http://www.baidu.com"
+
+      div.form-group
+        button type="submit" 提交
+
+
+
 
 
 
@@ -31,8 +49,11 @@ html.cn lang='zh' manifest="manifest.appcache"
     script type="text/javascript" src="scripts/main.js"
     /! endbuild
 
-    javascript:
-      var _gaq=[['_setAccount','UA-42968229-3'],['_trackPageview']];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-      g.src='//www.google-analytics.com/ga.js';
-      s.parentNode.insertBefore(g,s)}(document,'script'));
+    /javascript:
+    /    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    /    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    /    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    /    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    /
+    /    ga('create', 'UA-53226358-1', 'auto');
+    /    ga('send', 'pageview');
