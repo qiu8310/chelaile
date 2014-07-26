@@ -27,22 +27,20 @@ function _log(elem, msg, append) {
 }
 
 var wrap = function(key) {
-
-  var container = utils._('.__debug');
-  if (!container) {
-    container = document.createElement('div');
-    container.className = '__debug';
-    (document.getElementById('root') || document.body).appendChild(container);
-  }
-  container.style.cssText = "";
-  var elem = document.createElement('div');
-  elem.className = key;
-  container.appendChild(elem);
-
   return function() {
     if (debugKey < 1 || debugKey > debugMap[key]) {
       return false;
     }
+
+    var container = utils._('.__debug');
+    if (!container) {
+      container = document.createElement('div');
+      container.className = '__debug';
+      (document.getElementById('root') || document.body).appendChild(container);
+    }
+    var elem = document.createElement('div');
+    elem.className = key;
+    container.appendChild(elem);
 
     var args = [].slice.call(arguments, 0);
     var msg = [], append = true;
