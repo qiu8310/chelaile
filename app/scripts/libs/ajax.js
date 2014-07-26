@@ -78,7 +78,7 @@ function serializeData(options) {
     //  params.push(k + '=' + encodeURIComponent(options.data[k]));
     //}
     //options.data = params.join('&').replace(/%20/g, '+');
-    options.data = utils.serializeURL(options.data).replace(/%20/g, '+')
+    options.data = utils.objectToQuery(options.data).replace(/%20/g, '+')
   }
 
   if (options.data && (!options.type || options.type.toUpperCase() === 'GET')) {

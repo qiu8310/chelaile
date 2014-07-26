@@ -1,9 +1,10 @@
+'use strict';
 var utils = require('./utils');
 
 var last;
 
 function positionIn(last) {
-  var offset, w, h, tw, th;
+  var offset, w, h;
   var gap = 5; // 允许的误差
   var dropzone = last.dropzone;
 
@@ -69,7 +70,7 @@ function touchmove(e) {
   e.preventDefault();
 }
 
-function touchend(e) {
+function touchend() {
   if (!last) {
     return true;
   }

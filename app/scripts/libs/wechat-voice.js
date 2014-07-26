@@ -21,7 +21,7 @@ Event.wrap(obj);
  uploaded: func  => 成功上传文件到微信服务器的回调
  }
  */
-var Map = {};
+var CacheMap = {};
 
 function WechatVoice(appId, localId, opts) {
   opts = opts || {};
@@ -35,7 +35,7 @@ function WechatVoice(appId, localId, opts) {
   this.appId = appId;
 
   // 备份，方便查找
-  Map[localId] = this;
+  CacheMap[localId] = this;
 }
 
 // 静态录音的方法
@@ -107,8 +107,8 @@ WechatVoice.prototype = {
   },
   destroy  : function() {
     this.off();
-    Map[this.localId] = null;
-    delete Map[this.localId];
+    CacheMap[this.localId] = null;
+    delete CacheMap[this.localId];
   },
   isPlaying: function() { return this.status === STATUS.PLAYING; },
   isStopped: function() { return this.status === STATUS.STOPPED; }
@@ -118,9 +118,9 @@ Event.wrap(WechatVoice.prototype);
 
 if (Wechat.supported) {
   Wechat.on('voicebegin voiceend', function(e, data) {
-    if (data.localId && (data.localId in Map)) {
+    if (data.localId && (data.localId in CacheMap)) {
       var type = e.type === 'voicebegin' ? 'play' : 'end';
-      var voice = Map[data.localId];
+      var voice = CacheMap[data.localId];
       voice.trigger(type, [], voice);
       voice.status = type === 'play' ? STATUS.PLAYING : STATUS.STOPPED;
     }

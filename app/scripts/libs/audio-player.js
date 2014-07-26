@@ -117,4 +117,4 @@ var AudioPlayer = (function() {
 })();
 
 
-module.exports = AudioPlayer
+module.exports = AudioPlayer;

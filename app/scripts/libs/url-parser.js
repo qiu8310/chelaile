@@ -13,7 +13,7 @@ function parseURL(url) {
     host    : a.hostname,
     port    : a.port ? parseInt(a.port, 10) : 80,
     query   : a.search.replace('?', ''),
-    params  : utils.unserializeURL(a.search.substr(1)),
+    params  : utils.objectifyQuery(a.search.substr(1)),
     file    : (a.pathname.match(/\/([^\/?#]+)$/i) || [, ''])[1],
     hash    : a.hash.replace('#', ''),
     path    : a.pathname.replace(/^([^\/])/, '/$1') // pathname 最前面补上 / (如果没有的话)

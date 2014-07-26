@@ -82,7 +82,7 @@ Player.setupPlayers = function(selector, audioOpts, isSinglePlayer) {
     var player = new Player(control.dataset.src, audioOpts);
     player.on('playing', function() {
       control.classList.add('stop');
-      control.classList.remove('play')
+      control.classList.remove('play');
     });
     player.on('pause ended', function() {
       control.classList.add('play');
@@ -97,6 +97,6 @@ Player.setupPlayers = function(selector, audioOpts, isSinglePlayer) {
     players.push(player);
   });
   return players;
-}
+};
 
 module.exports = Player;

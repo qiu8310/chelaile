@@ -2,6 +2,15 @@
 
 var utils = require('./utils');
 
+
+
+
+function touchend() {
+  utils.__('.touched').forEach(function(ele) {
+    ele.classList.remove('touched');
+  });
+}
+
 function touchstart(e) {
   touchend();
   var target = e.target, i = 0, up = 3;
@@ -15,18 +24,12 @@ function touchstart(e) {
   }
 }
 
-
-function touchend() {
-  utils.__('.touched').forEach(function(ele) {
-    ele.classList.remove('touched');
-  });
-}
-
 function touchable() {
   document.addEventListener('touchstart', touchstart, false);
   document.addEventListener('touchend', touchend, false);
   document.addEventListener('touchcancel', touchend, false);
 }
+
 
 
 /*

@@ -173,7 +173,7 @@ var self = {
    * {} => foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
    * @param obj
    */
-  serializeURL: function(obj, _notJoin) {
+  objectToQuery: function(obj, _notJoin) {
     var i, name, val, rtn = [];
 
     var replace = function(w) { return w.replace('|', '[') + ']'; };
@@ -184,7 +184,7 @@ var self = {
 
         switch (self.type(val)) {
           case 'object':
-            var parts = self.serializeURL(val, true);
+            var parts = self.objectToQuery(val, true);
             for (i = 0; i < parts.length; i++) {
               rtn.push([name, parts[i]].join('|').replace(reg_wrap_bracket, replace));
             }
@@ -214,7 +214,7 @@ var self = {
      * }
    * @param str
    */
-  unserializeURL: function(str) {
+  objectifyQuery: function(str) {
     var data = {};
     str.split('&').forEach(function(pair) {
       var name, val, matches, i, mat, nextMat;
@@ -223,7 +223,7 @@ var self = {
         return;
       }
 
-      name = pair[0];
+      name = decodeURIComponent(pair[0]);
       val = decodeURIComponent(pair[1]);
 
       matches = name.match(reg_url_keys);
@@ -260,8 +260,8 @@ var self = {
    * 注意：浏览器在提交 form 时，如果有 radio 或 checkbox 没有选中是，就不会提交上去它们对应的 key
    *
    */
-  getFormData: function(elemForm) {
-    var data = [], cacheNames = {}, checkedNames = {};
+  objectifyForm: function(elemForm) {
+    var data = [];
     if (!elemForm.nodeName) {
       elemForm = self._(elemForm);
     }
@@ -273,20 +273,16 @@ var self = {
       val = elem.value;
       type = elem.type;
 
+      name = encodeURIComponent(name);
       val = encodeURIComponent(type === 'password' ? val : val.trim());
-      if (type === 'radio' || type === 'checkbox') {
-        cacheNames[name] = true;
-        if (elem.checked) {
-          data.push(name + '=' + val);
-          checkedNames[name] = true;
-        }
-      } else {
+
+      if (type !== 'radio' && type !== 'checkbox' || elem.checked) {
         data.push(name + '=' + val);
       }
 
     });
 
-    return self.unserializeURL(data.join('&'));
+    return self.objectifyQuery(data.join('&'));
 
   },
 
