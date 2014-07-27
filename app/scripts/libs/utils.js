@@ -20,17 +20,34 @@
 
 //var reg_word = /^[\w]+$/;
 
-var undef, reg_trip_bracket = /\[|\]/g,    //  去除中括号 [foo] => foo
-  reg_wrap_bracket = /^[\w\-]+\|[^=\[]*/,  // name|foo=bar => name[foo]=bar
-  reg_url_keys = /([\w\-]+)|(\[[\w\-]*\])/g; // 匹配 bar[foo][xx][] 这种形式 => [ 'bar', '[foo]', '[xxx]', '[]' ]
+var undef,
+    utils,
+    value_gettable_form_control_selector = 'input[name], select[name], textarea[name], button[name]',
+    reg_trip_bracket = /\[|\]/g,    //  去除中括号 [foo] => foo
+    reg_wrap_bracket = /^[\w\-]+\|[^=\[]*/,  // name|foo=bar => name[foo]=bar
+    reg_url_keys = /([\w\-]+)|(\[[\w\-]*\])/g; // 匹配 bar[foo][xx][] 这种形式 => [ 'bar', '[foo]', '[xxx]', '[]' ]
+
+
+function event_listener_delegate_wrap(func, delegateSelector) {
+
+  return function(e) {
+    var target = e.target;
+    if (utils.matchesSelector(target, delegateSelector)) {
+      func.call(target, e);
+    }
+  };
+}
 
 /*
  很多函数我都没写了，像 forEach、indexOf、trim、isArray...
  当作它们默认支持吧
  详情 es5 的浏览器支持情况: http://kangax.github.io/compat-table/es5/
  */
-var self = {
+utils = {
   _: function(selector, ctx) {
+    if (selector.nodeName) {
+      return selector;
+    }
     return (ctx || document).querySelector(selector);
   },
 
@@ -46,8 +63,8 @@ var self = {
     var k, i, args = [].slice.call(arguments);
 
     deep = true;
-    if (self.type(args[args.length - 1]) === 'boolean') {
-      deep = args.pop();
+    if (utils.type(args[0]) === 'boolean') {
+      deep = args.shift();
     }
 
     for (i = 1; i < args.length; ++i) {
@@ -59,8 +76,8 @@ var self = {
       for (k in other) {
         if (other.hasOwnProperty(k)) {
           // 数组不深度复制，避免它被转化成了 Object
-          if (deep && self.type(other[k]) === 'object') {
-            obj[k] = self.extend(obj[k], other[k], deep);
+          if (deep && utils.type(other[k]) === 'object') {
+            obj[k] = utils.extend(obj[k], other[k], deep);
           } else {
             obj[k] = other[k];
           }
@@ -73,20 +90,40 @@ var self = {
   /**
    *  在 URL 上添加新的参数
    */
-  appendQuery: function(url, query) {
-    if (query === '') {
+  appendQuery: function(url, queryString) {
+    if (queryString === '') {
       return url;
     }
     var parts = url.split('#');
-    return (parts[0] + '&' + query).replace(/[&?]{1,2}/, '?') + (parts.length === 2 ? ('#' + parts[1]) : '');
+    return (parts[0] + '&' + queryString).replace(/[&?]{1,2}/, '?') + (parts.length === 2 ? ('#' + parts[1]) : '');
   },
 
 
   /**
-   *  延迟 time 毫秒去执行 func
+   *  延迟 delayTime 毫秒去执行 func
    */
-  delay: function(time, func) {
-    setTimeout(func, time);
+  delay: function(delayTime, func) {
+    setTimeout(func, delayTime);
+  },
+
+  /**
+   *
+   * @param func
+   * @param obj
+   * @param funcArgs
+   * @returns {*}
+   */
+  bindFuncToObject: function(func, obj, funcArgs) {
+    var bound, args = [].slice.call(arguments);
+    func = args[0];
+    obj = args[1];
+    funcArgs = args.slice(2);
+
+    bound = function() {
+      func.apply(obj, funcArgs.concat([].slice.call(arguments)));
+    };
+
+    return bound;
   },
 
   /**
@@ -108,7 +145,7 @@ var self = {
     var shuffled = [];
     for (i = 0; i < arr.length; i++) {
       value = arr[i];
-      rand = self.random(i);
+      rand = utils.random(i);
       shuffled[i] = shuffled[rand];
       shuffled[rand] = value;
     }
@@ -126,7 +163,7 @@ var self = {
    *  获取 JS 对象的类型
    */
   type: function(obj) {
-    return self.toString(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
+    return utils.toString(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
   },
 
   /**
@@ -145,11 +182,25 @@ var self = {
 
   /**
    * 添加事件监听
+   * 支持代理
    */
-  on: function(elem, types, func) {
-    if (!elem) {
+  on: function(elem, types, delegateSelector, func) {
+    elem = utils._(elem);
+    if (!elem || !elem.nodeName) {
       return false;
     }
+
+    if (utils.type(delegateSelector) === 'function') {
+      func = delegateSelector;
+      delegateSelector = null;
+    }
+
+
+
+    if (delegateSelector) {
+      func = event_listener_delegate_wrap(func, delegateSelector);
+    }
+
     types = types.trim().split(/\s+/);
     types.forEach(function(type) {
       elem.addEventListener(type, func, false);
@@ -158,6 +209,7 @@ var self = {
 
   /**
    * 去除事件监听
+   * TODO 暂不支持去除代理
    */
   off: function(elem, types, func) {
     if (!elem) {
@@ -173,7 +225,7 @@ var self = {
    * {} => foo[aa]=aa&foo[bb]=bb&bar[]=cc&bar[]=dd
    * @param obj
    */
-  objectToQuery: function(obj, _notJoin) {
+  objectToQuery: function(obj, notJoin) {
     var i, name, val, rtn = [];
 
     var replace = function(w) { return w.replace('|', '[') + ']'; };
@@ -182,9 +234,9 @@ var self = {
       if (obj.hasOwnProperty(name)) {
         val = obj[name];
 
-        switch (self.type(val)) {
+        switch (utils.type(val)) {
           case 'object':
-            var parts = self.objectToQuery(val, true);
+            var parts = utils.objectToQuery(val, true);
             for (i = 0; i < parts.length; i++) {
               rtn.push([name, parts[i]].join('|').replace(reg_wrap_bracket, replace));
             }
@@ -199,7 +251,7 @@ var self = {
         }
       }
     }
-    return _notJoin ? rtn : rtn.join('&');
+    return notJoin ? rtn : rtn.join('&');
   },
 
   /**
@@ -262,12 +314,10 @@ var self = {
    */
   objectifyForm: function(elemForm) {
     var data = [];
-    if (!elemForm.nodeName) {
-      elemForm = self._(elemForm);
-    }
+    elemForm = utils._(elemForm);
 
     // 自定义的组件通过 <input type="hidden"> 来实现
-    self.__('input[name], select[name], textarea[name], button[name]', elemForm).forEach(function(elem) {
+    utils.__(value_gettable_form_control_selector, elemForm).forEach(function(elem) {
       var name, val, type;
       name = elem.name;
       val = elem.value;
@@ -282,7 +332,32 @@ var self = {
 
     });
 
-    return self.objectifyQuery(data.join('&'));
+    return utils.objectifyQuery(data.join('&'));
+
+  },
+
+  objectFillForm: function(obj, elemForm) {
+    elemForm = utils._(elemForm);
+
+    var data = {};
+    utils.objectToQuery(obj, true).forEach(function(encoded_name_val_pair) {
+      var name, val;
+      val = encoded_name_val_pair.split('=');
+      name = decodeURIComponent(val[0]);
+      val = decodeURIComponent(val[1]);
+      data[name] = val;
+    });
+    utils.__(value_gettable_form_control_selector, elemForm).forEach(function(elem) {
+      var name = elem.name,
+          type = elem.type;
+      if (name in data) {
+        if (type !== 'radio' && type !== 'checkbox') {
+          elem.value = data[name];
+        } else {
+          elem.checked = elem.value === data[name];
+        }
+      }
+    });
 
   },
 
@@ -290,7 +365,7 @@ var self = {
    *  获取或设置 elem 内的文本
    */
   elemText: function(elem, text) {
-    var k = elem.innerText ? 'innerText' : 'textContent';
+    var k = elem.textContent ? 'textContent' : 'innerText';
     return text === undef ? elem[k] : elem[k] = text;
   },
 
@@ -302,19 +377,37 @@ var self = {
   },
 
   /**
-   *  清空 elem 下的 DOM
+   * 查看 elem 是否能匹配 selector
+   * @param elem
+   * @param selector
+   * @returns {*}
    */
-  empty: function(elem) {
-    while (elem.firstChild) {
-      elem.removeChild(elem.firstChild);
-    }
+  matchesSelector: function(elem, selector) {
+    return (elem.matches ||
+        elem.matchesSelector ||
+        elem.msMatchesSelector ||
+        elem.mozMatchesSelector ||
+        elem.webkitMatchesSelector ||
+        elem.oMatchesSelector).call(elem, selector);
   },
 
   /**
-   *  elem 相对 body 的偏移
+   *  清空 elem 下的 DOM
    */
-  offset: function(el) {
-    var rect = el.getBoundingClientRect();
+  emptyDOM: function(elem) {
+    elem.innerHTML = '';
+  },
+
+  removeDOM: function(elem) {
+    elem.outerHTML = '';
+  },
+
+  offsetToViewport: function(elem) {
+    return elem.getBoundingClientRect();
+  },
+
+  offsetToBody: function(elem) {
+    var rect = elem.getBoundingClientRect();
     return {
       top : rect.top + document.body.scrollTop,
       left: rect.left + document.body.scrollLeft
@@ -354,14 +447,14 @@ var self = {
     if (Array.isArray(obj)) {
       var rtn = '';
       obj.forEach(function(item) {
-        rtn += self.render(tpl, item, quick_render, escape_html);
+        rtn += utils.render(tpl, item, quick_render, escape_html);
       });
       return rtn;
     }
 
     // 替换单个单词 #{word}
     tpl = tpl.replace(/#\{([\w\-]+)\}/g, function(word, match) {
-      return (match in obj) ? (escape_html ? self.escapeHTML(obj[match]) : obj[match]) : '';
+      return (match in obj) ? (escape_html ? utils.escapeHTML(obj[match]) : obj[match]) : '';
     });
 
     if (!quick_render) {
@@ -420,5 +513,5 @@ var self = {
 
 };
 
-module.exports = self;
+module.exports = utils;
 

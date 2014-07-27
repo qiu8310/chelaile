@@ -8,7 +8,7 @@ function positionIn(last) {
   var gap = 5; // 允许的误差
   var dropzone = last.dropzone;
 
-  offset = utils.offset(dropzone);
+  offset = utils.offsetToBody(dropzone);
   w = parseInt(utils.css(dropzone, 'width'), 10);
   h = parseInt(utils.css(dropzone, 'height'), 10);
 
@@ -23,7 +23,7 @@ function touchstart(e) {
   var touch = e.touches ? e.touches[0] : e, target = touch.target;
   if (!target || !target.getAttribute('draggable') || last) { return true; }
 
-  var offset = utils.offset(target);
+  var offset = utils.offsetToBody(target);
   target.style.position = 'absolute';
   target.style.zIndex = 100;
   target.style.top = offset.top + 'px';

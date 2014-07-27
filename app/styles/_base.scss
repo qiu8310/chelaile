@@ -160,7 +160,8 @@ input::-moz-focus-inner {
 // debug
 .__debug {
   position: fixed;
-  background-color: rgba(0,0,0,.5);
+  color: white;
+  background-color: rgba(0,0,0,.6);
   bottom: 0;
   left: 0;
   right: 0;
