@@ -1,4 +1,5 @@
 /* global WeixinJSBridge */
+var Debug = require('./debug');
 
 // WeixinJSBridgeReady 事件肯定已经触发完了，所以监听它也无用
 var listenEvents = {
@@ -8,12 +9,8 @@ var listenEvents = {
 },
     _check_funcs = [];
 
-
-var Debug = require('./debug');
-
 function _weixinReady() {
   var cb;
-  Debug.log('wechat ready');
   while((cb = _check_funcs.shift())) {
     cb();
   }
@@ -52,6 +49,7 @@ function invoke(eve, params, cb) {
       params = {};
     }
     // 微信接口调用
+    Debug.log('invoce => ' + eve, params);
     WeixinJSBridge.invoke(eve, params, function(res) {
       // 调用回调，可能包括：cancel，eve不存在，或者有返回内容的接口，如选取图片；所以不需要记录错误日志
       if (typeof cb === 'function') {
@@ -66,6 +64,7 @@ function _listenMenu(key, func, cb) {
   if (!(key in listenEvents) || (typeof func !== 'function')) {
     return false;
   }
+  Debug.log('listenMenu => ' + key);
   var eve = listenEvents[key];
   on(eve[0], function() {
     // 消息不能直接 invoke，必须放到on_xxx之下，否则会报 "access_control:not_allow" 错误
@@ -80,7 +79,7 @@ function _listenMenu(key, func, cb) {
   });
 }
 
-var self = {
+var wechat = {
   call           : call,
   invoke         : invoke,
 
@@ -134,6 +133,33 @@ var self = {
     _listenMenu('shareToWeibo', paramsFunc, errorFunc);
   },
 
+  /**
+   * 能用接口
+   *
+   * paramsFunc should return
+   *
+   *  title:
+   *  desc:
+   *  img_url:
+   *  link:
+   *
+   */
+  share: function(paramsFunc, errorFunc) {
+    wechat.shareToFrient(paramsFunc, errorFunc);
+    wechat.shareToTimeline(function() {
+      var data = paramsFunc();
+      data.title = data.desc;
+      return data;
+    }, errorFunc);
+    wechat.shareToWeibo(function() {
+      var data = paramsFunc();
+      return {
+        content: data.desc + ' ' + data.link,
+        img_url: data.img_url
+      }
+    }, errorFunc);
+  },
+
 
   // 获取用户网络类型
   // wifi, edge(非wifi,包含2G/3G), fail(无网络), wwan(2G或者3G)
@@ -159,9 +185,7 @@ var self = {
   // 隐藏、显示底部 toolbar
   hideToolbar    : function() { call('hideToolbar'); },
   showToolbar    : function() { call('showToolbar'); }
-
-
 };
 
 
-module.exports = self;
+module.exports = wechat;

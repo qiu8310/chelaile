@@ -1,50 +1,107 @@
 'use strict';
 
+var DEFAULT_SHARE_KEY = 'shen_jing_mao';
+
 var Debug = require('./libs/debug');
+window.onerror = function(msg, src, line) {
+  Debug.error(msg, src, line);
+}
+Debug.log('debug start');
+
 
 require('fastclick')(document.body);
-
 var utils = require('./libs/utils'),
-    wechat = require('./libs/wechat'),
-    ajax = require('./libs/ajax');
+    wechat = require('./libs/wechat-simple'),
+    ajax = require('./libs/ajax'),
+    Collapse = require('./app/collapse'),
+    DATA = require('./app/data');
+
 
 window.utils = utils;
 window.ajax = ajax;
 
-window.onerror = function(msg, src, line) {
-  Debug.error(msg, src, line);
-}
-Debug.log('start');
-Debug.log('start', 'abc');
-function uploadFiles(url, files) {
-  var formData = new FormData();
 
-  for (var i = 0, file; file = files[i]; ++i) {
-    formData.append('file_' + i, file);
+
+
+function set_img(img_url) {
+  utils._('[name=img_url]').value = img_url;
+  utils._('.thumbnail img').setAttribute('src', utils.appendQuery(img_url, '_=' + Date.now()));
+}
+function fill_form(share_key) {
+  var data = DATA.popular_share[share_key] || DATA.popular_share[DEFAULT_SHARE_KEY],
+      share_data = data.share_data;
+
+  utils.elemText(utils._('.navbar-brand'), data.label);
+  utils.objectFillForm(share_data, document.wechat_professor);
+  set_img(share_data.img_url);
+}
+
+
+
+// 分享
+wechat.share(function() {
+  var data = utils.objectifyForm(document.wechat_professor);
+  return {
+    title: data.title,
+    desc: data.desc,
+    img_url: data.img_url,
+    link: data.link
   }
+}, function() {
+  Debug.error([].slice.call(arguments));
+});
 
-  ajax({
-    url: url,
-    type: 'POST',
-    dataType: 'json',
-    data: formData,
-    success: function(data) {
-      var url = utils.appendQuery(data._FILES.file_0.url, '_=' + Date.now());
-      utils._('#image_preview').setAttribute('src', url);
 
-      var data = utils.objectifyForm(document.wechat_professor);
-      wechat.shareToFrient(function() {
-        return {
-          title: data.title,
-          desc: data.desc,
-          img_url: url,
-          link: data.link
-        }
-      });
-    }
+
+document.addEventListener('DOMContentLoaded', function() {
+  // 开始分享按钮
+  var elem_mask = utils._('#mask');
+  var bg = 'rgba(0, 0, 0, .8) url("' + DATA.wechat_share_arrow + '") no-repeat 95% 2% / 100px 100px';
+  elem_mask.style.cssText = 'background: ' + bg + ';';
+  utils.on('#start_share', 'click', function() {
+    elem_mask.style.display = 'block';
+    utils.delay(3000, function() {
+      elem_mask.style.display = 'none';
+    });
   });
-}
 
-document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-  uploadFiles('http://fcbst.sinaapp.com/util/cb.php', this.files);
-}, false);
+
+  // 监听文件上传事件
+  utils.on('[type=file]', 'change', function() {
+    var formData = new FormData();
+    if (!this.files[0]) {
+      return false;
+    }
+
+    formData.append('file', this.files[0]);
+
+    ajax({
+      url: DATA.file_uploader_url,
+      type: 'POST',
+      dataType: 'json',
+      data: formData,
+      success: function(data) {
+        set_img(data._FILES.file.url);
+      }
+    });
+  });
+
+
+  // Menu
+  var collapse = new Collapse(utils._('#navbar-collapse'));
+
+  utils.on('[data-toggle="collapse"]', 'click', function() {
+    collapse.toggle();
+  });
+  utils.on(document, 'click', '#navbar-collapse a', function() {
+    collapse.toggle();
+    fill_form(this.href.split('#').pop());
+  });
+
+  // 初始化 Data
+  fill_form(location.hash.substr(1))
+
+});
+
+
+

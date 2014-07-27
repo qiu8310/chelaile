@@ -8,46 +8,113 @@ html.cn lang='zh' manifest="manifest.appcache"
     meta name="force-rendering" content="webkit"
     meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"
 
-    meta name="viewport" content="width=device-width,initial-scale=1"
+    meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"
     meta name="format-detection" content="telephone=no;"
     meta name="format-detection" content="address=no;email=no;"
-    title 装逼王
+    title 朋友圈装逼利器
     link rel="shortcut icon" href="favicon.ico"
+
+    link rel="stylesheet" href="http://cdn.staticfile.org/twitter-bootstrap/3.2.0/css/bootstrap.min.css"
 
     /! build:css styles/main.css
     link rel="stylesheet" href="styles/main.css"
     /! endbuild
 
+    sass:
+      form
+        padding-bottom: 20px
+      .form-group
+        margin-bottom: 5px
+
+      .thumbnail
+        width: 80px
+        height: 80px
+        display: block
+        margin: 0 auto
+
+      .mask
+        display: none
+        position: fixed
+        left: 0
+        right: 0
+        top: 0
+        bottom: 0
+        z-index: 1000
+        background: rgba(0,0,0,.85)
+        background-size: 100px 100px
+
+        .mask-message
+          color: white
+          padding-top: 110px
+          font-size: 24px
+          text-align: center
+
+
   body
-    form name="wechat_professor" style="width: 240px; margin-left: auto; margin-right: auto; margin-top: 50px;"
-      div.form-group
-        label Title
-        input type="text" name="title" value="title" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
-      div.form-group
-        label Desc
-        textarea name="desc" rows=5 desc
-      div.form-group
-        label Image
-        input type="file"
-        input type="hidden" name="image" value=""
+    header.navbar.navbar-default
+      div.container
+        nav
+          div class="navbar-header"
+            button.navbar-toggle type="button" data-toggle="collapse" data-target="#navbar-collapse"
+              span class="icon-bar"
+              span class="icon-bar"
+              span class="icon-bar"
+            a.navbar-brand
+
+          div class="collapse navbar-collapse" id="navbar-collapse"
+            ul.nav.navbar-nav
+              li
+                a href="#shen_jing_mao" 围住神经猫
+              li
+                a href="#mi_shi_tao_sheng" 密室逃生
+              li
+                a href="#self_custom" 自定义
+
+    div.container
+      form.row.form-horizontal name="wechat_professor" style="margin:0;"
+        div.form-group
+          label.control-label.col-sm-3 分享标题
+          div.col-sm-9
+            input.form-control type="text" name="title" placeholder="只有`发送给朋友`时才需要这项" autocomplete="on" autocapitalize="off" autocorrect="off" spellcheck="false"
+        div.form-group
+          label.control-label.col-sm-3 分享文案
+          div.col-sm-9
+            textarea.form-control name="desc" rows=3
+        div.form-group
+          label.control-label.col-sm-3 二次分享文案
+          div.col-sm-9
+            textarea.form-control name="second_desc" rows=3 placeholder="如果不填则和`分享文案`一样"
+
+        div.form-group
+          label.control-label.col-sm-3 分享链接
+          div.col-sm-9
+            input.form-control type="url" name="link" value="http://www.baidu.com"
+
+        div.form-group
+          label.control-label.col-sm-3 分享图片
+          div.col-sm-5
+            input type="file" accept="image/*"
+            input type="hidden" name="img_url" value=""
+          div.col-sm-4
+            div.thumbnail
+              img alt="分享图片"
+
+        div.form-group
+          div.col-sm-offset-3.col-sm-9
+            a.btn.btn-success.center-block#start_share 开始装逼
 
 
-      div.form-group
-        label Url
-        input type="url" name="url" value="http://www.baidu.com"
+    div.mask#mask
+      div.mask-message
+        p 请点击右上角
+        p 再点击【分享到朋友圈】
 
-      div.form-group
-        button type="submit" 提交
-
-
-
-
-
-
-
+    /script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"
+    /script src="http://cdn.staticfile.org/twitter-bootstrap/3.2.0/js/bootstrap.js"
     /! build:js scripts/main.js
     script type="text/javascript" src="scripts/main.js"
     /! endbuild
+
 
     /javascript:
     /    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
