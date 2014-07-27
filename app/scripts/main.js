@@ -37,18 +37,33 @@ function fill_form(share_key) {
 }
 
 
-
 // 分享
-wechat.share(function() {
-  var data = utils.objectifyForm(document.wechat_professor);
-  return {
-    title: data.title,
-    desc: data.desc,
-    img_url: data.img_url,
-    link: data.link
-  }
-}, function() {
-  Debug.error([].slice.call(arguments));
+wechat.share(function(callback) {
+  var data = utils.objectifyForm(document.wechat_professor),
+      share_data = {
+        title: data.title,
+        desc: data.desc,
+        img_url: data.img_url,
+        link: data.link
+      };
+
+  ajax({
+    url: DATA.data_uploader_url,
+    type: 'POST',
+    dataType: 'text',
+    data: data,
+    success: function(id) {
+      if (id.length > 1) {
+        share_data.link = DATA.share_url + id;
+      }
+      callback(share_data);
+    },
+    error: function() {
+      callback(share_data);
+    }
+  });
+}, function(status) {
+  Debug[status ? 'success' : 'error']([].slice.call(arguments));
 });
 
 
@@ -67,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // 监听文件上传事件
-  utils.on('[type=file]', 'change', function() {
+  utils.on('[type=file]', 'change', function(e) {
     var formData = new FormData();
     if (!this.files[0]) {
       return false;
@@ -81,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
       dataType: 'json',
       data: formData,
       success: function(data) {
-        set_img(data._FILES.file.url);
+        set_img(data.file.url + '?imageView2/5/w/80/h/80');
       }
     });
   });

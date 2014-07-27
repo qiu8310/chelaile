@@ -1,8 +1,11 @@
 CACHE MANIFEST
-# Time: Mon Jul 14 2014 13:09:16 GMT+0800 (CST)
+# Time: Sun Jul 27 2014 17:20:49 GMT+0800 (CST)
 
 CACHE:
-scripts/ee4ae9.main.js
+scripts/636ada.main.js
+images/3b4547.shen_jing_mao.png
+images/8573d4.wechat_share_arrow.png
+images/bbaaaa.mi_shi_tao_sheng.png
 images/no-hash/avatar-guest.png
 images/no-hash/avatar-master.png
 images/ui/329a04.audio-play.png
@@ -11,7 +14,6 @@ images/ui/684aef.icon-back.png
 images/ui/954971.lls-ad.png
 images/ui/96c3d7.audio-stop.png
 images/ui/b5a661.icon-vote.png
-9176ac.favicon.ico
 
 NETWORK:
 *

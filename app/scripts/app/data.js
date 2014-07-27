@@ -1,5 +1,9 @@
 var DATA = {
+  // http://localhost/sites/fcbst/1/wechat/file_uploader.php
   file_uploader_url: 'http://fcbst.sinaapp.com/wechat/file_uploader.php',
+  data_uploader_url: 'http://fcbst.sinaapp.com/wechat/upload_share_data.php',
+  share_url: 'http://fcbst.sinaapp.com/wechat/share.php?id=',
+
   wechat_share_arrow: 'http://wechat-professor.qiniudn.com/wechat_top_right_share_arrow.png',
   popular_share: {
     shen_jing_mao: {
