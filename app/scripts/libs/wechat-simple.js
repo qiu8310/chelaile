@@ -53,7 +53,14 @@ function invoke(eve, params, cb) {
     WeixinJSBridge.invoke(eve, params, function(res) {
       // 调用回调，可能包括：cancel，eve不存在，或者有返回内容的接口，如选取图片；所以不需要记录错误日志
       if (typeof cb === 'function') {
-        cb(res);
+        //err_msg example
+        //case 'send_app_msg:cancel'
+        //case 'send_app_msg:fail'
+        //case 'send_app_msg:confirm'
+        //case 'send_app_msg:ok'
+        var rtn = res.err_msg, status;
+        status = (res.err_msg.match(/^\w+:(\w+)/))[1];
+        cb(status === 'ok' || status === 'confirm', status, res);
       }
     });
   });
