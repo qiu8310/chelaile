@@ -1,7 +1,52 @@
 /* global WeixinJSBridge */
+/*
+  // 同步 获取分享数据
+  wechat.share(function() {
+    var data = utils.objectifyForm(document.wechat_professor),
+    return {
+     title: data.title,
+     desc: data.desc,
+     img_url: data.img_url,
+     link: data.link
+    }
+  });
+
+
+ // 异步 获取分享数据
+ wechat.share(function(callback) {
+ var data = utils.objectifyForm(document.wechat_professor),
+   share_data = {
+     title: data.title,
+     desc: data.desc,
+     img_url: data.img_url,
+     link: data.link
+   };
+
+ ajax({
+   url: DATA.data_uploader_url,
+   type: 'POST',
+   dataType: 'text',
+   data: data,
+   success: function(id) {
+     if (id.length > 1) {
+        share_data.link = DATA.share_url + id;
+     }
+     callback(share_data);
+   },
+   error: function() {
+     callback(share_data);
+   }
+ });
+
+ }, function(status, text, res) {
+    Debug[status ? 'success' : 'error'](text, res);
+ });
+ */
+
+
 var Debug = require('./debug');
 
-// WeixinJSBridgeReady 事件肯定已经触发完了，所以监听它也无用
+// WeixinJSBridgeReady 事件肯定触发完 微信相关操作才有效
 var listenEvents = {
   'shareToFrient'  : ['menu:share:appmessage', 'sendAppMessage'],
   'shareToTimeline': ['menu:share:timeline', 'shareTimeline'],
@@ -71,18 +116,26 @@ function _listenMenu(key, func, cb) {
   if (!(key in listenEvents) || (typeof func !== 'function')) {
     return false;
   }
+
   Debug.log('listenMenu => ' + key);
-  var eve = listenEvents[key];
+
+  var eve = listenEvents[key],
+
+      invoke_callback = function(share_data) {
+        if (!share_data) return ;
+
+        // 处理 wechat android bug: 缺少 desc 就无法分享，但 desc 根本没用
+        if (key === 'shareToTimeline') {
+          share_data.desc = share_data.title;
+        }
+
+        invoke(eve[1], share_data, cb);
+      };
+
   on(eve[0], function() {
     // 消息不能直接 invoke，必须放到on_xxx之下，否则会报 "access_control:not_allow" 错误
-    var share_data = func.call(null, eve[0], eve[1]);
-
-    // 处理 wechat android bug: 缺少 desc 就无法分享，但 desc 根本没用
-    if (key === 'shareToTimeline') {
-      share_data.desc = share_data.title;
-    }
-
-    invoke(eve[1], share_data, cb);
+    var share_data = func.call(null, invoke_callback, eve[0], eve[1]);
+    invoke_callback(share_data);
   });
 }
 
